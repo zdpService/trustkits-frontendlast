@@ -1,0 +1,66 @@
+.modal-dropdown {
+  position: absolute;
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  width: 250px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: slideDown 0.2s forwards;
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-dropdown .close-btn {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  background: #1a5319;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-dropdown h4 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.modal-dropdown input {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.modal-dropdown button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: #e0a800;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.modal-dropdown button:hover {
+  background-color: #57450f;
+}

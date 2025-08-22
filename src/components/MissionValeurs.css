@@ -1,0 +1,169 @@
+/* Container général */
+.mission-container {
+  background: linear-gradient(135deg, #e0f7fa, #ffffff);
+  padding: 100px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Contenu central */
+.mission-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  animation: fadeInUp 1s ease forwards;
+}
+
+/* Titre */
+.mission-content h2 {
+  font-size: 2.8rem;
+  color: #00695c;
+  font-weight: 700;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+/* Petite ligne décorative sous le titre */
+.mission-content h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #ffb300;
+  margin: 10px auto 0 auto;
+  border-radius: 2px;
+}
+
+/* Paragraphe */
+.mission-content p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #333;
+  margin-bottom: 50px;
+  padding: 0 10px;
+}
+
+/* Cartes des valeurs (optionnel pour rendre plus joli) */
+.values-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.value-card {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
+  width: 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Titre de la carte */
+.value-card h3 {
+  color: #ffb300;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+/* Texte de la carte */
+.value-card p {
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media screen and (max-width: 900px) {
+  .mission-content h2 {
+    font-size: 2.2rem;
+  }
+
+  .mission-content p {
+    font-size: 1rem;
+  }
+
+  .values-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .value-card {
+    width: 90%;
+  }
+}
+.mission-container {
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+}
+
+.mission-content {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+}
+
+.mission-content h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.mission-content p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #555;
+}
+
+/* Styles pour l'admin */
+.mission-textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 15px;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  resize: vertical;
+  margin-bottom: 15px;
+  transition: border-color 0.3s;
+}
+
+.mission-textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.save-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.save-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}

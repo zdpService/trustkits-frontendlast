@@ -1,0 +1,48 @@
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+
+  /* Image + Dégradé */
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("https://media.istockphoto.com/id/484308927/fr/photo/f%C3%A9licitez-%C3%A9v%C3%A9nement-dans-une-%C3%A9glise-locale.webp?a=1&b=1&s=612x612&w=0&k=20&c=rIW84VZ-PhUbRSA-bwJp6gFdY8ILg8RJvkUgB8e8YGQ=")
+      center/cover no-repeat;
+}
+
+.hero-content {
+  max-width: 800px;
+  padding: 20px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-content p {
+  font-size: 1.3rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.hero-button {
+  background-color: #ffcc00;
+  color: #000;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.hero-button:hover {
+  background-color: #e6b800;
+}

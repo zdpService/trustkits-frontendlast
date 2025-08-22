@@ -1,0 +1,26 @@
+.marquee-container {
+  width: 100%;
+  background: #e0a800;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 10px;
+  z-index: 100;
+  position: fixed;
+  top: 70px; /* sous le header */
+}
+
+.marquee {
+  animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

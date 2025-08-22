@@ -1,0 +1,62 @@
+.actualites-container {
+  padding: 40px;
+  background: #f9f9f9;
+}
+
+.actualite-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.actualite-card img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.edit-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #e0a800;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.edit-btn:hover {
+  background: #57450f;
+}
+
+.edit-form input,
+.edit-form textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.edit-form button {
+  margin-right: 10px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-form button:first-of-type {
+  background: #1a5319;
+  color: #fff;
+}
+
+.edit-form button:last-of-type {
+  background: #ccc;
+}

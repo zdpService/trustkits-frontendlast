@@ -1,0 +1,76 @@
+/* Container principal centré */
+.connexion-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f9f9f9, #e0f7fa);
+  font-family: "Arial", sans-serif;
+}
+
+/* Titre de la page */
+.connexion-page h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+/* Formulaire */
+.connexion-page form {
+  background: #fff;
+  padding: 30px 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Inputs */
+.connexion-page input {
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.connexion-page input:focus {
+  border-color: #e0a800;
+}
+
+/* Bouton de connexion */
+.connexion-page button {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background-color: #e0a800;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.connexion-page button:hover {
+  background-color: #c17f00;
+}
+
+/* Responsive : petit écran */
+@media (max-width: 480px) {
+  .connexion-page form {
+    padding: 25px 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .connexion-page h2 {
+    font-size: 1.8rem;
+  }
+}
