@@ -1,0 +1,58 @@
+.historique-section {
+  padding: 20px;
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.header-icon {
+  height: 25px;
+  width: 25px;
+  color: #0f172a;
+}
+
+.header-title {
+  font-weight: bold;
+}
+
+.paiement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.paiement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.paiement-icon {
+  height: 20px;
+  width: 20px;
+  color: #0f172a;
+}
+
+.paiement-text {
+  font-size: 14px;
+  color: #333;
+}
+
+.empty-message {
+  font-style: italic;
+  color: #777;
+}

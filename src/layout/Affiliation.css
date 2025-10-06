@@ -1,0 +1,19 @@
+.account_infoItems {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Style par défaut (mobile d'abord) */
+.account_infoItems > * {
+  flex: 1 1 100%;
+}
+
+/* Sur écrans larges (desktop) */
+@media (min-width: 992px) {
+  .account_infoItems > * {
+    flex: 1 1 48%; /* 2 colonnes côte à côte */
+  }
+}

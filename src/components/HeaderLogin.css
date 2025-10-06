@@ -1,0 +1,144 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: #07002e;
+  color: #fff;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background 0.3s ease;
+  box-shadow: 1px 1px 1px 2px #dfdcdc52;
+}
+
+.header__logo img {
+  height: 45px;
+  width: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.header__logo img:hover {
+  transform: scale(1.05);
+}
+
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header__menu {
+  display: flex;
+  list-style: none;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.header__btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.header__btn--primary {
+  background: #fff;
+  color: #1f8a3b;
+  border: 1px solid #1f8a3b;
+}
+
+.header__btn--primary:hover {
+  background: #1f8a3b;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.header__btn--secondary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.header__btn--secondary:hover {
+  background: #fff;
+  color: #1f8a3b;
+  transform: translateY(-2px);
+}
+
+.header__icon {
+  width: 30px;
+  height: 30px;
+  padding-right: 0.5rem !important;
+  font-weight: bold;
+}
+
+.header__toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1100;
+}
+
+.header__toggle svg {
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  transition: transform 0.3s ease;
+  font-weight: bold;
+}
+
+.header__mobile {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #fff;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  animation: slideDown 0.4s ease forwards;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .header__menu {
+    display: none;
+  }
+
+  .header__toggle {
+    display: block;
+  }
+
+  .header__mobile {
+    display: flex;
+    width: 40vw;
+    justify-content: center;
+  }
+}
+
+.header__toggle.active svg {
+  transform: rotate(90deg);
+}

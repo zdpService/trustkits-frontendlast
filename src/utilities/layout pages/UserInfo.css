@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
+
+.user_info {
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.user_info h2 {
+  font-size: 24px;
+  color: #0f172a;
+  margin-bottom: 20px;
+}
+
+.user_info_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user_info_table tr {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.user_info_table td {
+  padding: 12px;
+  font-size: 16px;
+}
+
+.user_info_table .label {
+  font-weight: 600;
+  color: #334155;
+  width: 200px;
+}
+
+.user_info_table .value {
+  color: #475569;
+}
+.user_info_section {
+  padding: 20px;
+  background: #ffffff;
+  border-bottom: 1.1px solid rgba(0, 0, 0, 0.3);
+}
+
+.user_info_header {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: bold;
+}
+
+.user_info_header svg {
+  height: 25px;
+  width: 25px;
+  color: #0f172a;
+  transform: rotate(180deg);
+  font-weight: bold;
+}
+
+.user_info {
+  padding: 0.5rem;
+}
+
+.user_info_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user_info_table td {
+  padding: 8px;
+  font-size: 16px;
+}
+
+.user_info_table .label {
+  font-weight: 600;
+  color: #334155;
+  width: 200px;
+}
+
+.user_info_table .value {
+  color: #475569;
+}
+
+.delete_account_btn {
+  background: red;
+  border: none;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0.8rem 0;
+  padding: 0.3rem 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  gap: 0.3rem;
+}
+
+.delete_account_btn svg {
+  height: 25px;
+  width: 25px;
+  color: #ffffff;
+}
+
+/* Table normale sur grands écrans */
+.user_info_table,
+.affiliation_info_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user_info_table tr,
+.affiliation_info_table tr {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.user_info_table td,
+.affiliation_info_table td {
+  padding: 12px;
+  font-size: 16px;
+}
+
+/* Labels à gauche */
+.user_info_table .label,
+.affiliation_info_table .label {
+  font-weight: 600;
+  color: #334155;
+  width: 200px; /* valable seulement grands écrans */
+  white-space: nowrap;
+}
+
+.user_info_table .value,
+.affiliation_info_table .value {
+  color: #475569;
+  word-break: break-word;
+}
+
+/* ✅ Adaptation mobile */
+@media (max-width: 768px) {
+  .user_info_table td,
+  .affiliation_info_table td {
+    display: block;
+    width: 100% !important;
+    text-align: left;
+    padding: 6px 0;
+  }
+
+  .user_info_table .label,
+  .affiliation_info_table .label {
+    width: 100% !important;
+    font-weight: bold;
+    color: #0f172a;
+  }
+
+  .user_info_table .value,
+  .affiliation_info_table .value {
+    margin-bottom: 10px;
+    padding-left: 10px;
+  }
+
+  /* Ajout espace entre chaque "ligne" */
+  .user_info_table tr,
+  .affiliation_info_table tr {
+    display: block;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+}

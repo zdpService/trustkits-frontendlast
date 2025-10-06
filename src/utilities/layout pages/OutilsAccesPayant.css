@@ -1,0 +1,69 @@
+.toolsacces {
+  font-family: Arial, sans-serif;
+  padding: 20px 1%;
+}
+.newSection {
+  background: #fff;
+  max-width: 900px;
+  margin: 20px auto;
+}
+
+.acces-payants {
+  display: flex !important;
+  width: 100% !important;
+  flex-direction: column;
+  padding: 20px;
+  gap: 0.3rem;
+}
+
+.outil-card {
+  background: #f9fafb;
+  border: 1px solid #3060be !important;
+  border-radius: 10px;
+  padding: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.outil-card:hover {
+  transform: translateY(-4px);
+}
+
+.outil-card h2 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.outil-card p {
+  font-size: 14px;
+  margin: 4px 0;
+  color: #374151;
+}
+
+.outil-title {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 20px 0 5px;
+  color: #0f172a;
+}
+
+.outil-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.outil-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.outil-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #374151;
+}

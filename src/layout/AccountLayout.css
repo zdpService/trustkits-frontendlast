@@ -1,0 +1,112 @@
+.account_layout {
+  display: flex;
+  min-height: 100vh;
+  background: #ececed;
+}
+
+.sidebar {
+  width: 250px;
+  background: #0f172a;
+  color: #fff;
+  padding: 20px;
+  transition: width 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar_header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.sidebar_header p {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.sidebar_nav ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.sidebar_nav li {
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.sidebar_nav li:hover {
+  background: #1e293b;
+}
+
+.account_content {
+  flex: 1;
+  padding: 20px 10px;
+}
+
+/* 🔽 Responsive */
+@media (max-width: 45rem) {
+  .sidebar {
+    width: 70%; /* Sidebar prend 70% */
+  }
+
+  .account_content {
+    flex: 1;
+    width: 30%; /* Le reste prend 30% */
+  }
+}
+.sidebar-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+  color: #94a3b8;
+}
+
+.contact_container {
+  position: fixed;
+  z-index: 1000; /* Assure qu'il flotte au-dessus d'autres éléments */
+  right: 20px; /* Un peu plus d'espace depuis le bord pour ne pas être trop collé */
+  top: 50%;
+  transform: translateY(-50%); /* Centre l'élément verticalement */
+
+  /* Style visuel de base */
+  display: flex; /* Utilise flexbox pour centrer le SVG à l'intérieur */
+  justify-content: center;
+  align-items: center;
+
+  background-color: #0f172a; /* Couleur de fond sombre que vous avez spécifiée */
+  padding: 1rem; /* Marge interne pour le cercle */
+  border-radius: 50%; /* Rend le conteneur parfaitement circulaire */
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombre subtile pour le relief */
+
+  /* Effets d'interactivité */
+  cursor: pointer; /* Indique que l'élément est cliquable */
+  transition: all 0.3s ease; /* Transition douce pour les changements d'état */
+  text-decoration: none; /* Supprime le soulignement par défaut du lien */
+}
+
+/* Effet au survol du conteneur */
+.contact_container:hover {
+  background-color: #1e293b; /* Légèrement plus clair au survol pour un effet subtil */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre plus prononcée */
+  transform: translateY(-50%) scale(1.05); /* Légère augmentation de taille */
+}
+
+/* Styles pour l'icône SVG à l'intérieur du conteneur */
+.contact_container__svg {
+  /* Correction de la faute de frappe: 'contact' au lieu de 'oncat' */
+  color: #ececed; /* Couleur du SVG que vous avez spécifiée */
+  height: 35px; /* Utilisation de votre hauteur de 35px pour le SVG */
+  width: 35px; /* Ajuste la largeur à la même valeur pour maintenir les proportions carrées du SVG */
+
+  display: block; /* Assure que le SVG respecte ses dimensions */
+  transition: color 0.3s ease; /* Transition pour la couleur du SVG */
+}
+
+/* Effet au survol du SVG (quand le conteneur est survolé) */
+.contact_container:hover .contact_container__svg {
+  color: #ffffff; /* Le SVG devient blanc pur au survol pour un contraste clair */
+}

@@ -1,0 +1,42 @@
+/* src/components/ContactButtonWrapper/ContactButtonWrapper.css */
+
+.contact_container {
+  position: fixed;
+  z-index: 1000;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #0f172a;
+  padding: 1rem;
+  border-radius: 50%;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.contact_container:hover {
+  background-color: #1e293b;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.contact_container__svg {
+  color: #ececed;
+  height: 35px;
+  width: 35px;
+
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.contact_container:hover .contact_container__svg {
+  color: #ffffff;
+}

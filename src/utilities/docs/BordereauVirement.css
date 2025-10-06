@@ -1,0 +1,145 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: weight;
+  font-style: normal;
+}
+
+.section_viremnt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100vw;
+}
+.bordereau_container {
+  height: auto;
+  max-width: 95vw;
+  margin: auto;
+  padding: 10px;
+  box-shadow: 1px 1px 3px 0.5px rgba(0, 0, 0, 0.685);
+  background: #fff;
+}
+.section_title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.section_title img {
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+}
+
+.section_title h3 {
+  font-size: 17px;
+  color: #2f2f2f;
+}
+
+.section_order__main {
+  display: flex;
+  flex-direction: column;
+}
+
+.section_order__main .section_order:last-child {
+  margin-top: 0;
+}
+.section_order {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  padding: 12px 8px;
+  border: 1px solid #2f2f2f;
+  margin-top: 30px;
+}
+
+.title h5 {
+  font-size: 14px;
+  color: #2f2f2f;
+  font-weight: 800;
+}
+
+.section_descr {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #2f2f2f;
+  margin-top: 1rem;
+  width: 100%;
+}
+.section_descr h6 {
+  color: #2f2f2f;
+  text-wrap: nowrap;
+}
+
+.section_descr-item {
+  font-size: 12px;
+  color: #2f2f2f;
+  display: flex;
+  align-items: center;
+  padding: 0 25px;
+  border: 1px solid #b1aaaa;
+  margin-left: 0.3rem;
+  border-top: none;
+  flex-basis: 60%;
+  text-align: center;
+  justify-content: center;
+}
+
+.section_descr_items {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.descr_items {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.para_desr {
+  font-size: 8px;
+  font-weight: 700;
+  font-style: italic;
+  text-align: center;
+  padding: 0.3rem;
+}
+
+/* ======================================client main======================= */
+
+.section_client__main .section_order {
+  margin-top: 10px;
+}
+
+.section_client__main-bottom {
+  color: #2f2f2f;
+}
+
+.download-btn {
+  position: fixed;
+  top: 110px;
+  right: 15px;
+  padding: 10px 14px;
+  background: #1e293b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+  background: #334155;
+  transform: translateY(-2px);
+}

@@ -1,0 +1,44 @@
+.affiliation_info {
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.affiliation_info h2 {
+  font-size: 24px;
+  color: #0f172a;
+  margin-bottom: 20px;
+}
+
+.affiliation_info_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.affiliation_info_table tr {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.affiliation_info_table td {
+  padding: 12px;
+  font-size: 16px;
+}
+
+.affiliation_info_table .label {
+  font-weight: 600;
+  color: #334155;
+  width: 200px;
+}
+
+.affiliation_info_table .value {
+  color: #475569;
+}
+
+.affiliation_info_table .value a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.status.active {
+  color: green;
+  font-weight: bold;
+}
