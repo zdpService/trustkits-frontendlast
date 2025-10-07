@@ -1,0 +1,27 @@
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #c00; /* Rouge Société Générale */
+  color: #fff;
+  border: 2px solid #c00;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+  background-color: #a10000;
+  border-color: #a10000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(204, 0, 0, 0.3);
+}
+
+.primary-btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
