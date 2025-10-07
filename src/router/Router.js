@@ -15,8 +15,6 @@ import PrivateRoute from "./PrivateRoute";
 import AuthRedirectRoute from "./AuthRedirectRoute"; // <--- N'oubliez PAS d'importer AuthRedirectRoute !
 
 import PaymentStatus from "../statut du paiement/PaymentStatus";
-import ContactButtonWrapper from "../btn/ContactButtonWrapper"; // <--- Assurez-vous d'importer ContactButtonWrapper si vous l'utilisez
-import NewsletterAdmin from "../newletterAdmin/SendUpdate";
 import SendUpdate from "../newletterAdmin/SendUpdate";
 import SupportTicketForm from "../admin/SupportTicketForm";
 import AdminSupportPanel from "../admin/AdminSupportPanel";
@@ -127,7 +125,6 @@ const RouterContent = () => {
       {/* Le ContactButtonWrapper est ici, en dehors des Routes, 
           pour qu'il soit présent sur TOUTES les pages, 
           et sa visibilité est gérée par sa logique interne. */}
-      <ContactButtonWrapper />
 
       <Routes>
         {routesConfig.map((route, index) => (
