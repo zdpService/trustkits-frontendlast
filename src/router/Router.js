@@ -10,9 +10,8 @@ import { LoadingProvider, LoadingContext } from "../context/LoadingContext";
 import TextComponent from "../components/TextComponent";
 import { CoinsProvider } from "../context/CoinsContext";
 
-// --- Assurez-vous d'importer ces deux composants de route ---
 import PrivateRoute from "./PrivateRoute";
-import AuthRedirectRoute from "./AuthRedirectRoute"; // <--- N'oubliez PAS d'importer AuthRedirectRoute !
+import AuthRedirectRoute from "./AuthRedirectRoute";
 
 import PaymentStatus from "../statut du paiement/PaymentStatus";
 import SendUpdate from "../newletterAdmin/SendUpdate";
@@ -28,8 +27,7 @@ const routesConfig = [
   },
   {
     path: "/login",
-    // --- C'EST ICI LA MODIFICATION CLÉ ---
-    // Encapsuler LoginForm avec AuthRedirectRoute pour rediriger si déjà connecté
+
     Component: (
       <AuthRedirectRoute redirectTo="/account">
         <LoginForm />
@@ -109,11 +107,7 @@ const routesConfig = [
       </PrivateRoute>
     ),
   },
-  // Si vous avez une page de contact dédiée, ajoutez-la ici:
-  // {
-  //   path: "/contact",
-  //   Component: <ContactPage />, // Assurez-vous d'importer ContactPage
-  // },
+
   {
     path: "/loading",
     Component: <Loading />,
@@ -129,12 +123,7 @@ const RouterContent = () => {
 
   return (
     <>
-      {/* Affiche le composant de chargement si 'loading' est vrai */}
       {loading && <Loading />}
-
-      {/* Le ContactButtonWrapper est ici, en dehors des Routes, 
-          pour qu'il soit présent sur TOUTES les pages, 
-          et sa visibilité est gérée par sa logique interne. */}
       <ContactButtonWrapper />
       <Routes>
         {routesConfig.map((route, index) => (
@@ -146,7 +135,6 @@ const RouterContent = () => {
 };
 
 const AppRouter = () => {
-  // Renommé 'Router' en 'AppRouter' pour éviter la confusion avec BrowserRouter
   return (
     <LoadingProvider>
       <CoinsProvider>

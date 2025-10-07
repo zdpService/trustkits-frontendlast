@@ -64,7 +64,6 @@ const MdifiClientAccess = () => {
           motif,
         });
 
-        // 📩 Envoi d'email si statut = Rejeté
         if (statut === "Rejeté") {
           const v = virements.find((item) => item.id === selectedId);
 
@@ -92,7 +91,7 @@ const MdifiClientAccess = () => {
             "UWYvET8eDModmPseE"
           );
 
-          alert("📩 Mail de rejet envoyé au bénéficiaire.");
+          alert("le satut de vôtre virement a été modifier avec succès");
         }
 
         alert("✅ Virement mis à jour avec succès !");
@@ -116,7 +115,6 @@ const MdifiClientAccess = () => {
       <h3>Mettre à jour statut du virement</h3>
 
       <form className="update-client-form" onSubmit={handleSubmit}>
-        {/* Sélection du virement */}
         <div className="form-group">
           <label>
             Sélectionner un virement <span className="required">*</span>
@@ -134,7 +132,6 @@ const MdifiClientAccess = () => {
           </select>
         </div>
 
-        {/* Action */}
         <div className="form-group">
           <label>
             Action à effectuer <span className="required">*</span>
@@ -146,7 +143,6 @@ const MdifiClientAccess = () => {
           </select>
         </div>
 
-        {/* Modification du statut */}
         {action === "modifier" && (
           <>
             <div className="form-group">

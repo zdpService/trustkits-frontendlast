@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./VirementForm.css";
 import { useNavigate } from "react-router-dom";
-// import UpdateClientAccess from "./MdifiClientAccess"; // Commenté car non fourni
 import { db, auth } from "../firebase/config";
 import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import Loading from "../utilities/laoding/VirementLoading";
@@ -13,7 +12,7 @@ import {
   PAYS,
 } from "../data/tableau des banque/data";
 import { CoinsContext } from "../context/CoinsContext";
-import ModalVideo from "../video Modal/ModalVideo"; // 📌 1. Importez le composant ModalVideo
+import ModalVideo from "../video Modal/ModalVideo";
 import MdifiClientAccess from "./MdifiClientAccess";
 
 const VirementForm = () => {
@@ -24,11 +23,9 @@ const VirementForm = () => {
     loading: coinsLoading,
   } = useContext(CoinsContext);
 
-  // 📌 2. Nouvel état pour gérer la modale vidéo
   const [isModalVideoOpen, setIsModalVideoOpen] = useState(false);
 
   const [formData, setFormData] = useState({
-    // ... (votre état initial reste le même)
     debiteurNom: "",
     beneficiaireNom: "",
     devise: "EUR",
@@ -49,13 +46,8 @@ const VirementForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const VIREMENT_COST = 5000; // 💰 Coût du virement
-
-  // 📌 3. Définissez la source de la vidéo (Exemple YouTube)
-  // ATTENTION : L'URL doit être le lien d'intégration (embed) de YouTube !
-  const TEST_VIDEO_URL = "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Lien de test (Rick Roll)
-
-  // Récupération du nom utilisateur depuis Firebase (Aucun changement)
+  const VIREMENT_COST = 5000;
+  const TEST_VIDEO_URL = "https://www.youtube.com/embed/dQw4w9WgXcQ";
   useEffect(() => {
     const fetchUserName = async () => {
       if (!auth.currentUser) return;
@@ -86,7 +78,6 @@ const VirementForm = () => {
   };
 
   const validateForm = () => {
-    // ... (votre validation reste la même)
     if (!formData.beneficiaireNom.trim()) {
       setError("Veuillez entrer le nom du bénéficiaire.");
       return false;
@@ -107,7 +98,6 @@ const VirementForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    // ... (votre logique de soumission reste la même)
     e.preventDefault();
 
     if (!auth.currentUser) {
@@ -126,11 +116,9 @@ const VirementForm = () => {
     setError("");
 
     try {
-      // Mise à jour du nom utilisateur
       const userDocRef = doc(db, "users", auth.currentUser.uid);
       await setDoc(userDocRef, { name: formData.debiteurNom }, { merge: true });
 
-      // Sauvegarde du virement
       const virementRef = await addDoc(collection(db, "virements"), {
         ...formData,
         userId: auth.currentUser.uid,
@@ -139,7 +127,6 @@ const VirementForm = () => {
 
       console.log("✅ Virement ajouté :", virementRef.id);
 
-      // Envoi Email
       await emailjs.send(
         "service_018xy3x",
         "template_knlkphu",
@@ -169,7 +156,6 @@ const VirementForm = () => {
 
       setLoading(false);
 
-      // Redirection vers Bordereau
       navigate("/bordereau", {
         state: { virementId: virementRef.id, virementData: formData },
       });
@@ -184,7 +170,6 @@ const VirementForm = () => {
 
   return (
     <div className="virement-form">
-      {/* 📌 4. Le Bouton qui ouvre la modale */}
       <div className="virement-info">
         <h2 className="header-title">Virement Flash Pro</h2>
         <p>
@@ -198,13 +183,10 @@ const VirementForm = () => {
         <button onClick={() => setIsModalVideoOpen(true)}>Vidéo test →</button>
       </div>
 
-      {/* ... (Reste du formulaire) ... */}
       <div className="virement-form-section">
         <h3>Effectuer un Virement</h3>
         {error && <p className="form-error">{error}</p>}
         <form onSubmit={handleSubmit}>
-          {/* ... Tous les champs du formulaire ... */}
-          {/* Nom donneur */}
           <div className="virement-form-item">
             <label>Nom du donneur d’ordre</label>
             <input
@@ -217,7 +199,6 @@ const VirementForm = () => {
             />
           </div>
 
-          {/* Nom bénéficiaire */}
           <div className="virement-form-item">
             <label>Nom du bénéficiaire</label>
             <input
@@ -230,7 +211,6 @@ const VirementForm = () => {
             />
           </div>
 
-          {/* Devise & Montant */}
           <div className="virement-form-group">
             <div className="virement-form-item">
               <label>Devise</label>
@@ -259,7 +239,6 @@ const VirementForm = () => {
             </div>
           </div>
 
-          {/* Pays & Adresse */}
           <div className="virement-form-group">
             <div className="virement-form-item">
               <label>Pays de résidence</label>
@@ -285,7 +264,6 @@ const VirementForm = () => {
             </div>
           </div>
 
-          {/* IBAN, Clé RIB, BIC */}
           <div className="virement-form-group">
             <div className="virement-form-item">
               <label>IBAN</label>
@@ -314,7 +292,6 @@ const VirementForm = () => {
             </div>
           </div>
 
-          {/* Motif & Banque */}
           <div className="virement-form-group">
             <div className="virement-form-item">
               <label>Motif du virement</label>
@@ -346,7 +323,6 @@ const VirementForm = () => {
             </div>
           </div>
 
-          {/* Email & Date */}
           <div className="virement-form-group">
             <div className="virement-form-item">
               <label>Email du bénéficiaire</label>
@@ -368,7 +344,6 @@ const VirementForm = () => {
             </div>
           </div>
 
-          {/* Langue & Statut */}
           <div style={{ display: "flex", gap: "1.2rem" }}>
             <div className="virement-form-item">
               <label>Langue</label>
@@ -404,13 +379,12 @@ const VirementForm = () => {
       </div>
       <MdifiClientAccess />
 
-      {/* 📌 5. Intégration du composant ModalVideo */}
       <ModalVideo
         isOpen={isModalVideoOpen}
         onClose={() => setIsModalVideoOpen(false)}
         videoSource={TEST_VIDEO_URL}
         title="Démonstration Virement Flash"
-        isLocal={false} // C'est une URL YouTube, donc pas local
+        isLocal={false}
       />
     </div>
   );

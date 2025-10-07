@@ -1,6 +1,5 @@
 import "./Virement.css";
 import AccountLayout from "./AccountLayout";
-import AffiliationInfo from "../utilities/layout pages/AffiliationInfo";
 import Breadcrumb from "../utilities/Breadcrumb";
 import VirementForm from "../tools/VirementForm";
 import VirementFormHistory from "../tools/VirementFormHistory";
@@ -37,7 +36,7 @@ const Virement = ({ activeSection }) => {
               ),
             },
             // { label: "Outils", link: "/account" },
-            { label: "virement-pro" }, // ✅ dernier élément = actif
+            { label: "virement-pro" },
           ]}
         />
         <div className="account_infoItems">

@@ -1,22 +1,24 @@
-// src/components/ContactButtonWrapper/ContactButtonWrapper.jsx
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import "./ContactButtonWrapper.css"; // Créez ce fichier CSS pour le bouton flottant
+import "./ContactButtonWrapper.css";
 
 const ContactButtonWrapper = () => {
   const [isConnected, setIsConnected] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsConnected(!!user); // Met à jour l'état de connexion
+      setIsConnected(!!user);
     });
-    return () => unsubscribe(); // Nettoyage de l'écouteur
+    return () => unsubscribe();
   }, []);
 
-  if (!isConnected) {
-    return null; // N'affiche rien si l'utilisateur n'est pas connecté
+  const excludedPaths = ["/contact/admin", "/bordereau"];
+
+  if (!isConnected || excludedPaths.includes(location.pathname)) {
+    return null;
   }
 
   return (
