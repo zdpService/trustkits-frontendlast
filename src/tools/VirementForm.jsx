@@ -14,6 +14,7 @@ import {
 } from "../data/tableau des banque/data";
 import { CoinsContext } from "../context/CoinsContext";
 import ModalVideo from "../video Modal/ModalVideo"; // 📌 1. Importez le composant ModalVideo
+import MdifiClientAccess from "./MdifiClientAccess";
 
 const VirementForm = () => {
   const navigate = useNavigate();
@@ -401,7 +402,7 @@ const VirementForm = () => {
           </button>
         </form>
       </div>
-      {/* <UpdateClientAccess /> */}
+      <MdifiClientAccess />
 
       {/* 📌 5. Intégration du composant ModalVideo */}
       <ModalVideo
