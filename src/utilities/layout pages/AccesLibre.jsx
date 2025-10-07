@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import "./AccesLibre.css"; // Assurez-vous que ce fichier CSS existe et contient les styles pour .unavailable et .status-tag
-import Loading from "../laoding/Loading"; // ⚡ Vérifie le chemin
-
+import "./AccesLibre.css";
+import Loading from "../laoding/Loading";
 export const libreData = [
   {
     title: "Recherche Whois",

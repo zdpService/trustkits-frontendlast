@@ -6,7 +6,7 @@ import { auth } from "../../firebase/config";
 import axios from "axios";
 
 const packs = [
-  { id: 1, prix: 200, Coins: 30000 },
+  // { id: 1, prix: 200, Coins: 30000 },
   { id: 2, prix: 55000, Coins: 5000 },
   { id: 3, prix: 60000, Coins: 10000 },
   { id: 4, prix: 80000, Coins: 20000 },
