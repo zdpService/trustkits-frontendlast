@@ -1,8 +1,10 @@
+/* src/components/ContactButtonWrapper/ContactButtonWrapper.css */
+
 .contact_container {
   position: fixed;
   z-index: 1000;
   right: 20px;
-  bottom: 20%;
+  top: 80%;
   transform: translateY(-50%);
 
   display: flex;
