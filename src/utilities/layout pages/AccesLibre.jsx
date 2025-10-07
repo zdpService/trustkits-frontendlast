@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./AccesLibre.css";
+import "./AccesLibre.css"; // Assurez-vous que ce fichier CSS existe et contient les styles pour .unavailable et .status-tag
 import Loading from "../laoding/Loading"; // ⚡ Vérifie le chemin
 
 export const libreData = [
@@ -7,21 +7,25 @@ export const libreData = [
     title: "Recherche Whois",
     iconUrl: "https://www.kitscms.com/res/img/whois.png",
     link: "https://example.com/whois",
+    status: "indisponible", // Ajout du statut
   },
   {
     title: "Générateur d’IBAN",
     iconUrl: "https://www.kitscms.com/res/img/rib.png",
     link: "https://example.com/generateur-iban",
+    status: "indisponible", // Ajout du statut
   },
   {
     title: "Test SMS Gratuit",
     iconUrl: "https://www.kitscms.com/res/img/sms.png",
     link: "https://example.com/sms-gratuit",
+    status: "indisponible", // Exemple d'outil indisponible
   },
   {
     title: "Scanner de site",
     iconUrl: "https://www.kitscms.com/res/img/telephone.png",
     link: "https://example.com/scanner-site",
+    status: "indisponible", // Ajout du statut
   },
 ];
 
@@ -29,13 +33,19 @@ const AccesLibre = () => {
   const [loading, setLoading] = useState(false);
   const [targetLink, setTargetLink] = useState("");
 
-  const handleToolClick = (link) => {
+  const handleToolClick = (tool) => {
+    // La fonction prend maintenant l'objet 'tool' en entier
+    if (tool.status === "indisponible") {
+      alert(`❌ L'outil "${tool.title}" est actuellement indisponible.`);
+      return;
+    }
+
     setLoading(true);
-    setTargetLink(link);
+    setTargetLink(tool.link); // Utilise tool.link
 
     setTimeout(() => {
       setLoading(false);
-      window.location.href = link; // 🔗 Redirection externe
+      window.location.href = tool.link; // 🔗 Redirection externe
     }, 3000); // ⏳ Loading de 3 secondes
   };
 
@@ -71,15 +81,25 @@ const AccesLibre = () => {
 
       {/* Grid d’outils */}
       <div className="acces-payant">
+        {" "}
+        {/* Réutilise la classe acces-payant pour la grille */}
         {libreData.map((tool, index) => (
           <div
             key={index}
-            className="acces-item"
-            onClick={() => handleToolClick(tool.link)}
-            style={{ cursor: "pointer" }}
+            className={`acces-item ${
+              tool.status === "indisponible" ? "unavailable" : ""
+            }`}
+            onClick={() => handleToolClick(tool)} // Passe l'objet tool entier
+            style={{
+              cursor:
+                tool.status === "indisponible" ? "not-allowed" : "pointer",
+            }}
           >
             <img src={tool.iconUrl} alt={tool.title} />
             <h2>{tool.title}</h2>
+            {tool.status === "indisponible" && (
+              <span className="status-tag">Indisponible</span>
+            )}
           </div>
         ))}
       </div>
