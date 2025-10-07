@@ -43,7 +43,7 @@ export const CoinsProvider = ({ children }) => {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/paiement/fusion-verify",
+        "https://trust-kits-backend.onrender.com/api/paiement/fusion-verify",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

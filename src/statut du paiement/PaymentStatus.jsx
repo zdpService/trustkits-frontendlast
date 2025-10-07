@@ -43,7 +43,7 @@ const PaymentStatus = () => {
   const verifyPayment = async (token, uid) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/check-payment-status?token=${token}`
+        `https://trust-kits-backend.onrender.com/api/check-payment-status?token=${token}`
       );
       const paymentStatus = response.data;
       const transactionData = paymentStatus.data;
