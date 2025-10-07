@@ -47,7 +47,6 @@ const PaymentStatus = () => {
       );
       const paymentStatus = response.data;
       const transactionData = paymentStatus.data;
-
       if (paymentStatus.statut && transactionData.statut === "paid") {
         const coinsGained = transactionData.personal_Info?.[0]?.packCoins || 0;
         let rawAmount =
