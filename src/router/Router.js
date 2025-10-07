@@ -18,6 +18,8 @@ import PaymentStatus from "../statut du paiement/PaymentStatus";
 import SendUpdate from "../newletterAdmin/SendUpdate";
 import SupportTicketForm from "../admin/SupportTicketForm";
 import AdminSupportPanel from "../admin/AdminSupportPanel";
+import ContactButtonWrapper from "../btn/ContactButtonWrapper";
+import ContactForm from "../contact/ContactForm";
 
 const routesConfig = [
   {
@@ -34,20 +36,20 @@ const routesConfig = [
       </AuthRedirectRoute>
     ),
   },
-  // Si vous avez une page d'inscription, elle irait ici aussi, enveloppée de AuthRedirectRoute:
-  // {
-  //   path: "/register",
-  //   Component: (
-  //     <AuthRedirectRoute redirectTo="/account">
-  //       <RegisterForm /> // Assurez-vous d'importer RegisterForm
-  //     </AuthRedirectRoute>
-  //   ),
-  // },
+
   {
     path: "/account",
     Component: (
       <PrivateRoute>
         <AccountPage />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/contact",
+    Component: (
+      <PrivateRoute>
+        <ContactButtonWrapper />
       </PrivateRoute>
     ),
   },
@@ -99,6 +101,14 @@ const routesConfig = [
       </PrivateRoute>
     ),
   },
+  {
+    path: "/contact/admin",
+    Component: (
+      <PrivateRoute>
+        <ContactForm />
+      </PrivateRoute>
+    ),
+  },
   // Si vous avez une page de contact dédiée, ajoutez-la ici:
   // {
   //   path: "/contact",
@@ -125,7 +135,7 @@ const RouterContent = () => {
       {/* Le ContactButtonWrapper est ici, en dehors des Routes, 
           pour qu'il soit présent sur TOUTES les pages, 
           et sa visibilité est gérée par sa logique interne. */}
-
+      <ContactButtonWrapper />
       <Routes>
         {routesConfig.map((route, index) => (
           <Route key={index} path={route.path} element={route.Component} />

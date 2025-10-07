@@ -12,6 +12,7 @@ const Home = () => {
     <div className="homepageDesign">
       <HeaderLogin />
       <SectionHeroLogin />
+
       <SectionBannier />
       <SectionServices />
       <SectionTools />
