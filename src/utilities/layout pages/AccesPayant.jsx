@@ -13,7 +13,7 @@ export const toolsData = [
   {
     title: "Compte Flash Pro",
     iconUrl:
-      "https://play-lh.googleusercontent.com/aegD6vfDyfLWnVLua0yi_FMxZ3fVtRIbiskvL7kJ3Vu23xQPR52x6QJAPIOjoCNw6tUY",
+      "https://www.flashbank.lk/wp-content/uploads/2020/05/512x512bb-512x300.jpg",
     link: "/account/tools/compte-flash-pro",
     status: "indisponible",
   },

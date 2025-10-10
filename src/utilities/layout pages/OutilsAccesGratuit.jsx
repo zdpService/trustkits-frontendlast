@@ -1,5 +1,6 @@
 // src/utilities/layout pages/OutilsAccesPayant.js
 import "./OutilsAccesPayant.css";
+import React from "react"; // Ajout de l'import de React, bonne pratique même sans hooks/state
 
 const CheckIcon = () => (
   <svg
@@ -31,7 +32,7 @@ const LigneAvecCheck = ({ texte }) => (
   </p>
 );
 
-const OutilsAccesPayant = () => {
+const OutilsAccesGratuit = () => {
   return (
     <section className="newSection">
       {/* Header */}
@@ -53,17 +54,17 @@ const OutilsAccesPayant = () => {
         {/* SMS Pro */}
         <h2 className="outil-title">SMS Pro :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard (70 Caractères => 1 SMS) : 1000 Crédits" />
-          <LigneAvecCheck texte="Tarif Double (140 Caractères => 2 SMS) : 2000 Crédits" />
-          <LigneAvecCheck texte="Tarif triple (210 Caractères => 3 SMS) : 3000 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard (70 Caractères => 1 SMS) : 1000 Coins" />
+          <LigneAvecCheck texte="Tarif Double (140 Caractères => 2 SMS) : 2000 Coins" />
+          <LigneAvecCheck texte="Tarif triple (210 Caractères => 3 SMS) : 3000 Coins" />
           <LigneAvecCheck texte="Etc..." />
         </div>
 
         {/* Mail Flash Pro */}
         <h2 className="outil-title">Mail Flash Pro :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard (Caractères illimités) : 1000 Crédits" />
-          <LigneAvecCheck texte="Avec fichier joint (image, Word, PDF) : 2000 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard (Caractères illimités) : 1000 Coins" />
+          <LigneAvecCheck texte="Avec fichier joint (image, Word, PDF) : 2000 Coins" />
         </div>
 
         {/* Mail Pro Privé */}
@@ -75,44 +76,44 @@ const OutilsAccesPayant = () => {
         {/* Flash Compte Pro v1 */}
         <h2 className="outil-title">Flash Compte Pro v1 :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard : 4000 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard : 4000 Coins" />
           <LigneAvecCheck texte="Ajout des alertes par e-mail : Gratuit" />
-          <LigneAvecCheck texte="Ajout des alertes par sms : 1000 Crédits" />
+          <LigneAvecCheck texte="Ajout des alertes par sms : 1000 Coins" />
         </div>
 
         {/* Flash Compte Pro v2 */}
         <h2 className="outil-title">Flash Compte Pro v2 :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard : 5000 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard : 5000 Coins" />
           <LigneAvecCheck texte="Ajout des alertes par e-mail : Gratuit" />
         </div>
 
         {/* Collecte de code coupon */}
         <h2 className="outil-title">Collecte de code coupon :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard : 3000 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard : 3000 Coins" />
         </div>
 
         {/* Vérification IBAN / CB */}
         <h2 className="outil-title">Vérification IBAN / CB :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard : 500 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard : 500 Coins" />
         </div>
 
         {/* Vérification Email */}
         <h2 className="outil-title">Vérification d’un e-mail :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard : 500 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard : 500 Coins" />
         </div>
 
         {/* Vérification numéro */}
         <h2 className="outil-title">Vérification d’un numéro de téléphone :</h2>
         <div className="outil-card">
-          <LigneAvecCheck texte="Tarif Standard : 500 Crédits" />
+          <LigneAvecCheck texte="Tarif Standard : 500 Coins" />
         </div>
       </section>
     </section>
   );
 };
 
-export default OutilsAccesPayant;
+export default OutilsAccesGratuit;

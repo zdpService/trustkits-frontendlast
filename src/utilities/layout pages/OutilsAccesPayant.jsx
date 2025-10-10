@@ -1,5 +1,6 @@
 // src/utilities/layout pages/OutilsAccesPayant.js
 import "./OutilsAccesPayant.css";
+import React from "react"; // Ajout de l'import de React, bonne pratique même sans hooks/state
 
 const CheckIcon = () => (
   <svg
@@ -63,17 +64,17 @@ const OutilsAccesPayant = () => {
         {/* SMS Pro */}
         <h2 className="outil-title">SMS Pro :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard (70 Caractères => 1 SMS) : 1000 Crédits")}
-          {renderLine("Tarif Double (140 Caractères => 2 SMS) : 2000 Crédits")}
-          {renderLine("Tarif triple (210 Caractères => 3 SMS) : 3000 Crédits")}
+          {renderLine("Tarif Standard (70 Caractères => 1 SMS) : 1000 Coins")}
+          {renderLine("Tarif Double (140 Caractères => 2 SMS) : 2000 Coins")}
+          {renderLine("Tarif triple (210 Caractères => 3 SMS) : 3000 Coins")}
           {renderLine("Etc...")}
         </div>
 
         {/* Mail Flash Pro */}
         <h2 className="outil-title">Mail Flash Pro :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard (Caractères illimités) : 1000 Crédits")}
-          {renderLine("Avec fichier joint (image, Word, PDF) : 2000 Crédits")}
+          {renderLine("Tarif Standard (Caractères illimités) : 1000 Coins")}
+          {renderLine("Avec fichier joint (image, Word, PDF) : 2000 Coins")}
         </div>
 
         {/* Mail Pro Privé */}
@@ -85,40 +86,40 @@ const OutilsAccesPayant = () => {
         {/* Flash Compte Pro v1 */}
         <h2 className="outil-title">Flash Compte Pro v1 :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard : 4000 Crédits")}
+          {renderLine("Tarif Standard : 4000 Coins")}
           {renderLine("Ajout des alertes par e-mail : Gratuit")}
-          {renderLine("Ajout des alertes par sms : 1000 Crédits")}
+          {renderLine("Ajout des alertes par sms : 1000 Coins")}
         </div>
 
         {/* Flash Compte Pro v2 */}
         <h2 className="outil-title">Flash Compte Pro v2 :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard : 5000 Crédits")}
+          {renderLine("Tarif Standard : 5000 Coins")}
           {renderLine("Ajout des alertes par e-mail : Gratuit")}
         </div>
 
         {/* Collecte de code coupon */}
         <h2 className="outil-title">Collecte de code coupon :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard : 3000 Crédits")}
+          {renderLine("Tarif Standard : 3000 Coins")}
         </div>
 
         {/* Vérification IBAN / CB */}
         <h2 className="outil-title">Vérification IBAN / CB :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard : 500 Crédits")}
+          {renderLine("Tarif Standard : 500 Coins")}
         </div>
 
         {/* Vérification Email */}
         <h2 className="outil-title">Vérification d’un e-mail :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard : 500 Crédits")}
+          {renderLine("Tarif Standard : 500 Coins")}
         </div>
 
         {/* Vérification numéro */}
         <h2 className="outil-title">Vérification d’un numéro de téléphone :</h2>
         <div className="outil-card">
-          {renderLine("Tarif Standard : 500 Crédits")}
+          {renderLine("Tarif Standard : 500 Coins")}
         </div>
       </section>
     </section>
