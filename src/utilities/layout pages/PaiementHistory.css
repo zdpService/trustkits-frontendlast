@@ -1,0 +1,43 @@
+.paiement_history {
+  margin: 1.5rem 0;
+  background: #fff;
+  max-width: 700px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.paiement_history h3 {
+  font-weight: bold;
+  color: #0f172a;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #000;
+  padding-bottom: 0.5rem;
+}
+
+.paiement_list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.paiement_item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.paiement_icon svg {
+  font-size: 1rem;
+  color: #39609e !important;
+}
+
+.paiement_item p {
+  margin: 0;
+  color: #1e293b;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}

@@ -1,0 +1,514 @@
+.update-status-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 25px 15px;
+  min-height: 100vh;
+  background: #f8f9fb;
+}
+
+/* Header */
+.status-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.status-header h1 {
+  font-size: 2rem;
+  color: #1f2937;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.status-header p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* Message de succès */
+.success-message {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  animation: slideDown 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Layout principal */
+.status-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Panneau des commandes */
+.orders-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+.orders-panel h2 {
+  font-size: 1.3rem;
+  color: #1f2937;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-items: center;
+}
+
+.order-card:hover {
+  border-color: #5b6fd8;
+  background: #f9fafb;
+}
+
+.order-card.active {
+  border-color: #5b6fd8;
+  background: #eff1ff;
+  box-shadow: 0 4px 12px rgba(91, 111, 216, 0.15);
+}
+
+.order-card img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.order-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-info h3 {
+  font-size: 0.95rem;
+  color: #1f2937;
+  margin-bottom: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-info p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 2px 0;
+}
+
+.order-date {
+  font-size: 0.75rem !important;
+  color: #9ca3af !important;
+}
+
+.status-indicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Panneau de mise à jour */
+.update-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  min-height: 500px;
+}
+
+.selected-order-header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 25px;
+}
+
+.selected-order-header img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.selected-order-header h2 {
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.selected-order-header p {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Étapes de statut */
+.status-steps {
+  margin-bottom: 30px;
+}
+
+.status-steps h3 {
+  font-size: 1.2rem;
+  color: #1f2937;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.step-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  border: 2px solid #e5e7eb;
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.step-button:hover {
+  border-color: #5b6fd8;
+  background: #f9fafb;
+}
+
+.step-button.completed {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.step-button.current {
+  border-color: #5b6fd8;
+  background: #eff1ff;
+  box-shadow: 0 4px 12px rgba(91, 111, 216, 0.2);
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.step-button.completed .step-number {
+  background: #10b981;
+  color: white;
+}
+
+.step-button.current .step-number {
+  background: #5b6fd8;
+  color: white;
+}
+
+.step-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4b5563;
+  text-align: left;
+  flex: 1;
+}
+
+.step-button.completed .step-name {
+  color: #059669;
+}
+
+.step-button.current .step-name {
+  color: #4a5cc5;
+}
+
+.step-check {
+  font-size: 1.2rem;
+  color: #10b981;
+  font-weight: bold;
+}
+
+/* Suivi actuel */
+.current-tracking {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.current-tracking h3 {
+  font-size: 1.2rem;
+  color: #1f2937;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.tracking-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timeline-step {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  position: relative;
+}
+
+.timeline-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 35px;
+  bottom: -12px;
+  width: 2px;
+  background: #e5e7eb;
+}
+
+.timeline-step.completed:not(:last-child)::after {
+  background: #10b981;
+}
+
+.timeline-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.timeline-step.completed .timeline-icon {
+  background: #10b981;
+  color: white;
+}
+
+.timeline-step.pending .timeline-icon {
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-label {
+  background: #6b7db5;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.timeline-step.pending .timeline-label {
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+
+.timeline-date {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.timeline-message {
+  font-size: 0.85rem;
+  color: #1f2937;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* Aucune sélection */
+.no-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+.no-selection-icon {
+  font-size: 5rem;
+  margin-bottom: 20px;
+}
+
+.no-selection h3 {
+  font-size: 1.5rem;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.no-selection p {
+  font-size: 0.95rem;
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .status-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .orders-panel {
+    max-height: 400px;
+  }
+
+  .steps-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .update-status-container {
+    padding: 15px 10px;
+  }
+
+  .status-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .orders-panel {
+    padding: 15px;
+    max-height: 350px;
+  }
+
+  .update-panel {
+    padding: 20px 15px;
+  }
+
+  .selected-order-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .selected-order-header img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-button {
+    padding: 12px;
+  }
+
+  .step-name {
+    font-size: 0.8rem;
+  }
+
+  .timeline-step {
+    padding: 10px 0;
+  }
+
+  .timeline-label {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .order-card {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .order-card img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .order-info h3 {
+    font-size: 0.85rem;
+  }
+
+  .status-indicator {
+    width: 35px;
+    height: 35px;
+    font-size: 0.75rem;
+  }
+
+  .selected-order-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .step-button {
+    padding: 10px;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .step-name {
+    font-size: 0.75rem;
+  }
+
+  .current-tracking {
+    padding: 15px;
+  }
+}

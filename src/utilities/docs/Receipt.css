@@ -1,0 +1,284 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+/* ========== STYLES MODAL POP-UP (AJOUTÉ) ========== */
+
+/* Overlay (fond noir transparent) */
+.receipt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Modal wrapper (boîte blanche) */
+.receipt-modal-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Animation d'entrée */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Bouton de fermeture */
+.receipt-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  border: none;
+  background: #dc3545;
+  color: white;
+  font-size: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.receipt-close-btn:hover {
+  background: #c82333;
+  transform: rotate(90deg) scale(1.15);
+  box-shadow: 0 6px 16px rgba(220, 53, 69, 0.6);
+}
+
+.receipt-close-btn:active {
+  transform: rotate(90deg) scale(1.05);
+}
+
+/* ========== VOS STYLES EXISTANTS (INCHANGÉS) ========== */
+
+.ticket__container {
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  width: 100%;
+  margin: 3rem auto;
+}
+
+.ticket__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ticket__title p {
+  height: 25px;
+  background-color: #0f172a;
+}
+
+.ticket__title p:first-child {
+  width: 30%;
+}
+.ticket__title p:last-child {
+  width: 15%;
+}
+
+.ticket__title h4 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.ticket__items {
+  display: flex;
+  flex-direction: column;
+  width: 85%;
+  margin: 2rem auto 1rem 1rem;
+}
+
+.ticket__items-title h4 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.ticket__items-elements {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+.ticket__items-elements__list {
+  width: 100%;
+}
+.ticket__items-elements__list-cards {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  gap: 1rem;
+}
+.ticket__items-elements__list-cards span {
+  font-weight: bold;
+  text-wrap: nowrap;
+}
+
+.lineDased {
+  width: 60%;
+  margin: auto;
+  height: 1px;
+  border: 1px dashed #0f172a;
+  margin-top: 3rem;
+}
+
+.product_items {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product_items {
+  margin-top: 2rem;
+}
+
+.product_items-elements,
+.product_items_quality,
+.product_items_total,
+.product_items_price {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product_items-elements h5 {
+  padding: 0.3rem 0;
+}
+
+.product_items span {
+  font-size: xx-small;
+  font-weight: bolder;
+  text-align: center;
+  width: 100%;
+  background: #b4b9c5;
+  padding: 0.2rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.product_items li {
+  font-size: xx-small;
+  list-style: none;
+  text-align: center;
+  width: 100%;
+  flex-basis: 100%;
+  padding: 0.2rem;
+}
+.produitslist {
+  background-color: transparent !important;
+}
+
+.totalsection {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  width: 90%;
+  margin: auto;
+}
+
+.totals {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #0f172a;
+  color: #b4b9c5;
+  padding: 0.5rem 0.8rem;
+}
+
+.totals h5 {
+  font-weight: bolder;
+  font-size: x-small;
+}
+.totals span {
+  font-weight: bolder;
+  font-size: x-small;
+}
+
+.section__orders {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem auto;
+}
+
+.section__orders p {
+  font-weight: bolder;
+  font-style: italic;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* ========== RESPONSIVE MODAL ========== */
+
+@media (max-width: 768px) {
+  .receipt-modal-wrapper {
+    max-width: 95vw;
+    max-height: 95vh;
+    border-radius: 8px;
+  }
+
+  .receipt-close-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    top: -10px;
+    right: 15px;
+  }
+
+  .ticket__container {
+    margin: 2rem auto;
+  }
+
+  .ticket__title h4 {
+    font-size: 1.2rem;
+  }
+
+  .ticket__items {
+    width: 90%;
+  }
+
+  .product_items {
+    width: 95%;
+  }
+}

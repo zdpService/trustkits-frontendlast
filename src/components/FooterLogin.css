@@ -1,0 +1,27 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 10%;
+  background: #07002e;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  height: 100%;
+}
+
+.footer__logo {
+  height: 40px;
+  width: auto;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    gap: 12px;
+    text-align: center;
+  }
+
+  .footer__logo {
+    height: 30px;
+  }
+}

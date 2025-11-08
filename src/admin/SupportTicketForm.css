@@ -1,0 +1,437 @@
+/* AdminSupportPanel.css */
+
+.admin-support-panel {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+}
+
+.admin-support-panel h1 {
+  color: #0f172a;
+  font-size: 28px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 15px;
+}
+
+.admin-support-panel h2 {
+  color: #1e3a8a;
+  font-size: 22px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+.admin-support-panel p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #4b5563;
+  margin-bottom: 10px;
+}
+
+/* --- Notifications (réutilisées de SupportTicketForm) --- */
+.notification {
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification--success {
+  background-color: #28a745; /* Vert */
+}
+
+.notification--error {
+  background-color: #dc3545; /* Rouge */
+}
+
+/* --- Barre de filtre --- */
+.filter-options {
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 15px;
+  color: #333;
+  background-color: #f0f4f8;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.filter-options select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  appearance: none; /* Supprime le style par défaut des select */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="#4b5563" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 30px; /* Pour éviter que le texte ne chevauche la flèche */
+}
+
+/* --- Liste des tickets --- */
+.ticket-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.ticket-card {
+  background-color: #fdfdfd;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pousse le bouton vers le bas */
+}
+
+.ticket-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ticket-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ticket-card h3 {
+  font-size: 18px;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.ticket-card .card-info {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+.ticket-card .card-snippet {
+  font-size: 14px;
+  color: #4b5563;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  flex-grow: 1; /* Permet au snippet de prendre l'espace restant */
+}
+
+.no-tickets {
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  padding: 30px;
+  border: 1px dashed #e2e8f0;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* --- Badges de statut --- */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  white-space: nowrap; /* Empêche le texte de se casser sur plusieurs lignes */
+}
+
+.status-open {
+  background-color: #3b82f6; /* Bleu */
+}
+
+.status-in-progress {
+  background-color: #f59e0b; /* Jaune/Orange */
+}
+
+.status-closed {
+  background-color: #64748b; /* Gris */
+}
+
+/* --- Vue détaillée du ticket --- */
+.ticket-detail-view {
+  margin-top: 20px;
+}
+
+.back-to-list-btn {
+  margin-bottom: 25px;
+}
+
+.ticket-header {
+  background-color: #f0f4f8;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 25px;
+  border: 1px solid #e2e8f0;
+}
+
+.ticket-header h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #0f172a;
+}
+
+.ticket-header p {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.ticket-header strong {
+  color: #1f2937;
+}
+
+.ticket-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.message-list {
+  background-color: #f9fafb;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 25px;
+  max-height: 400px; /* Limiter la hauteur et rendre scrollable */
+  overflow-y: auto;
+}
+
+.message-list h3 {
+  font-size: 18px;
+  color: #0f172a;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.message-bubble {
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  max-width: 85%;
+  line-height: 1.6;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.message-user {
+  background-color: #e0f2fe; /* Bleu très clair */
+  color: #1e3a8a;
+  margin-left: auto; /* Aligner à droite */
+}
+
+.message-admin {
+  background-color: #f0fdf4; /* Vert très clair */
+  color: #166534;
+  margin-right: auto; /* Aligner à gauche */
+}
+
+.message-sender {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #64748b;
+}
+
+.message-admin .message-sender {
+  color: #4b5563;
+}
+
+.message-timestamp {
+  font-size: 11px;
+  font-weight: normal;
+  color: #94a3b8;
+}
+
+.message-text {
+  margin: 0;
+  font-size: 15px;
+  word-wrap: break-word; /* Gérer les longs mots */
+}
+
+.admin-response-form {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* --- Formulaires et Boutons (réutilisés de SupportTicketForm) --- */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #333;
+  background-color: #fdfdfd;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box; /* Inclure padding et border dans la largeur */
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical; /* Permet de redimensionner verticalement */
+}
+
+.form-group input[type="text"]:disabled,
+.form-group textarea:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Styles pour les boutons PrimaryBtn et SecondaryBtn (adaptés si nécessaire) */
+/* Supposons que PrimaryBtn et SecondaryBtn appliquent leurs propres styles de base */
+/* Assurez-vous que vos composants PrimaryBtn et SecondaryBtn ont des styles de base robustes */
+/* Si vous n'utilisez pas de composants de boutons, remplacez par vos styles de boutons ici */
+.submit-ticket-btn,
+.submit-response-btn,
+.close-ticket-btn,
+.reopen-ticket-btn,
+.in-progress-ticket-btn,
+.view-ticket-btn,
+.back-to-list-btn {
+  /* Styles généraux pour les boutons */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  text-decoration: none; /* Pour les Link/Btn */
+  margin-top: 10px;
+}
+
+/* PrimaryBtn */
+.primary-btn {
+  /* Si PrimaryBtn a cette classe */
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: 1px solid #3b82f6;
+}
+.primary-btn:hover:not(:disabled) {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* SecondaryBtn */
+.secondary-btn {
+  /* Si SecondaryBtn a cette classe */
+  background-color: #f0f4ff;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+}
+.secondary-btn:hover:not(:disabled) {
+  background-color: #dbeafe;
+  transform: translateY(-1px);
+}
+
+.primary-btn:disabled,
+.secondary-btn:disabled {
+  opacity: 0;
+  cursor: not-allowed;
+}
+
+/* --- Accès non autorisé --- */
+.admin-panel-unauthorized {
+  text-align: center;
+  padding: 50px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin: 50px auto;
+  max-width: 600px;
+  color: #dc3545;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .admin-support-panel {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .admin-support-panel h1 {
+    font-size: 24px;
+    padding-bottom: 10px;
+  }
+
+  .ticket-cards-container {
+    grid-template-columns: 1fr; /* Une seule colonne sur mobile */
+  }
+
+  .ticket-header {
+    padding: 20px;
+  }
+
+  .message-bubble {
+    max-width: 95%; /* Plus de largeur sur mobile */
+  }
+
+  .filter-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ticket-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

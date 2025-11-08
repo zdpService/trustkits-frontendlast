@@ -1,0 +1,93 @@
+.section_tools {
+  padding: 60px 10%;
+}
+
+.section_tools__header {
+  margin-bottom: 50px;
+}
+
+.section_tools__header h1 {
+  font-size: 1.2rem;
+  color: #555;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.section_tools__header p {
+  font-size: 1.1rem;
+  color: #475569;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.section_tools__grid {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tool_card {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 16px;
+  width: 300px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  border-top: 5px #0f172a;
+  border-style: hidden;
+  text-align: center;
+}
+
+.tool_card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  background: #f9fdfa;
+}
+
+.tool_card__icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  color: #1f8a3b;
+}
+
+.tool_card h3 {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.tool_card p {
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.tool_card__icon img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+@media (max-width: 1024px) {
+  .section_tools__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 600px) {
+  .section_tools__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .section_tools {
+    padding: 60px 5%;
+  }
+  .tool_card {
+    width: 100%;
+  }
+}

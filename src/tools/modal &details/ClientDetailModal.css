@@ -1,0 +1,134 @@
+/* Fond sombre qui couvre tout l'écran */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Assurez-vous qu'elle est au-dessus de tout */
+  overflow-y: auto;
+}
+
+/* Contenu de la modale */
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 90%;
+  width: 700px; /* Largeur de la modale */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  max-height: 90vh; /* Limite la hauteur à 90% de la fenêtre */
+  overflow-y: auto; /* Ajoute une barre de défilement si le contenu est trop long */
+}
+
+.modal-title {
+  color: #2c3e50;
+  font-size: 1.8em;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #2c3e50;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 2em;
+  cursor: pointer;
+  color: #7f8c8d;
+  transition: color 0.2s;
+}
+
+.modal-close-button:hover {
+  color: #e74c3c;
+}
+
+/* Sections de détails */
+.modal-section {
+  margin-bottom: 25px;
+  padding: 15px;
+  border: 1px solid #ecf0f1;
+  border-radius: 8px;
+  background-color: #fcfcfc;
+}
+
+.modal-section-title {
+  font-size: 1.2em;
+  color: #07012f;
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #dcdcdc;
+}
+
+.modal-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95em;
+  line-height: 1.4;
+  padding: 2px 0;
+  border-bottom: 1px dotted #f0f0f0;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+  padding-right: 15px;
+}
+
+.detail-value {
+  color: #333;
+  text-align: right;
+  word-break: break-all;
+}
+
+.detail-value a {
+  color: #07012f;
+  text-decoration: none;
+}
+
+.detail-value a:hover {
+  text-decoration: underline;
+}
+
+.detail-value.emphasis {
+  font-weight: bold;
+  color: #2c3e50; /* Couleur orange pour les valeurs importantes */
+}
+
+.virement-message {
+  background-color: #fdeaea;
+  color: #e74c3c;
+  border-left: 5px solid #e74c3c;
+  padding: 10px;
+  border-radius: 4px;
+  font-style: italic;
+  line-height: 1.5;
+  font-size: 0.9em;
+}
+@media (max-width: 600px) {
+  .modal-content {
+    padding: 20px;
+    max-width: 100%;
+    width: 100% !important; /* Légèrement plus large sur mobile */
+  }
+
+  .modal-title {
+    font-size: 1.5em;
+  }
+}

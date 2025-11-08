@@ -1,0 +1,265 @@
+/* --- CompteFlashProHistory.css --- */
+
+.virement-history-container {
+  /* Retiré max-width et margin: auto ici. La largeur est gérée par le parent flex. */
+  width: 100%; /* Assure qu'il prend toute la largeur disponible de sa cellule flex */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.header-section {
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0; /* Ligne plus fine et grise */
+}
+
+.header-title-container {
+  display: flex;
+  align-items: center;
+  color: #f39c12; /* Couleur orange pour le titre et l'icône */
+  font-weight: bold;
+  font-size: 1.2em; /* Taille légèrement plus petite pour le titre */
+}
+
+.header-icon {
+  width: 24px; /* Taille de l'icône */
+  height: 24px;
+  margin-right: 8px;
+  color: #f39c12; /* Couleur de l'icône */
+}
+.ttb-title {
+  font-size: 1rem !important;
+}
+.header-title {
+  font-size: 1rem !important;
+
+  margin: 0; /* Réinitialise la marge par défaut du span */
+}
+
+/* --- Styles pour la liste d'accès --- */
+.client-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espace entre chaque élément de la liste */
+}
+
+.client-list-item {
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #ddd; /* Bordure par défaut */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex; /* Utiliser flexbox pour aligner lien et statut */
+  flex-direction: column; /* Lien au-dessus du statut sur les petits écrans */
+  align-items: flex-start; /* Aligner les éléments au début */
+  gap: 8px; /* Espace entre le lien et le statut */
+}
+
+.client-list-item:hover {
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.client-link {
+  color: #34495e; /* Couleur plus sombre pour le texte du lien */
+  text-decoration: none; /* Pas de soulignement par défaut */
+  font-size: 0.95em;
+  word-break: break-all; /* Permet aux liens longs de passer à la ligne */
+  flex-grow: 1; /* Prend l'espace disponible */
+}
+
+.client-link:hover {
+  text-decoration: underline; /* Soulignement au survol */
+  color: #2980b9; /* Couleur différente au survol */
+}
+
+/* Styles pour le bloc de statut (Flash Compte actif/bloqué) */
+.status-display {
+  display: inline-flex; /* Utiliser inline-flex pour le tag de statut */
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px; /* Forme de pilule */
+  font-weight: bold;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.status-icon {
+  width: 18px; /* Taille de l'icône de statut */
+  height: 18px;
+  margin-right: 6px;
+}
+
+/* Couleurs spécifiques pour les statuts */
+.status-flash-compte-actif {
+  background-color: #e6ffe6; /* Fond vert clair */
+  color: #2ecc71; /* Texte vert */
+  border: 1px solid #2ecc71;
+}
+.status-flash-compte-actif .status-icon.active {
+  color: #2ecc71; /* Icône verte */
+}
+
+.status-flash-compte-bloqué {
+  /* Notez le "bloqué" avec accent */
+  background-color: #fdeaea; /* Fond rouge clair */
+  color: #e74c3c; /* Texte rouge */
+  border: 1px solid #e74c3c;
+}
+.status-flash-compte-bloqué .status-icon.blocked {
+  color: #e74c3c; /* Icône rouge */
+}
+
+/* Message si pas de données */
+.no-data-message {
+  text-align: center;
+  padding: 20px;
+  color: #7f8c8d;
+  font-style: italic;
+  font-size: 1em;
+}
+
+/* Media query pour les écrans plus larges : aligner le statut à droite */
+@media (min-width: 768px) {
+  .client-list-item {
+    flex-direction: row; /* Aligner lien et statut sur la même ligne */
+    justify-content: space-between; /* Espacer le lien et le statut */
+    align-items: center;
+    gap: 15px; /* Plus d'espace entre les éléments */
+  }
+}
+/* NOUVEAUX STYLES POUR LE SWIPE-TO-DELETE */
+
+.swipe-container {
+  position: relative; /* Conteneur pour le bouton de suppression et la carte */
+  overflow: hidden; /* Empêche l'affichage du bouton de suppression lorsqu'il est en dehors */
+  margin-bottom: 10px; /* Ajout d'une petite marge pour séparer les éléments */
+}
+
+.client-list-item {
+  /* Styles existants de la carte (assurez-vous qu'ils sont toujours là) */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease-out; /* Ajout de la transition pour l'effet de glissement */
+
+  /* Rend l'élément au-dessus du bouton de suppression */
+  z-index: 2;
+  position: relative;
+  /* Empêche la sélection de texte lors du glissement */
+  user-select: none;
+  touch-action: pan-y; /* Permet le défilement vertical, mais contrôle l'horizontal */
+}
+
+/* Classe appliquée lorsque l'élément est glissé */
+.client-list-item.swiped {
+  transform: translateX(-100px); /* Déplace l'élément de 100px vers la gauche */
+}
+
+.delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px; /* Largeur pour révéler le bouton */
+  height: 100%;
+  background-color: #e53935; /* Rouge pour la suppression */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1; /* Assurez-vous qu'il est sous la carte glissée */
+  transition: opacity 0.3s ease; /* Transition pour un effet plus doux */
+  opacity: 1;
+}
+
+.delete-button svg {
+  margin-top: 5px;
+}
+
+/* Styles pour le conteneur du glissement */
+.swipe-container {
+  position: relative;
+  overflow: hidden; /* Cache la partie du bouton de suppression lorsqu'il est fermé */
+  margin-bottom: 10px;
+}
+
+.client-list-item {
+  position: relative;
+  z-index: 2; /* S'assure qu'il est au-dessus du bouton de suppression */
+  transition: transform 0.3s ease-out; /* Ajoute une animation douce */
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 👈 CLASSE CRITIQUE: Déplace la carte pour révéler le bouton */
+.client-list-item.swiped {
+  /* Doit correspondre à la largeur du bouton de suppression ci-dessous */
+  transform: translateX(-100px);
+}
+
+.delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px; /* 👈 Doit correspondre à la valeur de translateX */
+  height: 100%;
+  background-color: #e53935;
+  border-radius: 9px; /* Rouge */
+  color: white;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1; /* Doit être en dessous de la carte */
+}
+@media (max-width: 768px) {
+  .client-list-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .client-info-summary p:first-child {
+    font-size: 0.9rem; /* Nom/prénom plus petit */
+  }
+
+  .client-info-summary p:last-child {
+    font-size: 0.75rem; /* Date/heure plus petite */
+  }
+
+  /* Rendre le badge de statut plus petit */
+  .status-display {
+    padding: 4px 6px; /* Réduction du padding du badge */
+    font-size: 0.75rem; /* Réduction de la taille de la police du badge */
+  }
+}
+
+.client-info-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

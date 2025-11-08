@@ -1,0 +1,6 @@
+.account_infoItems {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+}

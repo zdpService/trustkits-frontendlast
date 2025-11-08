@@ -1,0 +1,187 @@
+.add-gift-admin {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.admin-header h1 {
+  font-size: 24px;
+  color: #2d2d2d;
+  margin-bottom: 8px;
+}
+
+.admin-header p {
+  color: #777;
+  font-size: 14px;
+}
+
+.add-gift-form {
+  background: #fff;
+  padding: 28px;
+  border-radius: 12px;
+  border: 1.5px solid #f0ece6;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+  font-size: 13.5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e8dcc9;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fefdf9;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #d4a373;
+  background: #fff;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #d4a373;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.image-upload .or-text {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.file-label {
+  display: inline-block;
+  background: #f8f4ee;
+  color: #d4a373;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  cursor: pointer;
+  text-align: center;
+  border: 1.5px dashed #d4a373;
+  transition: all 0.2s;
+}
+
+.file-label:hover {
+  background: #f0ece6;
+}
+
+.file-label input {
+  display: none;
+}
+
+.uploading-text {
+  color: #d4a373;
+  font-size: 13px;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.image-preview {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.image-preview p {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.image-preview img {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid #e8dcc9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-gift-btn {
+  width: 100%;
+  background: #d4a373;
+  color: white;
+  padding: 13px;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3);
+  transition: all 0.2s;
+}
+
+.add-gift-btn:hover:not(:disabled) {
+  background: #c89a63;
+  transform: translateY(-1px);
+}
+
+.add-gift-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.success-message {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .add-gift-admin {
+    padding: 0 16px;
+  }
+  .add-gift-form {
+    padding: 20px;
+  }
+}

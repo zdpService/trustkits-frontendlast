@@ -1,0 +1,201 @@
+body {
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.178),
+      rgba(255, 255, 255, 0.219)
+    ),
+    url("/public//background.png");
+}
+
+.login_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+
+  /* Mets l'image dans /public/ */
+
+  background-size: cover; /* Couvre tout l’écran */
+  background-position: center; /* Centre l’image */
+  background-repeat: no-repeat; /* Pas de répétition */
+}
+
+.login_card {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login_title {
+  font-size: 22.4px;
+  color: #212529;
+  text-align: center;
+}
+
+.login_card p {
+  font-size: 14.11px;
+  text-align: center;
+  padding: 0.8rem 0;
+  color: #737373;
+}
+
+.login_link {
+  text-decoration: underline;
+}
+
+.login_form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login_form label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+}
+
+.login_form input,
+.login_form select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  width: 100%;
+}
+
+.form_row {
+  display: flex;
+  gap: 12px;
+}
+
+.form_group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.login_button {
+  margin-top: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #07002e;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login_button:hover {
+  background-color: #040114;
+}
+
+.login_link {
+  color: #07002e;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.login_link span:first-child {
+  padding-bottom: 0.4rem;
+  font-size: 16px;
+}
+
+.login_row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+@media (max-width: 45rem) {
+  .login_card {
+    padding: 18px;
+    max-width: 95%;
+  }
+
+  .login_title {
+    font-size: 18px;
+  }
+
+  .login_form input,
+  .login_form select {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .form_row {
+    flex-direction: row; /* reste en ligne */
+    gap: 8px; /* on réduit l’espace */
+  }
+
+  .login_button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .login_row {
+    justify-content: space-between;
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  .login_form label {
+    font-size: 11.668px;
+  }
+}
+.dots {
+  display: inline-block;
+  margin-left: 5px;
+  animation: dotsAnimation 4s infinite;
+}
+
+@keyframes dotsAnimation {
+  0% {
+    content: ".";
+  }
+  25% {
+    content: "..";
+  }
+  50% {
+    content: "...";
+  }
+  75% {
+    content: "....";
+  }
+  100% {
+    content: ".";
+  }
+}
+
+/* Alternative plus fiable pour animation avec points */
+@keyframes dotsAnimation {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+  100% {
+    content: "";
+  }
+}
+
+.dots::after {
+  content: "";
+  animation: dotsAnimation 4s infinite;
+}

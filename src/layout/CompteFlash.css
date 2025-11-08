@@ -1,0 +1,22 @@
+/* --- Dans CompteFlash.css --- */
+.account_infoItems {
+  display: flex;
+  align-items: flex-start !important;
+  flex-wrap: wrap; /* Permet aux éléments de passer à la ligne sur les petits écrans */
+  gap: 20px; /* Espace entre les éléments */
+  margin-top: 1rem; /* Espacement avec la section d'en-tête */
+}
+
+/* Styles pour les éléments individuels à l'intérieur de account_infoItems */
+/* Appliquez ces styles aux enfants directs, comme CompteFlashPro et HistoriqueGains */
+.account_infoItems > * {
+  flex: 1 1 100%; /* Par défaut, chaque élément prend toute la largeur sur mobile */
+}
+
+/* Sur les écrans plus larges (desktop) */
+@media (min-width: 992px) {
+  .account_infoItems > * {
+    flex: 1 1 calc(50% - 10px); /* Prend environ la moitié de la largeur, avec de la place pour le gap */
+    /* Le 10px vient de la moitié du gap (20px / 2). Ajustez si votre gap est différent. */
+  }
+}

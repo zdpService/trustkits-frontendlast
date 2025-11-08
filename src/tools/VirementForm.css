@@ -1,0 +1,210 @@
+/* Container principal */
+.virement-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: #333;
+}
+
+/* Section d’information */
+.virement-info {
+  width: 100%;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.virement-info h2 {
+  font-size: 26px;
+  color: #1a202c;
+  margin-bottom: 12px;
+}
+
+.virement-info p {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.virement-info a {
+  color: #3182ce;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.virement-info a:hover {
+  text-decoration: underline;
+}
+
+.virement-info-box {
+  background: #eef4fb;
+  padding: 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  border-left: 4px solid #3182ce;
+  width: 100%;
+}
+
+.virement-info-box strong {
+  color: #2d3748;
+}
+
+.virement-video button {
+  background: linear-gradient(90deg, #07002e, #274d68);
+  border: none;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.virement-video button:hover {
+  background: linear-gradient(90deg, #07002e93, #4299e1);
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.virement-test-link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.virement-test-link label {
+  font-weight: bold;
+}
+
+.virement-test-link input,
+.input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fafafa;
+  transition: border-color 0.3s ease;
+}
+
+.virement-test-link input:focus {
+  border-color: #3182ce;
+  outline: none;
+}
+
+.virement-info button {
+  background: #1a202c;
+  border: none;
+  padding: 12px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.virement-info button:hover {
+  background: #111f3b;
+  transform: translateY(-2px);
+}
+
+/* Section formulaire */
+.virement-form-section {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.virement-form-section h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #1a202c;
+}
+
+/* Groupes de champs */
+.virement-form-group {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+  align-items: flex-start;
+}
+
+.virement-form-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.virement-form-item label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.virement-form-item select {
+  padding: 10px !important;
+}
+
+.virement-form-group input,
+.virement-form-group select {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  padding: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.virement-form-group input:focus,
+.vvirement-form-group select:focus {
+  border-color: #07002e;
+  box-shadow: 0px 0px 5px rgba(49, 130, 206, 0.5);
+  outline: none;
+}
+
+.required {
+  color: red;
+}
+
+.virement-form-group p {
+  font-size: 12px;
+  color: #666;
+}
+
+.virement-btn-create {
+  background: linear-gradient(90deg, #07002e, #274d68);
+  border: none;
+  color: white;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 0.8rem;
+}
+
+.virement-btn-create:hover {
+  background: linear-gradient(90deg, #274d68, #07002e);
+  transform: translateY(-2px);
+}
+
+/* Alignement horizontal */
+.form-inline {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+.form-inline label {
+  flex: 0 0 120px;
+}

@@ -1,0 +1,157 @@
+.achat_section {
+  background: #fff;
+  border: 1px solid #ddd;
+  max-width: 700px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+.achat_section h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.solde {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+h4 {
+  padding: 0.5rem 0;
+}
+.solde .valeur {
+  font-weight: bold;
+  color: #0056ff;
+  margin: 0 5px;
+}
+
+.packs {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+/* Petits écrans (mobile) : 2 colonnes fixes */
+@media (max-width: 600px) {
+  .packs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .achat_section {
+    background: #fff;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+  }
+}
+
+.pack {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  background: #f9f9f9;
+}
+
+.pack:hover {
+  border-color: #0056ff;
+  background: #eef4ff;
+}
+
+.pack.selected {
+  border: 2px solid #0056ff;
+  background: #e6f0ff;
+}
+
+.pack p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.pack .bonus {
+  color: #009900;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.fedapay_box {
+  margin-top: 0.5rem;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 135.74px;
+  justify-content: center;
+  margin-bottom: 20px;
+  background-color: #ffff;
+  align-items: center;
+  cursor: pointer;
+}
+
+.fedapay_box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+  border: 1px solid #07002e;
+  border-radius: 10px;
+  padding: 0.3rem;
+}
+
+.fedapay_box img:hover {
+  transform: scale(1.05);
+}
+
+.ou {
+  text-align: center;
+  margin: 15px 0;
+  font-weight: bold;
+  color: #666;
+}
+
+.qosic_form,
+.cb_form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.qosic_form select,
+.qosic_form input,
+.cb_form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+.qosic_form select:focus,
+.qosic_form input:focus,
+.cb_form input:focus {
+  border-color: #0056ff;
+}
+
+.payer_btn {
+  padding: 12px;
+  background: #0056ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.payer_btn:hover {
+  background: #0040cc;
+}
