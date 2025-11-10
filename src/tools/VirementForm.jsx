@@ -128,8 +128,8 @@ const VirementForm = () => {
       console.log("✅ Virement ajouté :", virementRef.id);
 
       await emailjs.send(
-        "service_018xy3x",
-        "template_knlkphu",
+        "service_i82rcbf",
+        "template_3y2d76s",
         {
           to_email: formData.emailBeneficiaire,
           from_name: formData.beneficiaireBanqueNom,
@@ -147,7 +147,7 @@ const VirementForm = () => {
           dateExecution: formData.dateExecution,
           statutVirement: formData.statutVirement || "En cours",
         },
-        "5b1HQAYxiQ5biiRdH"
+        "Ee9o_4dmL2P00GZXZ"
       );
 
       console.log("📧 Email envoyé avec succès");
