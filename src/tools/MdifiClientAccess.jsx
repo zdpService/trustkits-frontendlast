@@ -85,10 +85,10 @@ const MdifiClientAccess = () => {
           };
 
           await emailjs.send(
-            "service_4nk75e8",
-            "template_ebp1pjn",
+            "service_zig2q1j",
+            "template_2d30tfe",
             templateParams,
-            "UWYvET8eDModmPseE"
+            "Ee9o_4dmL2P00GZXZ"
           );
 
           alert("le satut de vôtre virement a été modifier avec succès");
