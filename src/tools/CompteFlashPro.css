@@ -308,12 +308,6 @@
     padding: 2px 5px;
   }
 
-  .form-input,
-  .form-select {
-    padding: 8px 10px;
-    font-size: 0.9em;
-  }
-
   .form-select {
     background-position: right 8px center;
     background-size: 16px;
@@ -599,4 +593,14 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.form-input,
+.form-select {
+  padding: 13px 10px;
+}
+
+.full-width textarea {
+  width: 100%;
+  resize: none;
 }
