@@ -464,7 +464,7 @@ const CompteFlashPro = () => {
           <div className="form-row iban-field">
             <div className="form-field full-width">
               <label htmlFor="iban" className="form-label">
-                IBAN (Facultatif - Laisser vide pour génération automatique)
+                IBAN (Facultatif )
               </label>
               <input
                 id="iban"
