@@ -1,20 +1,19 @@
-/* Fond sombre qui couvre tout l'écran */
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Assurez-vous qu'elle est au-dessus de tout */
-  overflow-y: auto;
+  z-index: 5000;
+  overflow-y: scroll;
 }
 
 /* Contenu de la modale */
-.modal-content {
+.modal-contents {
   background: #fff;
   padding: 30px;
   border-radius: 12px;
@@ -23,7 +22,7 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
   max-height: 90vh; /* Limite la hauteur à 90% de la fenêtre */
-  overflow-y: auto; /* Ajoute une barre de défilement si le contenu est trop long */
+  overflow-y: scroll; /* Ajoute une barre de défilement si le contenu est trop long */
 }
 
 .modal-title {
