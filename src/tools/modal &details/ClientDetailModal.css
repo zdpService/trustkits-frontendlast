@@ -131,3 +131,21 @@
     font-size: 1.5em;
   }
 }
+
+.detail-value a {
+  color: #0066cc;              /* ✅ Bleu classique */
+  text-decoration: underline;  /* ✅ Souligné */
+  word-break: break-all;
+  transition: all 0.2s ease;
+  font-weight: 500;            /* ✅ Texte un peu gras */
+}
+
+.detail-value a:hover {
+  color: #0052a3;              /* Bleu plus foncé au survol */
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.detail-value a:active {
+  color: #003d7a;              /* Bleu encore plus foncé au clic */
+}
