@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { db, auth } from "../firebase/config";
 import {
   collection,
@@ -6,6 +6,8 @@ import {
   where,
   onSnapshot,
   orderBy,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import ClientDetailModal from "./modal &details/ClientDetailModal";
 import "./CompteFlashProHistory.css";
@@ -92,6 +94,10 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [swipedItemId, setSwipedItemId] = useState(null);
+  const [deleting, setDeleting] = useState(null);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
   useEffect(() => {
     if (newClientCreation) {
@@ -216,7 +222,6 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
                   pourcentageDepart: finalPourcentageDepart,
                   pourcentageArret: finalPourcentageArret,
                   notification: finalNotification,
-
                   codeActivationVirement: data.codeActivationVirement || "N/A",
                   codeTransfert: data.codeTransfert || "N/A",
                   codeActivationUtilise: data.codeActivationUtilise || "NON",
@@ -259,7 +264,66 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
     };
   }, []);
 
+  // ✅ Gestion du swipe vers la gauche
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e, itemId) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const diffX = touchStartX.current - touchEndX;
+    const diffY = Math.abs(touchStartY.current - touchEndY);
+
+    // Swipe vers la gauche si: déplacement X > 50px et Y < 50px
+    if (diffX > 50 && diffY < 50) {
+      setSwipedItemId(itemId);
+    }
+  };
+
+  // ✅ Gestion du swipe souris (drag vers la gauche)
+  const handleMouseDown = (e) => {
+    touchStartX.current = e.clientX;
+    touchStartY.current = e.clientY;
+  };
+
+  const handleMouseUp = (e, itemId) => {
+    const touchEndX = e.clientX;
+    const touchEndY = e.clientY;
+
+    const diffX = touchStartX.current - touchEndX;
+    const diffY = Math.abs(touchStartY.current - touchEndY);
+
+    if (diffX > 50 && diffY < 50) {
+      setSwipedItemId(itemId);
+    }
+  };
+
+  // ✅ Supprimer un accès client
+  const handleDeleteClient = async (itemId) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cet accès ?")) {
+      return;
+    }
+
+    setDeleting(itemId);
+
+    try {
+      await deleteDoc(doc(db, "clientAccesses", itemId));
+      setSwipedItemId(null);
+      setDeleting(null);
+      console.log("✅ Accès client supprimé avec succès");
+    } catch (err) {
+      console.error("❌ Erreur lors de la suppression:", err);
+      alert("Erreur lors de la suppression de l'accès client.");
+      setDeleting(null);
+    }
+  };
+
   const handleCardClick = (clientDetails) => {
+    // Ne pas ouvrir le modal si on est en train de swiper
+    if (swipedItemId) return;
     setSelectedClient(clientDetails);
   };
 
@@ -319,22 +383,43 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
           clientAccesses.map((item) => (
             <div
               key={item.id}
-              className="client-list-item"
-              onClick={() => handleCardClick(item.details)}
+              className="swipe-container"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={(e) => handleTouchEnd(e, item.id)}
+              onMouseDown={handleMouseDown}
+              onMouseUp={(e) => handleMouseUp(e, item.id)}
             >
-              <div className="client-info-summary compact">
-                <p>{item.details.nomPrenom || "N/A"}</p>
-                <p>{item.dateCreation}</p>
+              <div
+                className={`client-list-item ${
+                  swipedItemId === item.id ? "swiped" : ""
+                } ${deleting === item.id ? "deleting" : ""}`}
+                onClick={() => handleCardClick(item.details)}
+              >
+                <div className="client-info-summary">
+                  <p>{item.details.nomPrenom || "N/A"}</p>
+                  <p>{item.dateCreation}</p>
+                </div>
+
+                <div
+                  className={`status-display status-${item.etat
+                    .toLowerCase()
+                    .replace(/\s/g, "-")}`}
+                >
+                  {getStatusIcon(item.etat)}
+                  <span>{item.etatCourt}</span>
+                </div>
               </div>
 
-              <div
-                className={`status-display status-${item.etat
-                  .toLowerCase()
-                  .replace(/\s/g, "-")}`}
-              >
-                {getStatusIcon(item.etat)}
-                <span className="status-text-compact">{item.etatCourt}</span>
-              </div>
+              {/* ✅ Bouton de suppression qui apparaît après swipe */}
+              {swipedItemId === item.id && (
+                <button
+                  className="delete-button"
+                  onClick={() => handleDeleteClient(item.id)}
+                  disabled={deleting === item.id}
+                >
+                  {deleting === item.id ? "Suppression..." : "Supprimer"}
+                </button>
+              )}
             </div>
           ))
         ) : (

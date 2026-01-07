@@ -1,0 +1,544 @@
+/* --- VARIABLES --- */
+:root {
+  --primary: #0f172a; /* Ton bleu nuit */
+  --primary-hover: #1e293b; /* Ton bleu nuit plus clair */
+  --bg-page: #ececed; /* Ton fond gris clair */
+  --bg-card: #ffffff;
+  --border: #cbd5e1; /* Gris bordure subtil */
+  --text-main: #334155; /* Gris texte foncé */
+  --text-light: #64748b; /* Gris texte clair */
+  --danger: #ef4444;
+  --success: #10b981;
+}
+
+/* --- STRUCTURE PRINCIPALE --- */
+.acf-container {
+  width: 100%;
+  max-width: 950px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  color: var(--text-main);
+}
+
+/* --- EN-TÊTE --- */
+.acf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.acf-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+}
+
+.acf-header p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+.acf-coins-badge {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.acf-coins-badge strong {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+/* --- CARTE FORMULAIRE --- */
+.acf-card {
+  background: var(--bg-card);
+  border-radius: 12px; /* Coins arrondis modernes */
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+}
+
+/* --- TITRES DE SECTION --- */
+.acf-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--primary);
+  margin-bottom: 1.2rem;
+  margin-top: 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
+}
+
+.acf-section-title span {
+  background: var(--primary);
+  color: white;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+
+/* --- GRILLES (LA STRUCTURE) --- */
+.acf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 colonnes par défaut */
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.acf-grid-3 {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 1fr; /* Structure financière */
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.full {
+  grid-column: 1 / -1; /* Prend toute la largeur */
+}
+
+/* --- INPUTS & LABELS --- */
+.acf-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.acf-input-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.acf-input-group input,
+.acf-input-group select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: #f8fafc; /* Fond très léger pour les inputs */
+  color: var(--primary);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.acf-input-group input:focus,
+.acf-input-group select:focus {
+  background-color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); /* Halo subtil */
+}
+
+/* Styles spéciaux pour l'argent */
+.input-money {
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.field-hint {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* --- FOOTER & BOUTON --- */
+.acf-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--border);
+  margin-top: 1rem;
+}
+
+.cost-info {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+.cost-info span {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.acf-btn-submit {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.acf-btn-submit:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.acf-btn-submit:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.error-banner {
+  margin-top: 15px;
+  padding: 10px;
+  background: #fee2e2;
+  color: var(--danger);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* --- RESPONSIVE RAFFINÉ (Le point important) --- */
+@media (max-width: 768px) {
+  .acf-container {
+    padding: 10px;
+  }
+
+  .acf-card {
+    padding: 1.2rem; /* Réduction du padding global */
+  }
+
+  /* MAGIE ICI : On garde 2 colonnes même sur mobile 
+     Mais on réduit les espacements pour que ça rentre
+  */
+  .acf-grid {
+    grid-template-columns: repeat(2, 1fr); /* Force 2 colonnes */
+    gap: 10px; /* Espace plus petit */
+  }
+
+  /* Exception : les éléments full-width restent full */
+  .acf-grid .full {
+    grid-column: 1 / -1;
+  }
+
+  /* Pour la grille financière à 3 colonnes, sur mobile c'est trop serré -> on passe à 2 */
+  .acf-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* L'input Devise prend toute la largeur sur mobile pour être clair */
+  .acf-grid-3 .acf-input-group:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Réduction de la taille des textes pour que ça rentre sur une ligne */
+  .acf-input-group label {
+    font-size: 0.7rem; /* Labels plus petits */
+    margin-bottom: 2px;
+  }
+
+  .acf-input-group input,
+  .acf-input-group select {
+    padding: 8px 10px; /* Inputs plus compacts */
+    font-size: 0.85rem; /* Texte à l'intérieur plus petit */
+    height: 38px; /* Hauteur fixe compacte */
+  }
+
+  /* Ajustement Header */
+  .acf-header h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Footer en colonne sur mobile */
+  .acf-footer {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .cost-info span {
+    display: inline;
+    margin-left: 5px;
+  }
+}
+
+/* --- MODAL (POPUP) --- */
+.internal-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6); /* Fond sombre bleuté */
+  backdrop-filter: blur(2px);
+}
+
+.popup-content {
+  position: relative;
+  background: white;
+  width: 90%;
+  max-width: 400px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.popup-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+.popup-icon.success {
+  background: var(--success);
+}
+.popup-icon.error {
+  background: var(--danger);
+}
+.popup-icon.info {
+  background: var(--primary);
+}
+
+.popup-content h4 {
+  margin: 0 0 10px;
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+.popup-content p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.85rem;
+  text-align: left;
+}
+.detail-key {
+  color: var(--text-light);
+}
+.detail-value {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.popup-close-btn {
+  background: var(--bg-page);
+  color: var(--text-main);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+}
+
+@keyframes popUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+/* Style pour la section Transactions */
+.btn-add-tx {
+  background: #e0f2fe;
+  color: #0284c7;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+.no-transactions {
+  padding: 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-style: italic;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.transactions-editor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tx-edit-row {
+  display: grid;
+  grid-template-columns: 30px 2fr 1fr 1fr 30px; /* Ajuste selon ton layout */
+  gap: 10px;
+  align-items: center;
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.tx-index {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.tx-select,
+.tx-input-amount,
+.tx-input-date {
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.btn-remove-tx {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.btn-remove-tx:hover {
+  background-color: #fee2e2;
+  border-radius: 4px;
+}
+
+/* Responsive Mobile */
+@media (max-width: 600px) {
+  .tx-edit-row {
+    grid-template-columns: 1fr; /* Tout en colonne sur mobile */
+    gap: 8px;
+  }
+  .tx-index {
+    display: none;
+  } /* On cache le numéro sur mobile */
+}
+/* Nouveau style pour les cartes de transactions éditables */
+.tx-edit-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.tx-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.tx-index {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tx-edit-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tx-row-basic,
+.tx-row-dynamic {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.tx-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tx-group.full {
+  grid-column: 1 / -1;
+}
+
+.tx-group label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.tx-group input,
+.tx-group select {
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #f8fafc;
+}
+
+.tx-group input:focus,
+.tx-group select:focus {
+  border-color: #3b82f6;
+  outline: none;
+  background: white;
+}

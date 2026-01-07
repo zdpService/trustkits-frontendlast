@@ -1,6 +1,4 @@
-// src/utilities/layout pages/OutilsAccesPayant.js
 import "./OutilsAccesPayant.css";
-import React from "react"; // Ajout de l'import de React, bonne pratique même sans hooks/state
 
 const CheckIcon = () => (
   <svg
@@ -49,7 +47,6 @@ const OutilsAccesPayant = () => {
         <span style={{ fontWeight: "bold" }}>Outils à accès payant</span>
       </div>
 
-      {/* Liste des outils */}
       <section
         style={{
           padding: "20px",

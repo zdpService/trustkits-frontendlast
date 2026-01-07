@@ -1,29 +1,28 @@
-/* Fond sombre qui couvre tout l'écran */
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Assurez-vous qu'elle est au-dessus de tout */
-  overflow-y: auto;
+  z-index: 5000;
+  overflow-y: scroll;
 }
 
 /* Contenu de la modale */
-.modal-content {
+.modal-contents {
   background: #fff;
-  padding: 30px;
+  padding: 30px 10px;
   border-radius: 12px;
-  max-width: 90%;
+  max-width: 100%;
   width: 700px; /* Largeur de la modale */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
   max-height: 90vh; /* Limite la hauteur à 90% de la fenêtre */
-  overflow-y: auto; /* Ajoute une barre de défilement si le contenu est trop long */
+  overflow-y: scroll; /* Ajoute une barre de défilement si le contenu est trop long */
 }
 
 .modal-title {
@@ -131,4 +130,22 @@
   .modal-title {
     font-size: 1.5em;
   }
+}
+
+.detail-value a {
+  color: #0066cc; /* ✅ Bleu classique */
+  text-decoration: underline; /* ✅ Souligné */
+  word-break: break-all;
+  transition: all 0.2s ease;
+  font-weight: 500; /* ✅ Texte un peu gras */
+}
+
+.detail-value a:hover {
+  color: #0052a3; /* Bleu plus foncé au survol */
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.detail-value a:active {
+  color: #003d7a; /* Bleu encore plus foncé au clic */
 }

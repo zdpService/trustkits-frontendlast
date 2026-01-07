@@ -24,6 +24,8 @@ import GilftHanler from "../layout/GilftHanler";
 import UpdateOrderStatus from "../tools/mise à jour du statut des cadeaux/UpdateOrderStatus";
 import Receipt from "../utilities/docs/Receipt";
 import AddGiftAdmin from "../GIFT ADMIN/AddGiftAdmin";
+import NumberBuy from "../layout/NumberBuy";
+import AchatCompteFlash from "../layout/AchatCompteFlash";
 
 const routesConfig = [
   {
@@ -60,7 +62,7 @@ const routesConfig = [
     path: "/account/tools/virement-pro",
     Component: (
       <PrivateRoute>
-        <Virement />
+        <Virement activeSection="Virement pro" />
       </PrivateRoute>
     ),
   },
@@ -68,7 +70,7 @@ const routesConfig = [
     path: "/account/tools/compte-flash-pro",
     Component: (
       <PrivateRoute>
-        <CompteFlash />
+        <CompteFlash activeSection="Compte Flash Pro" />
       </PrivateRoute>
     ),
   },
@@ -76,7 +78,7 @@ const routesConfig = [
     path: "/account/tools/envoie-de-cadeau",
     Component: (
       <PrivateRoute>
-        <GilftHanler />
+        <GilftHanler activeSection="Envoie de cadeau" />
       </PrivateRoute>
     ),
   },
@@ -149,6 +151,22 @@ const routesConfig = [
     Component: (
       <PrivateRoute>
         <ContactForm />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/account/tools/numeros-virtuels",
+    Component: (
+      <PrivateRoute>
+        <NumberBuy activeSection="Achat Numéros virtuels" />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/account/tools/achat-compte-flash",
+    Component: (
+      <PrivateRoute>
+        <AchatCompteFlash activeSection="Achat de compte Flash" />
       </PrivateRoute>
     ),
   },

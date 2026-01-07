@@ -1,6 +1,6 @@
 /* --- Base Styles --- */
 * {
-  box-sizing: border-box; /* S'assure que padding et border ne s'ajoutent pas à la largeur/hauteur */
+  box-sizing: border-box;
 }
 
 .compte-flash-pro-wrapper {
@@ -106,6 +106,7 @@
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  position: relative;
 }
 
 .form-section-title {
@@ -178,6 +179,19 @@
   white-space: nowrap;
 }
 
+.required-tag {
+  color: #e74c3c;
+}
+
+.optional-tag {
+  color: #3498db;
+}
+
+.default-tag {
+  color: white;
+  background-color: #3498db;
+}
+
 .form-input,
 .form-select {
   padding: 7px 9px;
@@ -232,6 +246,153 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
+/* ✅ POPUP MODAL STYLES - CORRIGÉ */
+.internal-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeInOverlay 0.3s ease-out;
+  overflow: auto;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  animation: slideInContent 0.3s ease-out;
+}
+
+.internal-popup.success .popup-content {
+  border-top: 5px solid #27ae60;
+}
+
+.internal-popup.error .popup-content {
+  border-top: 5px solid #e74c3c;
+}
+
+.internal-popup.info .popup-content {
+  border-top: 5px solid #3498db;
+}
+
+.popup-content h4 {
+  font-size: 1.5em;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+}
+
+.popup-content p {
+  font-size: 1em;
+  color: #555;
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+}
+
+.popup-details {
+  background-color: #f8f9fa;
+  border: 1.5px solid #dee2e6;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 15px 0;
+  text-align: left;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.popup-details p {
+  margin: 8px 0;
+  color: #333;
+  font-size: 0.95em;
+  word-break: break-all;
+}
+
+.popup-details strong {
+  color: #060911;
+  font-weight: 600;
+}
+
+.popup-close-btn {
+  background-color: #060911;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-top: 15px;
+}
+
+.popup-close-btn:hover {
+  background-color: #274d68;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-close-btn:active {
+  transform: translateY(0);
+}
+
+/* Scrollbar styling */
+.popup-content::-webkit-scrollbar,
+.popup-details::-webkit-scrollbar {
+  width: 8px;
+}
+
+.popup-content::-webkit-scrollbar-track,
+.popup-details::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.popup-content::-webkit-scrollbar-thumb,
+.popup-details::-webkit-scrollbar-thumb {
+  background: #060911;
+  border-radius: 10px;
+}
+
+.popup-content::-webkit-scrollbar-thumb:hover,
+.popup-details::-webkit-scrollbar-thumb:hover {
+  background: #274d68;
+}
+
+/* Animations */
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInContent {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
 @media (min-width: 576px) {
   .compte-flash-pro-wrapper {
     padding: 15px;
@@ -291,27 +452,9 @@
     min-width: 140px;
   }
 
-  .form-field.empty-placeholder {
-    min-width: 140px;
-  }
-
   .form-label {
     font-size: 0.85em;
     margin-bottom: 6px;
-  }
-
-  .required-tag,
-  .optional-tag,
-  .default-tag {
-    font-size: 0.68em;
-    margin-left: 6px;
-    padding: 2px 5px;
-  }
-
-  .form-input,
-  .form-select {
-    padding: 8px 10px;
-    font-size: 0.9em;
   }
 
   .form-select {
@@ -325,10 +468,6 @@
     font-size: 1em;
     margin-top: 18px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .submit-button:hover {
-    transform: translateY(-1px);
   }
 }
 
@@ -372,11 +511,6 @@
     padding: 20px;
   }
 
-  .form-group-header {
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-  }
-
   .group-title {
     font-size: 1.15em;
   }
@@ -386,24 +520,12 @@
   }
 
   .form-field {
-    min-width: 180px; /* Restaurer le min-width à 180px */
-  }
-
-  .form-field.empty-placeholder {
     min-width: 180px;
   }
 
   .form-label {
     font-size: 0.9em;
     margin-bottom: 8px;
-  }
-
-  .required-tag,
-  .optional-tag,
-  .default-tag {
-    font-size: 0.75em;
-    margin-left: 8px;
-    padding: 3px 6px;
   }
 
   .form-input,
@@ -429,174 +551,8 @@
     transform: translateY(-2px);
   }
 }
-/* --- Dans CompteFlashPro.css --- */
-/* --- Base Styles --- */
-* {
-  box-sizing: border-box; /* S'assure que padding et border ne s'ajoutent pas à la largeur/hauteur */
-}
 
-.compte-flash-pro-wrapper {
-  padding: 10px;
-  /* max-width: 700px; <--- Supprimez ou commentez cette ligne */
-  /* margin: 10px auto; <--- Supprimez ou commentez cette ligne */
-  /* Il prendra la largeur définie par le flex parent */
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  /* Ajoutez ceci pour qu'il prenne toute la largeur disponible de sa "cellule" flex */
+.full-width textarea {
   width: 100%;
-}
-
-/* Le reste de votre CSS pour les éléments INTERNES de CompteFlashPro est bon */
-/* Les media queries pour les champs du formulaire (.form-row, .form-field) sont également bons */
-/* car ils gèrent la disposition interne du formulaire */
-
-@media (min-width: 992px) {
-  /* Ici, vous pouvez ajuster comment les champs se comportent à l'intérieur du conteneur de 48% */
-  .form-row {
-    /* Si vous voulez que les champs se placent côte à côte même si l'espace est plus restreint */
-    flex-wrap: wrap; /* Pour permettre le wrapping si l'espace est insuffisant */
-    gap: 0.8rem; /* Ajustez l'espacement */
-  }
-
-  .form-field {
-    /* Adaptez les champs pour qu'ils prennent la moitié de la largeur disponible dans la colonne */
-    flex: 1 1 calc(50% - 0.4rem); /* calc(50% - (gap / 2)) */
-    min-width: unset; /* Laissez flex-basis gérer la largeur */
-  }
-
-  .form-field.empty-placeholder {
-    flex: 1 1 calc(50% - 0.4rem);
-    min-width: unset;
-  }
-}
-
-/* Assurez-vous que les optgroup-label ont un style défini */
-.optgroup-label {
-  font-weight: bold;
-  color: #34495e;
-  background-color: #e9e9e9;
-  padding: 5px 10px;
-}
-
-.required-tag {
-  color: #e74c3c;
-}
-
-.optional-tag {
-  color: #3498db;
-}
-
-.default-tag {
-  color: white;
-}
-
-/* Ajoutez ces styles à votre fichier CompteFlashPro.css ou un fichier CSS global */
-
-.internal-popup {
-  position: fixed; /* Rendre la pop-up fixe par rapport à la fenêtre */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Assurez-vous qu'elle soit au-dessus de tout le reste */
-  animation: fadeInOverlay 0.3s ease-out; /* Animation d'apparition */
-}
-
-.popup-content {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-  text-align: center;
-  max-width: 450px;
-  width: 90%;
-  transform: translateY(0); /* Position initiale sans translation */
-  animation: slideInContent 0.3s ease-out; /* Animation d'apparition du contenu */
-}
-
-/* Styles pour les types de pop-up (succès/erreur) */
-.internal-popup.success .popup-content {
-  border-top: 5px solid #060911; /* Vert pour le succès */
-}
-
-.internal-popup.error .popup-content {
-  border-top: 5px solid #dc3545; /* Rouge pour l'erreur */
-}
-
-.popup-content h4 {
-  font-size: 1.8em;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-.popup-content p {
-  font-size: 1.1em;
-  color: #555;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-.popup-details {
-  background-color: #f0f8ff; /* Couleur de fond légère pour les détails */
-  border: 1px solid #060911ce; /* Bordure douce */
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 20px;
-  margin-bottom: 25px;
-  text-align: left;
-}
-
-.popup-details p {
-  margin: 5px 0;
-  color: #333;
-  font-size: 0.95em;
-}
-
-.popup-details strong {
-  color: #000;
-}
-
-.popup-close-btn {
-  background-color: #060911;
-  color: white;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.2s ease;
-  margin-top: 10px;
-}
-
-.popup-close-btn:hover {
-  background-color: #060911;
-}
-
-/* Animations */
-@keyframes fadeInOverlay {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInContent {
-  from {
-    opacity: 0;
-    transform: translateY(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  resize: none;
 }

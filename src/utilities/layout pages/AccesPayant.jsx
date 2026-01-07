@@ -31,12 +31,13 @@ export const toolsData = [
     link: "/account/tools/numeros-virtuels",
     status: "indisponible",
   },
-  // {
-  //   title: "SMS Pro",
-  //   iconUrl: "https://www.kitscms.com/res/img/sms.png",
-  //   link: "/account/tools/sms-pro",
-  //   status: "indisponible",
-  // },
+  {
+    title: "Achat de compte Flash",
+    iconUrl:
+      "https://s.france24.com/media/display/210e575c-cda9-11ef-94bb-005056a90284/w:1280/p:16x9/4banques-main.jpg",
+    link: "/account/tools/achat-compte-flash",
+    status: "disponible",
+  },
   // {
 
   //   title: "Vérification IBAN / CB",

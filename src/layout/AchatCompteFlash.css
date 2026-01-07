@@ -1,0 +1,17 @@
+.account_infoItems {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start !important;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.account_infoItems > * {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 992px) {
+  .account_infoItems > * {
+    flex: 1 1 48%;
+  }
+}

@@ -1,0 +1,238 @@
+/* --- VARIABLES (Identiques au composant précédent pour cohérence) --- */
+:root {
+  --primary: #0f172a;
+  --bg-page: #ececed;
+  --bg-card: #ffffff;
+  --border: #e2e8f0;
+  --text-main: #334155;
+  --text-light: #64748b;
+  --success: #10b981;
+  --bg-success: #dcfce7;
+}
+
+/* --- CONTENEUR --- */
+.history-container {
+  width: 100%;
+  max-width: 950px; /* Même largeur que le formulaire */
+  margin: 30px auto 0; /* Marge au-dessus pour séparer du formulaire */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-main);
+}
+
+/* --- HEADER --- */
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 0 5px;
+}
+
+.history-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-count {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-light);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* --- LISTE / TABLEAU --- */
+.history-list {
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Ligne (Row) */
+.history-row {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 2fr 1.5fr 1fr; /* Colonnes Desktop */
+  padding: 15px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.history-row:last-child {
+  border-bottom: none;
+}
+
+/* En-tête du tableau (Grisé) */
+.history-row.header {
+  background-color: #f8fafc;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- COLONNES --- */
+.col-date {
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+.col-bank {
+  display: flex;
+  flex-direction: column;
+}
+.bank-name {
+  font-weight: 700;
+  color: var(--primary);
+}
+.bank-type {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.col-details {
+  display: flex;
+  flex-direction: column;
+}
+.client-name {
+  font-weight: 600;
+}
+.iban-small {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  background: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 2px;
+}
+
+.col-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Alignement montant à droite */
+}
+.amount-value {
+  font-weight: 700;
+  color: var(--primary);
+}
+.cost-sub {
+  font-size: 0.75rem;
+  color: #ef4444; /* Rouge pour le débit de coins */
+}
+
+.col-status {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Badge Statut */
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 50px;
+  text-transform: uppercase;
+}
+
+.status-badge.success {
+  background-color: var(--bg-success);
+  color: var(--success);
+  border: 1px solid #bbf7d0;
+}
+
+/* Masquer les labels mobile par défaut */
+.mobile-label {
+  display: none;
+}
+
+/* Messages d'état */
+.history-loading,
+.history-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+  /* Cacher l'en-tête du tableau sur mobile */
+  .history-row.header {
+    display: none;
+  }
+
+  /* Transformer la ligne en "Carte" */
+  .history-row.item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+    gap: 10px;
+    position: relative; /* Pour positionner le statut en absolu */
+  }
+
+  /* Repositionner le statut en haut à droite de la carte */
+  .col-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+
+  /* Date un peu plus petite */
+  .col-date {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+  }
+
+  /* Banque mise en avant */
+  .col-bank {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #f1f5f9;
+  }
+  .bank-name {
+    font-size: 1rem;
+  }
+
+  /* Détails et Montant sur la même ligne en bas */
+  .col-details {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .col-amount {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    align-items: flex-end;
+  }
+
+  /* Ajustements texte */
+  .amount-value {
+    font-size: 1.1rem;
+  }
+  .client-name {
+    font-size: 0.9rem;
+    color: var(--text-main);
+  }
+  .iban-small {
+    display: none; /* On cache l'IBAN sur mobile pour épurer */
+  }
+}

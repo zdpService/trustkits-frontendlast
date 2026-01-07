@@ -10,6 +10,7 @@ import IbanCb from "../../tools/IbanCb";
 import Virement from "../../layout/Virement";
 import CompteFlash from "../../layout/CompteFlash";
 import SendGilft from "../../tools/SendGilft";
+import AchatCompteFlash from "../../layout/AchatCompteFlash";
 
 const AccountPage = () => {
   const location = useLocation();
@@ -23,10 +24,15 @@ const AccountPage = () => {
     affiliation: <Affiliation activeSection="Service d'affiliation" />,
     "virement-pro": <Virement activeSection="Virement pro" />,
     "compte-flash-pro": <CompteFlash activeSection="Compte Flash Pro" />,
-    "envoie-de-cadeau": <SendGilft activeSection="envoie de cadeau" />,
+    "envoie-de-cadeau": <SendGilft activeSection="Envoie de cadeau" />,
     "sms-pro": <SmsPro activeSection="SMS Pro" />,
-    "numeros-virtuels": <NumerosVirtuels activeSection="Numéros virtuels" />,
+    "numeros-virtuels": (
+      <NumerosVirtuels activeSection="Achat Numéros virtuels" />
+    ),
     "iban-cb": <IbanCb activeSection="Vérification IBAN / CB" />,
+    "achat-compte-flash": (
+      <AchatCompteFlash activeSection="Achat de compte Flash" />
+    ),
   };
 
   return sections[getParam] || <Tools activeSection="Outils" />;
