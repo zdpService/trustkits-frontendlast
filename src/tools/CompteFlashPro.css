@@ -457,6 +457,20 @@
     margin-bottom: 6px;
   }
 
+  .required-tag,
+  .optional-tag,
+  .default-tag {
+    font-size: 0.68em;
+    margin-left: 6px;
+    padding: 2px 5px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+
   .form-select {
     background-position: right 8px center;
     background-size: 16px;
@@ -550,6 +564,16 @@
   .submit-button:hover {
     transform: translateY(-2px);
   }
+}
+
+.full-width textarea {
+  width: 100%;
+  resize: none;
+}
+
+.form-input,
+.form-select {
+  padding: 13px 10px;
 }
 
 .full-width textarea {

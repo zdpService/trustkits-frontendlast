@@ -320,7 +320,6 @@ const CompteFlashPro = () => {
 
   return (
     <>
-      {/* ✅ MODAL S'AFFICHE TOUJOURS AU-DESSUS */}
       <PopupModal
         isOpen={showPopup}
         content={popupContent}
@@ -372,6 +371,31 @@ const CompteFlashPro = () => {
 
         <div className="compte-form-section">
           <h3 className="form-section-title">Créer un Accès Client</h3>
+          {showPopup && (
+            <div className={`internal-popup ${popupContent.type}`}>
+              <div className="popup-content">
+                <h4>{popupContent.title}</h4>
+                <p>{popupContent.message}</p>
+                {popupContent.details && (
+                  <div className="popup-details">
+                    {Object.entries(popupContent.details).map(
+                      ([key, value]) => (
+                        <p key={key}>
+                          <strong>{key} :</strong> {value}
+                        </p>
+                      )
+                    )}
+                  </div>
+                )}
+                <button
+                  onClick={() => setShowPopup(false)}
+                  className="popup-close-btn"
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          )}
           <form className="client-creation-form" onSubmit={handleSubmit}>
             <div className="form-group-header">
               <p className="group-title">Informations sur le client :</p>
@@ -480,7 +504,7 @@ const CompteFlashPro = () => {
             <div className="form-row iban-field">
               <div className="form-field full-width">
                 <label htmlFor="iban" className="form-label">
-                  IBAN (Facultatif )
+                  IBAN (Facultatif - Laisser vide pour génération automatique)
                 </label>
                 <input
                   id="iban"
@@ -598,7 +622,11 @@ const CompteFlashPro = () => {
             )}
             {!activeUserUid && !coinsLoading && (
               <p
-                style={{ color: "orange", fontSize: "0.9em", marginTop: "5px" }}
+                style={{
+                  color: "orange",
+                  fontSize: "0.9em",
+                  marginTop: "5px",
+                }}
               >
                 (Veuillez vous connecter pour créer un compte client.)
               </p>
