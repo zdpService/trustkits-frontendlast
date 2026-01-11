@@ -5,6 +5,7 @@ import { CoinsContext } from "../context/CoinsContext";
 import { auth, db } from "../firebase/config";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { Plus, Trash2 } from "lucide-react";
+import { languagesAchat } from "../data/clientData";
 
 const TYPES_COMPTE = ["Compte Courant", "Compte Épargne", "Compte Bloqué"];
 
@@ -15,17 +16,38 @@ const SOUS_TYPES_COMPTE = [
 
 const COINS_COST = 5000;
 
-// --- CONFIGURATION DES URLS (Mise à jour) ---
+// URL de l'application cliente (App 2)
 const URL_LOCAL = "http://localhost:3001";
 const URL_VERCEL = "https://online-bank-app.vercel.app";
+const APP2_URL =
+  window.location.hostname === "localhost" ? URL_LOCAL : URL_VERCEL;
 
-// ⬇️ C'est ici que tu choisis quel lien sera envoyé au client ⬇️
-// Pour l'instant, j'ai activé Vercel pour que le lien soit accessible partout.
-const APP2_URL = URL_VERCEL;
-// Si tu veux repasser en local, commente la ligne du dessus et décommente celle-ci :
-// const APP2_URL = URL_LOCAL;
+// 👇 LISTE DES MOTIFS (Identique aux clés de traduction de l'App 2)
+const MOTIFS_LIST = [
+  "Facture",
+  "Loyer",
+  "Services",
+  "Achat",
+  "Remboursement",
+  "Salaire",
+  "Donation",
+  "Dons",
+  "Aide familiale",
+  "Investissement",
+  "Voyage",
+  "Prêt personnel",
+  "Frais médicaux",
+  "Frais d’étude",
+  "Achat véhicule",
+  "Frais de réparation",
+  "Cadeau",
+  "Cotisation",
+  "Abonnement",
+  "Autre",
+  "Assurance",
+  "Impôts",
+];
 
-// --- TYPES DE TRANSACTION ---
 const TRANSACTION_TYPES = [
   {
     label: "Réception de virement",
@@ -66,13 +88,11 @@ const TRANSACTION_TYPES = [
 
 // --- GÉNÉRATEURS ---
 const generateRandomIban = (countryCode = "FR") => {
-  // Génère 23 chiffres aléatoires pour compléter l'IBAN
   const randomDigits = Math.floor(
     10000000000000000000 + Math.random() * 90000000000000000000
   )
     .toString()
     .substring(0, 23);
-  // S'assure que le code pays a 2 lettres majuscules
   const code =
     countryCode && countryCode.length >= 2
       ? countryCode.substring(0, 2).toUpperCase()
@@ -83,7 +103,6 @@ const generateRandomIban = (countryCode = "FR") => {
 const generatePin = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
-// MODIFICATION ICI : ID uniquement numérique (10 chiffres)
 const generateId = () =>
   Math.floor(1000000000 + Math.random() * 9000000000).toString();
 
@@ -150,6 +169,7 @@ const AchatDeCompteFlash = () => {
     soldeCompte: "",
     fraisDeblocage: "",
     devise: "€",
+    language: "Français",
     pays: PAYS[0] || "France",
     ville: "",
     iban: "",
@@ -212,7 +232,7 @@ const AchatDeCompteFlash = () => {
               merchant: "",
               iban: "",
               bic: "",
-              libelle: "",
+              libelle: "", // Reset du libellé si on change de type
               location: "",
             };
           }
@@ -245,15 +265,12 @@ const AchatDeCompteFlash = () => {
         ? formData.autreBanque
         : formData.nomBanque;
 
-    // Génération IBAN avec code pays correct
     const ibanFinal =
       formData.iban ||
       generateRandomIban(formData.pays ? formData.pays.substring(0, 2) : "FR");
 
     const generatedPin = generatePin();
-    const generatedId = generateId(); // Maintenant numérique
-
-    // Utilisation de l'URL configurée en haut
+    const generatedId = generateId();
     const lienConnexion = `${APP2_URL}/?id=${generatedId}`;
 
     const finalSousType =
@@ -301,6 +318,7 @@ const AchatDeCompteFlash = () => {
       showSuccessPopup("Compte Créé !", "Accès client :", {
         Banque: banqueFinale,
         Solde: `${formData.soldeCompte} ${formData.devise}`,
+        Langue: formData.language,
         "Identifiant (ID)": generatedId,
         "Code PIN": generatedPin,
         Lien: lienConnexion,
@@ -316,7 +334,7 @@ const AchatDeCompteFlash = () => {
         soldeCompte: "",
         fraisDeblocage: "",
         ville: "",
-        iban: "", // Reset IBAN aussi
+        iban: "",
       }));
       setTransactions([]);
     } catch (error) {
@@ -356,7 +374,7 @@ const AchatDeCompteFlash = () => {
 
       <div className="acf-card">
         <form onSubmit={handleSubmit}>
-          {/* --- SECTION 01 : BANQUE --- */}
+          {/* SECTION 01 & 02 (Identique) */}
           <div className="acf-section-title">
             <span>01</span> Configuration Bancaire
           </div>
@@ -386,7 +404,6 @@ const AchatDeCompteFlash = () => {
                 />
               </div>
             )}
-
             <div className="acf-input-group">
               <label>Type de Compte</label>
               <select
@@ -401,7 +418,6 @@ const AchatDeCompteFlash = () => {
                 ))}
               </select>
             </div>
-
             {formData.typeCompte === "Compte Courant" && (
               <div className="acf-input-group">
                 <label>Option du Compte</label>
@@ -418,7 +434,6 @@ const AchatDeCompteFlash = () => {
                 </select>
               </div>
             )}
-
             <div className="acf-input-group">
               <label>IBAN (Optionnel)</label>
               <input
@@ -431,7 +446,6 @@ const AchatDeCompteFlash = () => {
             </div>
           </div>
 
-          {/* --- SECTION 02 : IDENTITÉ --- */}
           <div className="acf-section-title">
             <span>02</span> Identité du Titulaire
           </div>
@@ -508,11 +522,25 @@ const AchatDeCompteFlash = () => {
             </div>
           </div>
 
-          {/* --- SECTION 03 : FINANCES --- */}
+          {/* SECTION 03 */}
           <div className="acf-section-title">
             <span>03</span> Détails Financiers
           </div>
-          <div className="acf-grid-3">
+          <div className="acf-grid">
+            <div className="acf-input-group">
+              <label>Langue d'affichage</label>
+              <select
+                name="language"
+                value={formData.language}
+                onChange={handleChange}
+              >
+                {languagesAchat.map((lang, i) => (
+                  <option key={i} value={lang}>
+                    {lang}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="acf-input-group">
               <label>Devise</label>
               <select
@@ -594,7 +622,6 @@ const AchatDeCompteFlash = () => {
                   </div>
 
                   <div className="tx-edit-body">
-                    {/* Ligne 1 : Type, Montant, Date */}
                     <div className="tx-row-basic">
                       <div className="tx-group">
                         <label>Type de transaction</label>
@@ -634,7 +661,6 @@ const AchatDeCompteFlash = () => {
                       </div>
                     </div>
 
-                    {/* Ligne 2 : Champs Dynamiques selon le type */}
                     <div className="tx-row-dynamic">
                       {(tx.typeObj.fields.includes("merchant") ||
                         tx.typeObj.fields.includes("iban")) && (
@@ -713,18 +739,42 @@ const AchatDeCompteFlash = () => {
                       {tx.typeObj.fields.includes("libelle") && (
                         <div className="tx-group full">
                           <label>Libellé / Motif</label>
-                          <input
-                            type="text"
-                            placeholder="ex: Remboursement..."
-                            value={tx.libelle}
-                            onChange={(e) =>
-                              updateTransaction(
-                                tx.id,
-                                "libelle",
-                                e.target.value
-                              )
-                            }
-                          />
+
+                          {/* 👇 MODIFICATION ICI : SELECT POUR LES VIREMENTS */}
+                          {tx.typeObj.category === "Transfer" ||
+                          tx.typeObj.category === "Deposit" ? (
+                            <select
+                              value={tx.libelle}
+                              onChange={(e) =>
+                                updateTransaction(
+                                  tx.id,
+                                  "libelle",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              <option value="">-- Choisir un motif --</option>
+                              {MOTIFS_LIST.map((motif, idx) => (
+                                <option key={idx} value={motif}>
+                                  {motif}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            /* Sinon Input libre pour les autres types */
+                            <input
+                              type="text"
+                              placeholder="ex: Remboursement..."
+                              value={tx.libelle}
+                              onChange={(e) =>
+                                updateTransaction(
+                                  tx.id,
+                                  "libelle",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          )}
                         </div>
                       )}
                     </div>
@@ -734,7 +784,6 @@ const AchatDeCompteFlash = () => {
             </div>
           )}
 
-          {/* FOOTER */}
           <div className="acf-footer">
             <div className="cost-info">
               Coût : <span>{COINS_COST.toLocaleString()} Coins</span>

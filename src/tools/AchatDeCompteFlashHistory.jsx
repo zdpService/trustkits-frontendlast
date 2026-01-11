@@ -11,19 +11,20 @@ import {
 import "./AchatDeCompteFlashHistory.css";
 
 // --- CONFIGURATION DES URLS ---
+// Remplace URL_VERCEL par ton URL de production réelle
 const URL_LOCAL = "http://localhost:3001";
 const URL_VERCEL = "https://online-bank-app.vercel.app";
 
-// ⬇️ C'est ici que tu choisis quel lien est utilisé dans l'historique ⬇️
-const APP2_URL = URL_VERCEL;
-// const APP2_URL = URL_LOCAL;
+// ⬇️ DÉTECTION AUTOMATIQUE DE L'ENVIRONNEMENT ⬇️
+const APP2_URL =
+  window.location.hostname === "localhost" ? URL_LOCAL : URL_VERCEL;
 
 // --- MODALE DE DÉTAILS ---
 const HistoryDetailModal = ({ item, onClose }) => {
   if (!item) return null;
   const { detailsCompte } = item;
 
-  // Utilisation de l'URL configurée en haut
+  // Utilisation de l'URL dynamique
   const lienConnexion = `${APP2_URL}/?id=${detailsCompte.identifiant}`;
 
   return (
@@ -98,14 +99,12 @@ const HistoryDetailModal = ({ item, onClose }) => {
   );
 };
 
-// --- COMPOSANT PRINCIPAL ---
 const AchatDeCompteFlashHistory = () => {
   const { userUid } = useContext(CoinsContext);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // --- CORRECTION ICI : Utilisation de onSnapshot ---
   useEffect(() => {
     const currentUser = userUid || auth.currentUser?.uid;
 
