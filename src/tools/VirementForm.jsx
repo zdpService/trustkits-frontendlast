@@ -14,6 +14,7 @@ import {
 import { CoinsContext } from "../context/CoinsContext";
 import ModalVideo from "../video Modal/ModalVideo";
 import MdifiClientAccess from "./MdifiClientAccess";
+import { Lock } from "lucide-react"; // Import de l'icône cadenas
 
 const VirementForm = () => {
   const navigate = useNavigate();
@@ -22,6 +23,14 @@ const VirementForm = () => {
     updateCoins,
     loading: coinsLoading,
   } = useContext(CoinsContext);
+
+  // Prix par défaut
+  const DEFAULT_VIREMENT_COST = 5000;
+
+  // --- NOUVEAUX ÉTATS POUR LA PERSONNALISATION ---
+  const [actualCost, setActualCost] = useState(DEFAULT_VIREMENT_COST);
+  const [isAllowed, setIsAllowed] = useState(true);
+  const [settingsLoading, setSettingsLoading] = useState(true);
 
   const [isModalVideoOpen, setIsModalVideoOpen] = useState(false);
 
@@ -46,31 +55,57 @@ const VirementForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const VIREMENT_COST = 5000;
   const TEST_VIDEO_URL = "https://www.youtube.com/embed/m9EoDflW49c";
+
+  // 1. Charger le nom de l'utilisateur ET ses paramètres Admin
   useEffect(() => {
-    const fetchUserName = async () => {
-      if (!auth.currentUser) return;
+    const fetchData = async () => {
+      if (!auth.currentUser) {
+        setSettingsLoading(false);
+        return;
+      }
 
-      const userDocRef = doc(db, "users", auth.currentUser.uid);
-      const userSnap = await getDoc(userDocRef);
+      try {
+        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        const userSnap = await getDoc(userDocRef);
 
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        setFormData((prev) => ({
-          ...prev,
-          debiteurNom:
-            data.name || auth.currentUser.displayName || "Nom Utilisateur",
-        }));
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          debiteurNom: auth.currentUser.displayName || "Nom Utilisateur",
-        }));
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+
+          // A. Pré-remplir le nom du débiteur
+          setFormData((prev) => ({
+            ...prev,
+            debiteurNom:
+              data.name || auth.currentUser.displayName || "Nom Utilisateur",
+          }));
+
+          // B. Vérifier les réglages Admin (virement_pro)
+          const serviceConfig = data.serviceSettings?.virement_pro;
+          if (serviceConfig) {
+            // Vérifier autorisation
+            if (serviceConfig.allowed === false) {
+              setIsAllowed(false);
+            }
+            // Vérifier coût personnalisé
+            if (serviceConfig.cost !== undefined && serviceConfig.cost !== "") {
+              setActualCost(Number(serviceConfig.cost));
+            }
+          }
+        } else {
+          // Fallback si pas de profil complet
+          setFormData((prev) => ({
+            ...prev,
+            debiteurNom: auth.currentUser.displayName || "Nom Utilisateur",
+          }));
+        }
+      } catch (error) {
+        console.error("Erreur chargement données:", error);
+      } finally {
+        setSettingsLoading(false);
       }
     };
 
-    fetchUserName();
+    fetchData();
   }, []);
 
   const handleChange = (e) => {
@@ -100,6 +135,12 @@ const VirementForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Vérification blocage
+    if (!isAllowed) {
+      alert("Ce service n'est pas disponible pour votre compte.");
+      return;
+    }
+
     if (!auth.currentUser) {
       alert("Vous devez être connecté pour effectuer un virement.");
       return;
@@ -107,8 +148,11 @@ const VirementForm = () => {
 
     if (!validateForm()) return;
 
-    if (coins < VIREMENT_COST) {
-      setError(`Solde insuffisant. Un virement coûte ${VIREMENT_COST} coins.`);
+    // Vérification coût dynamique
+    if (coins < actualCost) {
+      setError(
+        `Solde insuffisant. Un virement coûte ${actualCost.toLocaleString()} coins.`
+      );
       return;
     }
 
@@ -116,13 +160,16 @@ const VirementForm = () => {
     setError("");
 
     try {
+      // Mise à jour du nom utilisateur si besoin
       const userDocRef = doc(db, "users", auth.currentUser.uid);
       await setDoc(userDocRef, { name: formData.debiteurNom }, { merge: true });
 
+      // Enregistrement Virement
       const virementRef = await addDoc(collection(db, "virements"), {
         ...formData,
         userId: auth.currentUser.uid,
         createdAt: new Date(),
+        cout: actualCost, // On enregistre combien ça a coûté
       });
 
       console.log("✅ Virement ajouté :", virementRef.id);
@@ -152,8 +199,8 @@ const VirementForm = () => {
 
       console.log("📧 Email envoyé avec succès");
 
-      // 💰 Déduction des coins
-      await updateCoins(auth.currentUser.uid, coins - VIREMENT_COST);
+      // 💰 Déduction des coins (Prix Dynamique)
+      await updateCoins(auth.currentUser.uid, coins - actualCost);
 
       setLoading(false);
 
@@ -167,7 +214,40 @@ const VirementForm = () => {
     }
   };
 
-  if (loading || coinsLoading) return <Loading />;
+  if (loading || coinsLoading || settingsLoading) return <Loading />;
+
+  // --- UI SI BLOQUÉ ---
+  if (!isAllowed) {
+    return (
+      <div
+        className="virement-form"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "400px",
+        }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            background: "white",
+            padding: "40px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Lock size={48} color="#dc2626" style={{ marginBottom: "16px" }} />
+          <h2 style={{ color: "#1f2937", marginBottom: "8px" }}>
+            Service Non Disponible
+          </h2>
+          <p style={{ color: "#6b7280" }}>
+            L'accès aux virements flash a été restreint pour votre compte.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="virement-form">
@@ -374,7 +454,8 @@ const VirementForm = () => {
           </div>
 
           <button type="submit" className="virement-btn-create">
-            Effectuer le virement → {VIREMENT_COST} coins
+            {/* Affichage du coût dynamique */}
+            Effectuer le virement → {actualCost.toLocaleString()} coins
           </button>
         </form>
       </div>

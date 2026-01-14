@@ -1,12 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { LANGUES, PAYS } from "../data/tableau des banque/data";
 import "./CompteFlashPro.css";
 import FlashAccountUpdater from "./mise à jour compte/FlashAccountUpdater";
 import { CoinsContext } from "../context/CoinsContext";
 import { auth, db } from "../firebase/config";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, doc, getDoc } from "firebase/firestore";
 import axios from "axios";
 import ModalVideo from "../video Modal/ModalVideo";
+import { Lock } from "lucide-react"; // Import de l'icône de cadenas
 
 const API_BASE_URL =
   process.env.REACT_APP_API_URL ||
@@ -21,7 +22,8 @@ const FRONTEND_URL =
     ? "https://vantex.ink"
     : "http://localhost:3001");
 
-const COINS_COST = 10000;
+// Prix par défaut
+const DEFAULT_COINS_COST = 10000;
 const TEST_VIDEO_URL = "https://www.youtube.com/embed/W88TO2D9SC4";
 
 const generatePin = () => {
@@ -45,7 +47,7 @@ const generateActivationCode = () => {
   return result;
 };
 
-// ✅ COMPOSANT MODAL SÉPARÉ - S'affichera par-dessus tout
+// ✅ COMPOSANT MODAL SÉPARÉ
 const PopupModal = ({ isOpen, content, onClose }) => {
   if (!isOpen) return null;
 
@@ -81,6 +83,11 @@ const CompteFlashPro = () => {
     userUid,
   } = useContext(CoinsContext);
 
+  // --- NOUVEAUX ÉTATS POUR LA PERSONNALISATION ---
+  const [actualCost, setActualCost] = useState(DEFAULT_COINS_COST);
+  const [isAllowed, setIsAllowed] = useState(true);
+  const [settingsLoading, setSettingsLoading] = useState(true);
+
   const [clientData, setClientData] = useState({
     nom: "",
     prenom: "",
@@ -109,6 +116,44 @@ const CompteFlashPro = () => {
   const currentCoins = coins || 0;
   const activeUserUid = userUid || auth.currentUser?.uid;
 
+  // --- EFFET POUR RÉCUPÉRER LE COÛT PERSONNALISÉ ---
+  useEffect(() => {
+    const fetchServiceSettings = async () => {
+      if (!activeUserUid) {
+        setSettingsLoading(false);
+        return;
+      }
+
+      try {
+        const userDocRef = doc(db, "users", activeUserUid);
+        const userSnap = await getDoc(userDocRef);
+
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          // On cherche la clé "compte_flash_pro" définie dans l'admin
+          const serviceConfig = data.serviceSettings?.compte_flash_pro;
+
+          if (serviceConfig) {
+            // 1. Vérifier si le service est autorisé
+            if (serviceConfig.allowed === false) {
+              setIsAllowed(false);
+            }
+            // 2. Vérifier s'il y a un coût personnalisé
+            if (serviceConfig.cost !== undefined && serviceConfig.cost !== "") {
+              setActualCost(Number(serviceConfig.cost));
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Erreur chargement settings:", error);
+      } finally {
+        setSettingsLoading(false);
+      }
+    };
+
+    fetchServiceSettings();
+  }, [activeUserUid]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "soldeInitial") return;
@@ -134,7 +179,6 @@ const CompteFlashPro = () => {
     return true;
   };
 
-  // ✅ Fonction helper pour afficher les popups d'erreur
   const showErrorPopup = (title, message) => {
     setPopupContent({
       title,
@@ -145,7 +189,6 @@ const CompteFlashPro = () => {
     setShowPopup(true);
   };
 
-  // ✅ Fonction helper pour afficher les popups de succès
   const showSuccessPopup = (title, message, details) => {
     setPopupContent({
       title,
@@ -159,6 +202,14 @@ const CompteFlashPro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Vérification blocage Admin
+    if (!isAllowed) {
+      return showErrorPopup(
+        "Accès Refusé",
+        "Ce service n'est pas disponible pour votre compte."
+      );
+    }
+
     if (!activeUserUid) {
       showErrorPopup(
         "Erreur d'Authentification",
@@ -169,11 +220,12 @@ const CompteFlashPro = () => {
 
     if (!validateForm()) return;
 
-    if (currentCoins < COINS_COST) {
+    // Utilisation de actualCost au lieu de la constante
+    if (currentCoins < actualCost) {
       showErrorPopup(
         "Solde de Coins Insuffisant",
-        `Votre solde est insuffisant. Un accès coûte ${COINS_COST.toLocaleString()} coins. Il vous manque ${(
-          COINS_COST - currentCoins
+        `Votre solde est insuffisant. Un accès coûte ${actualCost.toLocaleString()} coins. Il vous manque ${(
+          actualCost - currentCoins
         ).toLocaleString()} coins.`
       );
       return;
@@ -226,7 +278,7 @@ const CompteFlashPro = () => {
         codeActivationVirement: activationCode,
         codeActivationUtilise: "NON",
         alertesEmail: "Désactivé",
-        coutCreation: `${COINS_COST.toLocaleString()} Crédits`,
+        coutCreation: `${actualCost.toLocaleString()} Crédits`, // Enregistrement du coût réel
 
         transactionHistory: [],
       };
@@ -265,8 +317,8 @@ const CompteFlashPro = () => {
 
       await axios.post(API_REGISTER_URL, registrationPayload);
 
-      // ✅ ÉTAPE 3 : Déduire les coins
-      const newCoinsBalance = currentCoins - COINS_COST;
+      // ✅ ÉTAPE 3 : Déduire les coins (Prix Dynamique)
+      const newCoinsBalance = currentCoins - actualCost;
       await updateCoins(activeUserUid, newCoinsBalance);
 
       // ✅ Afficher la popup de succès
@@ -312,10 +364,47 @@ const CompteFlashPro = () => {
   };
 
   const isButtonDisabled =
-    isLoading || coinsLoading || currentCoins < COINS_COST || !activeUserUid;
+    isLoading || coinsLoading || currentCoins < actualCost || !activeUserUid;
 
   if (coinsLoading) {
     return <div>Chargement des coins...</div>;
+  }
+
+  // --- RENDU SI SERVICE BLOQUÉ ---
+  if (!settingsLoading && !isAllowed) {
+    return (
+      <div
+        className="compte-flash-pro-wrapper"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "400px",
+        }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            background: "white",
+            padding: "40px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Lock size={48} color="#dc2626" style={{ marginBottom: "16px" }} />
+          <h2 style={{ color: "#1f2937", marginBottom: "8px" }}>
+            Service Non Disponible
+          </h2>
+          <p style={{ color: "#6b7280" }}>
+            L'accès à la création de comptes pro a été restreint pour votre
+            compte.
+          </p>
+          <p style={{ color: "#6b7280", fontSize: "13px" }}>
+            Veuillez contacter le support pour plus d'informations.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -358,7 +447,7 @@ const CompteFlashPro = () => {
             <strong className="nb-text">NB</strong> : Un accès
             <strong>Compte Flash Pro</strong> doit être créé pour un
             <strong className="client-emphasis">client</strong>. Cet outil est
-            payant ({COINS_COST.toLocaleString()} coins pour un accès flash
+            payant ({actualCost.toLocaleString()} coins pour un accès flash
             compte client).
           </div>
           <button
@@ -611,12 +700,12 @@ const CompteFlashPro = () => {
             >
               {isLoading
                 ? "Création en cours..."
-                : `Créer l'accès client → ${COINS_COST.toLocaleString()} coins`}
+                : `Créer l'accès client → ${actualCost.toLocaleString()} coins`}
             </button>
 
-            {currentCoins < COINS_COST && !coinsLoading && activeUserUid && (
+            {currentCoins < actualCost && !coinsLoading && activeUserUid && (
               <p style={{ color: "red", fontSize: "0.9em", marginTop: "5px" }}>
-                (Il vous manque {(COINS_COST - currentCoins).toLocaleString()}
+                (Il vous manque {(actualCost - currentCoins).toLocaleString()}
                 coins pour effectuer cette opération.)
               </p>
             )}

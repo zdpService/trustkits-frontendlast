@@ -1,0 +1,189 @@
+/* --- LAYOUT GÉNÉRAL COMPACT --- */
+.page-container {
+  max-width: 100%; /* Utilise toute la largeur disponible */
+  margin: 0 auto;
+  padding: 0 20px 20px 20px; /* Marges réduites */
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- HEADER DE LA PAGE --- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Réduit de 32px à 20px */
+  gap: 12px;
+}
+
+.page-header h1 {
+  font-size: 20px; /* Réduit de 24px à 20px */
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+/* --- BARRE DE RECHERCHE COMPACTE --- */
+.search-bar {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px; /* Rayon réduit */
+  padding: 6px 12px; /* Padding fortement réduit */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px; /* Largeur réduite */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  height: 36px; /* Hauteur forcée plus petite */
+}
+
+.search-bar:focus-within {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  font-size: 13px; /* Texte plus petit */
+  width: 100%;
+  color: #1f2937;
+  background: transparent;
+}
+
+/* --- CONTENEUR DU TABLEAU --- */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+/* --- TABLEAU --- */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+/* En-tête */
+.admin-table thead {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 10px 16px; /* Padding vertical réduit */
+  font-size: 11px; /* Font réduite */
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Corps */
+.admin-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.1s;
+}
+
+.admin-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.admin-table td {
+  padding: 8px 16px; /* Padding vertical très compact */
+  font-size: 13px;
+  color: #374151;
+  vertical-align: middle;
+}
+
+/* --- CELLULE UTILISATEUR (Avatar + Nom) --- */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar-sm {
+  width: 28px; /* Avatar réduit (36px -> 28px) */
+  height: 28px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  color: #4338ca;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.user-cell span {
+  font-weight: 500;
+  color: #111827;
+  font-size: 13px;
+}
+
+/* --- BOUTON D'ACTION --- */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px; /* Bouton plus fin */
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  height: 28px;
+}
+
+.btn-action:hover {
+  background-color: #f3f4f6;
+  color: #4f46e5;
+  border-color: #d1d5db;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 640px) {
+  .page-container {
+    padding: 10px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-bar {
+    max-width: 100%;
+  }
+
+  .admin-table th:nth-child(2),
+  .admin-table td:nth-child(2) {
+    display: none; /* Cache l'email sur mobile */
+  }
+}

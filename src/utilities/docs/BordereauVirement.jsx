@@ -24,6 +24,22 @@ const BordereauVirement = () => {
     return Math.floor(10 + Math.random() * 90).toString();
   };
 
+  // ✅ Fonction pour formater le montant (10 000,00€)
+  const formatMontantEuropeen = (montant, devise = "EUR") => {
+    if (!montant) return "0,00 €";
+
+    // On convertit en nombre si c'est une string
+    const nombre = parseFloat(montant.toString().replace(",", "."));
+
+    if (isNaN(nombre)) return `${montant} ${devise}`;
+
+    return new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: devise,
+      minimumFractionDigits: 2,
+    }).format(nombre);
+  };
+
   useEffect(() => {
     const fetchVirementData = async () => {
       setLoading(true);
@@ -211,7 +227,8 @@ const BordereauVirement = () => {
                 </div>
                 <div className="section_client__items-bottom_nav">
                   <p className="section_bottom-left-item barside">
-                    {virement.montant} {virement.devise}
+                    {/* ✅ Application du formatage ici */}
+                    {formatMontantEuropeen(virement.montant, virement.devise)}
                   </p>
                   <span className="describ_bars">
                     montant et devise en chiffre

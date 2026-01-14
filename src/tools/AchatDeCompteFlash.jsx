@@ -1,10 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react"; // Ajout de useEffect
 import { BANQUES, PAYS } from "../data/tableau des banque/data";
 import "./AchatDeCompteFlash.css";
 import { CoinsContext } from "../context/CoinsContext";
 import { auth, db } from "../firebase/config";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { Plus, Trash2 } from "lucide-react";
+import { collection, addDoc, Timestamp, doc, getDoc } from "firebase/firestore"; // Ajout de doc, getDoc
+import { Plus, Trash2, Lock } from "lucide-react"; // Ajout de Lock
 import { languagesAchat } from "../data/clientData";
 
 const TYPES_COMPTE = ["Compte Courant", "Compte Épargne", "Compte Bloqué"];
@@ -14,15 +14,14 @@ const SOUS_TYPES_COMPTE = [
   "Compte avec lancement de virement",
 ];
 
-const COINS_COST = 5000;
+// Prix par défaut (si l'admin n'a rien défini)
+const DEFAULT_COINS_COST = 5000;
 
-// URL de l'application cliente (App 2)
 const URL_LOCAL = "http://localhost:3001";
 const URL_VERCEL = "https://online-bank-app.vercel.app";
 const APP2_URL =
   window.location.hostname === "localhost" ? URL_LOCAL : URL_VERCEL;
 
-// 👇 LISTE DES MOTIFS (Identique aux clés de traduction de l'App 2)
 const MOTIFS_LIST = [
   "Facture",
   "Loyer",
@@ -86,7 +85,6 @@ const TRANSACTION_TYPES = [
   },
 ];
 
-// --- GÉNÉRATEURS ---
 const generateRandomIban = (countryCode = "FR") => {
   const randomDigits = Math.floor(
     10000000000000000000 + Math.random() * 90000000000000000000
@@ -102,11 +100,9 @@ const generateRandomIban = (countryCode = "FR") => {
 
 const generatePin = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
-
 const generateId = () =>
   Math.floor(1000000000 + Math.random() * 9000000000).toString();
 
-// --- MODAL ---
 const PopupModal = ({ isOpen, content, onClose }) => {
   if (!isOpen) return null;
   return (
@@ -147,7 +143,6 @@ const PopupModal = ({ isOpen, content, onClose }) => {
   );
 };
 
-// --- COMPOSANT PRINCIPAL ---
 const AchatDeCompteFlash = () => {
   const {
     coins,
@@ -155,6 +150,11 @@ const AchatDeCompteFlash = () => {
     loading: coinsLoading,
     userUid,
   } = useContext(CoinsContext);
+
+  // --- NOUVEAUX ÉTATS POUR LA PERSONNALISATION ---
+  const [actualCost, setActualCost] = useState(DEFAULT_COINS_COST);
+  const [isAllowed, setIsAllowed] = useState(true);
+  const [settingsLoading, setSettingsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     nom: "",
@@ -188,9 +188,46 @@ const AchatDeCompteFlash = () => {
   const currentCoins = coins || 0;
   const activeUserUid = userUid || auth.currentUser?.uid;
 
+  // --- EFFET POUR RÉCUPÉRER LE COÛT PERSONNALISÉ ---
+  useEffect(() => {
+    const fetchServiceSettings = async () => {
+      if (!activeUserUid) {
+        setSettingsLoading(false);
+        return;
+      }
+
+      try {
+        const userDocRef = doc(db, "users", activeUserUid);
+        const userSnap = await getDoc(userDocRef);
+
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          // On cherche la clé "achat_compte_flash" définie dans l'admin
+          const serviceConfig = data.serviceSettings?.achat_compte_flash;
+
+          if (serviceConfig) {
+            // 1. Vérifier si le service est autorisé
+            if (serviceConfig.allowed === false) {
+              setIsAllowed(false);
+            }
+            // 2. Vérifier s'il y a un coût personnalisé
+            if (serviceConfig.cost !== undefined && serviceConfig.cost !== "") {
+              setActualCost(Number(serviceConfig.cost));
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Erreur chargement settings:", error);
+      } finally {
+        setSettingsLoading(false);
+      }
+    };
+
+    fetchServiceSettings();
+  }, [activeUserUid]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "typeCompte") {
       setFormData((prev) => ({
         ...prev,
@@ -232,7 +269,7 @@ const AchatDeCompteFlash = () => {
               merchant: "",
               iban: "",
               bic: "",
-              libelle: "", // Reset du libellé si on change de type
+              libelle: "",
               location: "",
             };
           }
@@ -248,14 +285,24 @@ const AchatDeCompteFlash = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Vérification blocage Admin
+    if (!isAllowed)
+      return showErrorPopup(
+        "Accès Refusé",
+        "Ce service n'est pas disponible pour votre compte."
+      );
+
     if (!activeUserUid)
       return showErrorPopup("Auth", "Veuillez vous reconnecter.");
     if (!formData.nom || !formData.prenom || !formData.soldeCompte)
       return showErrorPopup("Erreur", "Champs obligatoires manquants.");
-    if (currentCoins < COINS_COST)
+
+    // Utilisation de actualCost au lieu de la constante
+    if (currentCoins < actualCost)
       return showErrorPopup(
         "Solde Insuffisant",
-        `Manque ${(COINS_COST - currentCoins).toLocaleString()} coins.`
+        `Manque ${(actualCost - currentCoins).toLocaleString()} coins.`
       );
 
     setIsLoading(true);
@@ -264,15 +311,12 @@ const AchatDeCompteFlash = () => {
       formData.nomBanque === "Autre (Saisir manuellement)"
         ? formData.autreBanque
         : formData.nomBanque;
-
     const ibanFinal =
       formData.iban ||
       generateRandomIban(formData.pays ? formData.pays.substring(0, 2) : "FR");
-
     const generatedPin = generatePin();
     const generatedId = generateId();
     const lienConnexion = `${APP2_URL}/?id=${generatedId}`;
-
     const finalSousType =
       formData.typeCompte === "Compte Courant"
         ? formData.sousTypeCompte
@@ -309,11 +353,13 @@ const AchatDeCompteFlash = () => {
           lienConnexion: lienConnexion,
           transactions: formattedTransactions,
         },
-        cout: COINS_COST,
+        cout: actualCost, // On enregistre le coût réel payé
       };
 
       await addDoc(collection(db, "purchasedAccounts"), purchaseData);
-      await updateCoins(activeUserUid, currentCoins - COINS_COST);
+
+      // Déduction du coût dynamique
+      await updateCoins(activeUserUid, currentCoins - actualCost);
 
       showSuccessPopup("Compte Créé !", "Accès client :", {
         Banque: banqueFinale,
@@ -354,6 +400,42 @@ const AchatDeCompteFlash = () => {
     setShowPopup(true);
   };
 
+  // --- RENDU SI SERVICE BLOQUÉ ---
+  if (!settingsLoading && !isAllowed) {
+    return (
+      <div
+        className="acf-container"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "60vh",
+        }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            background: "white",
+            padding: "40px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Lock size={48} color="#dc2626" style={{ marginBottom: "16px" }} />
+          <h2 style={{ color: "#1f2937", marginBottom: "8px" }}>
+            Service Non Disponible
+          </h2>
+          <p style={{ color: "#6b7280" }}>
+            L'accès à ce générateur a été restreint pour votre compte.
+          </p>
+          <p style={{ color: "#6b7280", fontSize: "13px" }}>
+            Veuillez contacter le support pour plus d'informations.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="acf-container">
       <PopupModal
@@ -374,6 +456,8 @@ const AchatDeCompteFlash = () => {
 
       <div className="acf-card">
         <form onSubmit={handleSubmit}>
+          {/* ... (SECTIONS 01, 02, 03 SONT IDENTIQUES À AVANT, JE LES GARDE) ... */}
+
           {/* SECTION 01 & 02 (Identique) */}
           <div className="acf-section-title">
             <span>01</span> Configuration Bancaire
@@ -522,7 +606,6 @@ const AchatDeCompteFlash = () => {
             </div>
           </div>
 
-          {/* SECTION 03 */}
           <div className="acf-section-title">
             <span>03</span> Détails Financiers
           </div>
@@ -620,7 +703,6 @@ const AchatDeCompteFlash = () => {
                       <Trash2 size={16} />
                     </button>
                   </div>
-
                   <div className="tx-edit-body">
                     <div className="tx-row-basic">
                       <div className="tx-group">
@@ -660,7 +742,6 @@ const AchatDeCompteFlash = () => {
                         />
                       </div>
                     </div>
-
                     <div className="tx-row-dynamic">
                       {(tx.typeObj.fields.includes("merchant") ||
                         tx.typeObj.fields.includes("iban")) && (
@@ -685,16 +766,10 @@ const AchatDeCompteFlash = () => {
                           />
                         </div>
                       )}
-
                       {tx.typeObj.fields.includes("iban") && (
                         <>
                           <div className="tx-group">
-                            <label>
-                              IBAN{" "}
-                              {tx.typeObj.type === "income"
-                                ? "Émetteur"
-                                : "Bénéficiaire"}
-                            </label>
+                            <label>IBAN</label>
                             <input
                               type="text"
                               placeholder="FR76..."
@@ -717,13 +792,12 @@ const AchatDeCompteFlash = () => {
                           </div>
                         </>
                       )}
-
                       {tx.typeObj.fields.includes("location") && (
                         <div className="tx-group">
                           <label>Lieu / Ville</label>
                           <input
                             type="text"
-                            placeholder="ex: Paris, En ligne..."
+                            placeholder="ex: Paris..."
                             value={tx.location}
                             onChange={(e) =>
                               updateTransaction(
@@ -735,12 +809,9 @@ const AchatDeCompteFlash = () => {
                           />
                         </div>
                       )}
-
                       {tx.typeObj.fields.includes("libelle") && (
                         <div className="tx-group full">
                           <label>Libellé / Motif</label>
-
-                          {/* 👇 MODIFICATION ICI : SELECT POUR LES VIREMENTS */}
                           {tx.typeObj.category === "Transfer" ||
                           tx.typeObj.category === "Deposit" ? (
                             <select
@@ -761,7 +832,6 @@ const AchatDeCompteFlash = () => {
                               ))}
                             </select>
                           ) : (
-                            /* Sinon Input libre pour les autres types */
                             <input
                               type="text"
                               placeholder="ex: Remboursement..."
@@ -786,18 +856,21 @@ const AchatDeCompteFlash = () => {
 
           <div className="acf-footer">
             <div className="cost-info">
-              Coût : <span>{COINS_COST.toLocaleString()} Coins</span>
+              {/* Affichage du Coût Dynamique */}
+              Coût : <span>{actualCost.toLocaleString()} Coins</span>
             </div>
             <button
               type="submit"
               className="acf-btn-submit"
-              disabled={isLoading || coinsLoading}
+              disabled={isLoading || coinsLoading || settingsLoading}
             >
               {isLoading ? "Création..." : "Générer le Compte"}
             </button>
           </div>
-          {currentCoins < COINS_COST && (
-            <div className="error-banner">Solde insuffisant.</div>
+          {currentCoins < actualCost && (
+            <div className="error-banner">
+              Solde insuffisant (Requis: {actualCost}).
+            </div>
           )}
         </form>
       </div>

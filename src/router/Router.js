@@ -1,47 +1,50 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+// --- PAGES CLIENTS ---
 import Home from "../pages/Home";
 import LoginForm from "../pages/LoginForm";
 import AccountPage from "../utilities/layout pages/AccountPage";
 import Virement from "../layout/Virement";
 import BordereauVirement from "../utilities/docs/BordereauVirement";
 import Loading from "../utilities/laoding/Loading";
-import { LoadingProvider, LoadingContext } from "../context/LoadingContext";
 import TextComponent from "../components/TextComponent";
-import { CoinsProvider } from "../context/CoinsContext";
-
-import PrivateRoute from "./PrivateRoute";
-import AuthRedirectRoute from "./AuthRedirectRoute";
-
 import PaymentStatus from "../statut du paiement/PaymentStatus";
-import SendUpdate from "../newletterAdmin/SendUpdate";
-import SupportTicketForm from "../admin/SupportTicketForm";
-import AdminSupportPanel from "../admin/AdminSupportPanel";
 import ContactButtonWrapper from "../btn/ContactButtonWrapper";
 import ContactForm from "../contact/ContactForm";
 import CompteFlash from "../layout/CompteFlash";
 import GilftHanler from "../layout/GilftHanler";
-import UpdateOrderStatus from "../tools/mise à jour du statut des cadeaux/UpdateOrderStatus";
 import Receipt from "../utilities/docs/Receipt";
-import AddGiftAdmin from "../GIFT ADMIN/AddGiftAdmin";
 import NumberBuy from "../layout/NumberBuy";
 import AchatCompteFlash from "../layout/AchatCompteFlash";
 
+// --- PAGES ADMIN (À REGROUPER) ---
+import UpdateOrderStatus from "../tools/mise à jour du statut des cadeaux/UpdateOrderStatus";
+import AddGiftAdmin from "../GIFT ADMIN/AddGiftAdmin";
+import SendUpdate from "../newletterAdmin/SendUpdate";
+
+// --- CONTEXTES & UTILS ---
+import { LoadingProvider, LoadingContext } from "../context/LoadingContext";
+import { CoinsProvider } from "../context/CoinsContext";
+import PrivateRoute from "./PrivateRoute";
+import AuthRedirectRoute from "./AuthRedirectRoute";
+import AdminRoute from "./AdminRoute"; // <--- IMPORT DU NOUVEAU COMPOSANT
+import AdminLayout from "../admin/AdminLayout";
+import AdminDashboard from "../admin/AdminDashboard";
+import AdminUsers from "../admin/AdminUsers";
+import AdminUserDetail from "../admin/AdminUserDetail";
+import AdminMessages from "../admin/AdminMessages";
+
 const routesConfig = [
-  {
-    path: "/",
-    Component: <Home />,
-  },
+  { path: "/", Component: <Home /> },
   {
     path: "/login",
-
     Component: (
       <AuthRedirectRoute redirectTo="/account">
         <LoginForm />
       </AuthRedirectRoute>
     ),
   },
-
   {
     path: "/account",
     Component: (
@@ -58,6 +61,7 @@ const routesConfig = [
       </PrivateRoute>
     ),
   },
+  // --- OUTILS CLIENTS ---
   {
     path: "/account/tools/virement-pro",
     Component: (
@@ -83,74 +87,10 @@ const routesConfig = [
     ),
   },
   {
-    path: "/account/tools/admin/orders",
-    Component: (
-      <PrivateRoute>
-        <UpdateOrderStatus />
-      </PrivateRoute>
-    ),
-  },
-  {
     path: "/account/tools/envoie-de-cadeau-ticket",
     Component: (
       <PrivateRoute>
         <Receipt />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/account/tools/admin/add-gift",
-    Component: (
-      <PrivateRoute>
-        <AddGiftAdmin />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/bordereau",
-    Component: (
-      <PrivateRoute>
-        <BordereauVirement />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/admin/newletter",
-    Component: (
-      <PrivateRoute>
-        <SendUpdate />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/admin/support-form",
-    Component: (
-      <PrivateRoute>
-        <SupportTicketForm />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/admin/support-pannel",
-    Component: (
-      <PrivateRoute>
-        <AdminSupportPanel />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/payment-status",
-    Component: (
-      <PrivateRoute>
-        <PaymentStatus />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/contact/admin",
-    Component: (
-      <PrivateRoute>
-        <ContactForm />
       </PrivateRoute>
     ),
   },
@@ -170,15 +110,33 @@ const routesConfig = [
       </PrivateRoute>
     ),
   },
-
   {
-    path: "/loading",
-    Component: <Loading />,
+    path: "/bordereau",
+    Component: (
+      <PrivateRoute>
+        <BordereauVirement />
+      </PrivateRoute>
+    ),
   },
   {
-    path: "/text",
-    Component: <TextComponent />,
+    path: "/payment-status",
+    Component: (
+      <PrivateRoute>
+        <PaymentStatus />
+      </PrivateRoute>
+    ),
   },
+  {
+    path: "/contact/admin", // Formulaire de contact pour le client
+    Component: (
+      <PrivateRoute>
+        <ContactForm />
+      </PrivateRoute>
+    ),
+  },
+  // Pages publiques / utilitaires
+  { path: "/loading", Component: <Loading /> },
+  { path: "/text", Component: <TextComponent /> },
 ];
 
 const RouterContent = () => {
@@ -189,9 +147,38 @@ const RouterContent = () => {
       {loading && <Loading />}
       <ContactButtonWrapper />
       <Routes>
+        {/* ROUTES CLIENTS */}
         {routesConfig.map((route, index) => (
           <Route key={index} path={route.path} element={route.Component} />
         ))}
+
+        {/* ------------------------------------------------------- */}
+        {/* --- SECTEUR ADMIN SÉCURISÉ (Regroupé) --- */}
+        {/* ------------------------------------------------------- */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          {/* Dashboard par défaut */}
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+
+          {/* Gestion Utilisateurs */}
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="users/:userId" element={<AdminUserDetail />} />
+
+          {/* Messages / Support */}
+          <Route path="messages" element={<AdminMessages />} />
+
+          {/* Outils Admin (J'ai regroupé tes anciennes routes ici) */}
+          <Route path="orders" element={<UpdateOrderStatus />} />
+          <Route path="add-gift" element={<AddGiftAdmin />} />
+          <Route path="newsletter" element={<SendUpdate />} />
+        </Route>
       </Routes>
     </>
   );

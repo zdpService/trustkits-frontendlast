@@ -1,0 +1,251 @@
+.messages-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- HEADER --- */
+.messages-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.messages-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #111827;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* --- RECHERCHE --- */
+.search-bar-message {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+  transition: box-shadow 0.2s;
+}
+
+.search-bar-message:focus-within {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-bar-message input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  color: #374151;
+}
+
+/* --- LISTE DES MESSAGES --- */
+.messages-grid-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- CARTE MESSAGE (STYLE TICKET) --- */
+.message-ticket {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.message-ticket:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.08);
+}
+
+/* Bandeau latéral couleur */
+.message-status-stripe {
+  width: 5px;
+  flex-shrink: 0;
+}
+
+/* État NON LU */
+.message-ticket.unread .message-status-stripe {
+  background-color: #4f46e5;
+}
+.message-ticket.unread {
+  background-color: #ffffff;
+}
+
+/* État LU */
+.message-ticket.read .message-status-stripe {
+  background-color: #e5e7eb;
+}
+.message-ticket.read {
+  background-color: #fafafa;
+}
+.message-ticket.read .message-subject,
+.message-ticket.read .sender-email {
+  color: #6b7280;
+}
+
+.message-body {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Header du Ticket */
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.sender-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sender-avatar {
+  width: 40px;
+  height: 40px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.sender-email {
+  margin: 0;
+  font-size: 15px;
+  color: #111827;
+}
+
+.message-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* Actions */
+.ticket-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-icon {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.2s;
+}
+
+.action-icon:hover {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+.action-icon.reply:hover {
+  color: #2563eb;
+  background-color: #eff6ff;
+}
+.action-icon.delete:hover {
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.action-icon.read-toggle.is-read {
+  color: #16a34a;
+}
+.action-icon.read-toggle:hover {
+  color: #16a34a;
+  background-color: #f0fdf4;
+}
+
+/* Contenu du message */
+.ticket-content {
+  border-top: 1px solid #f3f4f6;
+  padding-top: 12px;
+}
+
+.message-subject {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.message-text {
+  margin: 0;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+  white-space: pre-wrap; /* Conserve les sauts de ligne */
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 0;
+  color: #9ca3af;
+}
+.empty-icon {
+  background: #f3f4f6;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+  color: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ticket-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ticket-actions {
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px dashed #e5e7eb;
+    padding-top: 8px;
+  }
+}

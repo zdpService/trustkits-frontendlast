@@ -6,7 +6,6 @@ import { auth } from "../../firebase/config";
 import axios from "axios";
 
 const packs = [
-  // { id: 1, prix: 200, Coins: 30000000 },
   { id: 2, prix: 55000, Coins: 5000 },
   { id: 3, prix: 60000, Coins: 10000 },
   { id: 4, prix: 80000, Coins: 20000 },
@@ -19,7 +18,12 @@ const BACKEND_API_URL =
 const AchatCredits = () => {
   const [selectedPack, setSelectedPack] = useState(null);
   const { coins } = useContext(CoinsContext);
-  const [value, setValue] = useState("");
+
+  // États pour le formulaire Carte Bancaire
+  const [expiryDate, setExpiryDate] = useState(""); // Remplaçant de 'value' pour plus de clarté
+  const [cardNumber, setCardNumber] = useState("");
+  const [cvc, setCvc] = useState("");
+
   const [isPaying, setIsPaying] = useState(false);
 
   const [userData, setUserData] = useState({
@@ -41,18 +45,38 @@ const AchatCredits = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleChange = (e) => {
+  // Gestion de la date d'expiration (MM/AA)
+  const handleDateChange = (e) => {
     let val = e.target.value.replace(/\D/g, "");
     if (val.length > 4) val = val.slice(0, 4);
     if (val.length > 2) val = val.slice(0, 2) + "/" + val.slice(2);
-    setValue(val);
+    setExpiryDate(val);
   };
 
-  /**
-   * 1. Vérifie le pack sélectionné.
-   * 2. Appelle l'endpoint backend pour créer la transaction FusionPay.
-   * 3. Redirige l'utilisateur vers l'URL de paiement reçue.
-   */
+  // Gestion du numéro de carte (chiffres uniquement)
+  const handleCardNumberChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "");
+    // Limite standard à 16 chiffres pour l'exemple
+    if (val.length <= 16) {
+      setCardNumber(val);
+    }
+  };
+
+  // Gestion du CVC (3 chiffres)
+  const handleCvcChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "");
+    if (val.length <= 3) {
+      setCvc(val);
+    }
+  };
+
+  // 🔒 Logique de validation pour activer le bouton
+  const isCardFormValid =
+    selectedPack !== null && // Un pack doit être choisi
+    cardNumber.length === 16 && // Le numéro de carte doit faire 16 chiffres
+    expiryDate.length === 5 && // La date doit être complète (ex: 12/25)
+    cvc.length === 3; // Le CVC doit faire 3 chiffres
+
   const handleFusionPay = async () => {
     if (!selectedPack) {
       alert("Veuillez choisir un pack d'abord !");
@@ -65,20 +89,17 @@ const AchatCredits = () => {
     setIsPaying(true);
 
     try {
-      // 🚀 Appel à l'endpoint backend
       const response = await axios.post(BACKEND_API_URL, {
         amount: packDetails.prix,
         coins: packDetails.Coins,
-        userId: userData.uid, // Envoyé pour identification par le backend
+        userId: userData.uid,
         customerEmail: userData.email,
         customerName: userData.nom,
-        // customerPhone: à ajouter si vous collectez le numéro de téléphone.
       });
 
       const { payment_url } = response.data;
 
       if (payment_url) {
-        // Redirection vers la passerelle de paiement FusionPay
         window.location.href = payment_url;
       } else {
         throw new Error("URL de paiement non reçue de l'API.");
@@ -89,13 +110,18 @@ const AchatCredits = () => {
         error.response?.data || error.message
       );
       alert("Erreur lors de la préparation du paiement. Veuillez réessayer.");
-      setIsPaying(false); // Réactiver le bouton en cas d'erreur
+      setIsPaying(false);
     }
+  };
+
+  // Simulation de paiement par carte (pour l'exemple)
+  const handleCardPay = () => {
+    alert("Paiement par carte simulé avec succès !");
+    // Ici, vous mettriez votre logique Stripe ou autre
   };
 
   return (
     <section className="achat_section">
-      {/* ... (Votre en-tête avec l'icône de panier) ... */}
       <div
         style={{
           padding: "20px",
@@ -127,7 +153,7 @@ const AchatCredits = () => {
         </svg>
         <span style={{ fontWeight: "bold" }}>Achat de coin</span>
       </div>
-      {/* ------------------------------------------------------------------ */}
+
       <div style={{ padding: "20px" }}>
         <div className="solde">
           coin(s) disponible : <span className="valeur">{coins}</span>{" "}
@@ -150,48 +176,76 @@ const AchatCredits = () => {
           ))}
         </div>
 
-        <h4>Payer par FusionPay :</h4>
-        {/* ------------------------------------------------------ */}
-        {/* MISE À JOUR DU BOUTON POUR FUSIONPAY */}
+        <h4>
+          Payer par FusionPay :{" "}
+          <span
+            style={{ fontWeight: "400", fontSize: "13px", color: "#111111" }}
+          >
+            {" "}
+            Cliqué sur l'image ci desous pour valider
+          </span>
+        </h4>
         <button
           className="fedapay_box"
-          onClick={handleFusionPay} // 👈 Appelle la fonction de paiement
-          disabled={!selectedPack || isPaying} // 👈 Désactiver si pas de pack ou si paiement en cours
+          onClick={handleFusionPay}
+          disabled={!selectedPack || isPaying}
         >
           {isPaying ? (
-            "Initialisation du paiement..."
+            "Initialisation..."
           ) : (
             <img
-              src="https://www.kitscms.com/res/img/paydunya.png" // REMPLACER par le logo FusionPay si disponible
+              src="https://www.kitscms.com/res/img/fedapay.png"
               alt="FusionPay"
             />
           )}
         </button>
-        {/* ------------------------------------------------------ */}
 
         <div className="ou">OU</div>
 
         <h4>Payer par Carte bancaire :</h4>
+
+        {/* FORMULAIRE CARTE BANCAIRE */}
         <div className="cb_form">
-          <input type="text" placeholder="Numéro de carte" disabled />
+          <input
+            type="text"
+            placeholder="Numéro de carte (16 chiffres)"
+            value={cardNumber}
+            onChange={handleCardNumberChange}
+            maxLength={16}
+            // J'ai retiré 'disabled' ici
+          />
+
           <input
             type="text"
             placeholder="MM/AA"
-            value={value}
+            value={expiryDate}
             maxLength={5}
-            onChange={handleChange}
+            onChange={handleDateChange}
             style={{ padding: "8px", fontSize: "16px" }}
-            disabled
+            // J'ai retiré 'disabled' ici
           />
+
           <input
             type="text"
             placeholder="CVC"
-            pattern="\d{2}/\d{2}"
+            pattern="\d*"
             maxLength="3"
-            disabled
+            value={cvc}
+            onChange={handleCvcChange}
+            // J'ai retiré 'disabled' ici
           />
 
-          <button className="payer_btn" disabled>
+          {/* BOUTON VALIDATION CARTE */}
+          <button
+            className="payer_btn"
+            onClick={handleCardPay}
+            // Le bouton est désactivé tant que le formulaire n'est pas valide
+            disabled={!isCardFormValid}
+            style={{
+              opacity: isCardFormValid ? 1 : 0.5,
+              cursor: isCardFormValid ? "pointer" : "not-allowed",
+            }}
+          >
             Payer{" "}
             {selectedPack
               ? packs.find((p) => p.id === selectedPack).prix.toLocaleString()
