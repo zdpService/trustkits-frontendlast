@@ -12,20 +12,23 @@ import {
   TagIcon,
   UserGroupIcon,
   ArrowRightOnRectangleIcon,
+  ShieldCheckIcon, // ✅ Import de l'icône Admin
 } from "@heroicons/react/24/outline";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
-import { CoinsContext } from "../context/CoinsContext"; // ⬅️ Import du contexte
+import { CoinsContext } from "../context/CoinsContext";
 
 const AccountLayout = ({ children }) => {
   const navigate = useNavigate();
   const { menuOpen, closeMenu } = useMenu();
 
-  // 🔑 Utilisation des valeurs et de fullLogout du contexte
   const { coins, setCoins, fullLogout } = useContext(CoinsContext);
   const [userName, setUserName] = useState(null);
-  const [isConnected, setIsConnected] = useState(false); // Cet état n'est pas utilisé, mais conservé
+  const [isConnected, setIsConnected] = useState(false);
+
+  // ✅ Nouvel état pour vérifier le rôle
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -34,9 +37,7 @@ const AccountLayout = ({ children }) => {
     }
   };
 
-  // 🔑 Appel à la fonction centralisée de déconnexion
   const handleLogout = () => {
-    // Passer 'navigate' comme callback pour la redirection après nettoyage
     fullLogout(navigate);
   };
 
@@ -47,28 +48,36 @@ const AccountLayout = ({ children }) => {
       if (user) {
         setIsConnected(true);
         const userDoc = await getDoc(doc(db, "users", user.uid));
+
         if (userDoc.exists()) {
           const data = userDoc.data();
+
+          // Gestion du nom
           if (data.nom && data.prenom) {
             setUserName(`${data.nom} ${data.prenom.charAt(0).toUpperCase()}.`);
           } else {
             setUserName(user.email);
           }
-          // NOTE: setCoins est géré par le Context, mais nous le laissons pour la mise à jour initiale du Layout
-          // setCoins(data.coins || 150000);
+
+          // ✅ VÉRIFICATION DU RÔLE ADMIN
+          if (data.role === "admin") {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+          }
         } else {
           setUserName(user.email);
-          // setCoins(0);
+          setIsAdmin(false);
         }
       } else {
         setIsConnected(false);
         setUserName(null);
-        // setCoins(0);
+        setIsAdmin(false);
       }
     });
 
     return () => unsubscribe();
-  }, [setCoins]); // setCoins est inclus par précaution
+  }, [setCoins]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -97,6 +106,7 @@ const AccountLayout = ({ children }) => {
                     paddingTop: "0.2rem",
                   }}
                 >
+                  {/* Icône utilisateur standard */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -126,6 +136,28 @@ const AccountLayout = ({ children }) => {
                 <li onClick={() => handleNavigate("/account/?get=account")}>
                   <UserIcon className="sidebar-icon" /> Mon compte
                 </li>
+
+                {/* ✅ LIEN ADMIN SÉCURISÉ & STYLISÉ */}
+                {isAdmin && (
+                  <li
+                    onClick={() => handleNavigate("/admin/dashboard")}
+                    style={{
+                      color: "#4f46e5", // Couleur Indigo distinctive
+                      fontWeight: "600", // Texte en gras
+                      backgroundColor: "#eef2ff", // Fond léger pour le ressortir
+                      borderLeft: "4px solid #4f46e5", // Bordure latérale
+                      marginTop: "10px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <ShieldCheckIcon
+                      className="sidebar-icon"
+                      style={{ color: "#4f46e5" }}
+                    />{" "}
+                    Administration
+                  </li>
+                )}
+
                 <li onClick={() => handleNavigate("/account/?get=recharge")}>
                   <CreditCardIcon className="sidebar-icon" /> Recharge
                 </li>
