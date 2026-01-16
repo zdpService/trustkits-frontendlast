@@ -10,6 +10,7 @@ import {
   serverTimestamp,
   arrayUnion,
   onSnapshot,
+  addDoc,
 } from "firebase/firestore";
 
 import { LANGUES } from "../../data/tableau des banque/data";
@@ -95,7 +96,7 @@ const FlashAccountUpdater = () => {
       setError("Erreur lors de la configuration de l'écouteur clients.");
       setLoadingClients(false);
     }
-  }, [auth.currentUser]);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -141,7 +142,18 @@ const FlashAccountUpdater = () => {
     }
 
     try {
-      const clientDocRef = doc(db, "clientAccesses", selectedClientUid);
+      // ✅ Récupérer le clientId (UID du document dans la collection clients)
+      const clientId =
+        selectedClientData.clientId || selectedClientData.relatedClientUid;
+
+      if (!clientId) {
+        throw new Error("clientId introuvable dans les données du client.");
+      }
+
+      // ✅ Références aux deux documents à mettre à jour
+      const clientDocRef = doc(db, "clients", clientId);
+      const clientAccessRef = doc(db, "clientAccesses", selectedClientUid);
+
       let updateData = {};
       let successMessage = "";
 
@@ -175,13 +187,24 @@ const FlashAccountUpdater = () => {
             )}.`;
           }
 
+          // ✅ Structure de transaction corrigée - Retirer les champs undefined
           const transactionEntry = {
             type: selectedAction.replace("fc-", ""),
             description: description || "Opération Agent",
-            amount: amount,
-            sender: "Agent Flashtech",
+            amount: selectedAction === "fc-debit" ? -amount : amount,
             date: transactionDate,
+            status: "completed",
           };
+
+          // ✅ Ajouter sender ou beneficiaryName seulement s'ils existent
+          if (
+            selectedAction === "fc-credit" ||
+            selectedAction === "fc-refund"
+          ) {
+            transactionEntry.sender = description || "Agent Flashtech";
+          } else if (selectedAction === "fc-debit") {
+            transactionEntry.beneficiaryName = description || "Destinataire";
+          }
 
           updateData = {
             solde: newSolde,
@@ -193,7 +216,83 @@ const FlashAccountUpdater = () => {
               timestamp: serverTimestamp(),
             },
           };
+
+          // ✅ CRÉER UNE NOTIFICATION pour le client
+          console.log("🔔 === DÉBUT CRÉATION NOTIFICATION ===");
+          console.log("📍 ClientId:", clientId);
+          console.log("📍 SelectedAction:", selectedAction);
+
+          try {
+            const notificationData = {
+              clientUid: clientId,
+              type:
+                selectedAction === "fc-credit" || selectedAction === "fc-refund"
+                  ? "credit"
+                  : "debit",
+              title:
+                selectedAction === "fc-credit"
+                  ? "Virement reçu"
+                  : selectedAction === "fc-refund"
+                  ? "Remboursement reçu"
+                  : "Virement effectué",
+              message:
+                selectedAction === "fc-credit"
+                  ? `Virement reçu de ${
+                      description || "Agent Flashtech"
+                    } : ${amount.toFixed(2)} ${
+                      selectedClientData.devise || "€"
+                    }`
+                  : selectedAction === "fc-refund"
+                  ? `Remboursement de ${amount.toFixed(2)} ${
+                      selectedClientData.devise || "€"
+                    }`
+                  : `Virement vers ${
+                      description || "Destinataire"
+                    } : ${amount.toFixed(2)} ${
+                      selectedClientData.devise || "€"
+                    }`,
+              time: serverTimestamp(),
+              read: false,
+              metadata: {
+                beneficiaire:
+                  description ||
+                  (selectedAction === "fc-debit"
+                    ? "Destinataire"
+                    : "Agent Flashtech"),
+                montant: amount,
+                devise: selectedClientData.devise || "€",
+                motif: description || "Opération Agent",
+                statut: "réussi",
+                date: serverTimestamp(),
+              },
+            };
+
+            console.log(
+              "📤 Données notification à envoyer:",
+              JSON.stringify(notificationData, null, 2)
+            );
+
+            const notifDocRef = await addDoc(
+              collection(db, "notifications"),
+              notificationData
+            );
+
+            console.log(
+              "✅ Notification créée avec succès! ID:",
+              notifDocRef.id
+            );
+            console.log("🔔 === FIN CRÉATION NOTIFICATION ===");
+          } catch (notifError) {
+            console.error("❌ === ERREUR CRÉATION NOTIFICATION ===");
+            console.error("Erreur complète:", notifError);
+            console.error("Code erreur:", notifError.code);
+            console.error("Message erreur:", notifError.message);
+            console.error("Stack:", notifError.stack);
+            // Ne pas bloquer la transaction si la notification échoue
+          }
+
           break;
+
         case "fc-bank-color":
           updateData = { couleurInterface: formData.color };
           successMessage = `Couleur de l'interface changée pour ${formData.color}.`;
@@ -213,7 +312,7 @@ const FlashAccountUpdater = () => {
           break;
 
         case "fc-new-codepin":
-          updateData = { codePin: formData.pin };
+          updateData = { pinAccess: formData.pin }; // ✅ pinAccess au lieu de codePin
           successMessage = `Code PIN de connexion changé. Nouveau PIN: ${formData.pin}.`;
           break;
 
@@ -226,7 +325,7 @@ const FlashAccountUpdater = () => {
           updateData = {
             pourcentageDepart: formData.percentageStart,
             pourcentageArret: formData.percentageStop,
-            stopMessage: formData.stopMessage,
+            messageApresVirement: formData.stopMessage, // ✅ messageApresVirement au lieu de stopMessage
           };
           successMessage = `Pourcentages de virement mis à jour.`;
           break;
@@ -242,8 +341,8 @@ const FlashAccountUpdater = () => {
           break;
 
         case "fc-new-codetransfer":
-          updateData = { codeTransfert: formData.newTransferCode };
-          successMessage = `Code d'activation virement changé.`;
+          updateData = { codeActivationVirement: formData.newTransferCode }; // ✅ codeActivationVirement au lieu de codeTransfert
+          successMessage = `Code d'activation virement changé en ${formData.newTransferCode}.`;
           break;
 
         case "fc-update-card":
@@ -253,12 +352,17 @@ const FlashAccountUpdater = () => {
           throw new Error("Action non reconnue : " + selectedAction);
       }
 
+      // ✅ Mettre à jour les DEUX documents
       await updateDoc(clientDocRef, updateData);
+      await updateDoc(clientAccessRef, updateData);
 
       setSuccess(
         `Action "${selectedAction}" effectuée avec succès. ${successMessage}`
       );
       setSelectedAction("N/A");
+
+      // ✅ Mettre à jour l'état local
+      updateClientState(updateData);
     } catch (err) {
       console.error(`Erreur lors de l'action "${selectedAction}" :`, err);
       setError(
@@ -303,55 +407,53 @@ const FlashAccountUpdater = () => {
         return <NewCurrencyForm {...commonProps} currencies={currencies} />;
       case "fc-pp-msg":
         return <PercentageStopForm {...commonProps} />;
-
       case "fc-new-codetransfer":
         return <TransferCodeForm {...commonProps} />;
-
       case "fc-new-codepin":
         return <NewPinForm {...commonProps} />;
 
       case "fc-lock-unlock":
         return (
-          <form
-            className="form-group"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleActionSubmit({ status: e.target.elements.status.value });
-            }}
-          >
-            <label htmlFor="status" className="form-label">
-              Statut du compte
-            </label>
-
-            <select
-              id="status"
-              name="status"
-              className="form-select"
-              required
-              defaultValue={selectedClientData.etat}
+          <div style={{ paddingTop: "1rem" }}>
+            <form
+              className="form-group"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleActionSubmit({ status: e.target.elements.status.value });
+              }}
             >
-              <option value="Flash Compte actif">Actif</option>
+              <label htmlFor="status" className="form-label">
+                Statut du compte
+              </label>
 
-              <option value="Compte bloqué (Fraude)">Bloqué (Fraude)</option>
+              <select
+                id="status"
+                name="status"
+                className="form-select"
+                required
+                defaultValue={selectedClientData.etat}
+              >
+                <option value="Flash Compte actif">Actif</option>
+                <option value="Compte bloqué (Fraude)">Bloqué (Fraude)</option>
+                <option value="Compte bloqué (Temporaire)">
+                  Bloqué (Temporaire)
+                </option>
+              </select>
 
-              <option value="Compte bloqué (Temporaire)">
-                Bloqué (Temporaire)
-              </option>
-            </select>
-
-            <button
-              type="submit"
-              className="btn btn-primary mt-2"
-              disabled={submittingAction}
-            >
-              Mettre à jour le statut
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="btn btn-primary mt-2"
+                disabled={submittingAction}
+              >
+                Mettre à jour le statut
+              </button>
+            </form>
+          </div>
         );
 
       case "fc-reset-transfer":
         return (
-          <div>
+          <div style={{ paddingTop: "1rem" }}>
             <p className="alert alert-warning">
               Êtes-vous sûr de vouloir réinitialiser l'historique des virements
               de ce client ? Cette action est irréversible.
@@ -456,31 +558,29 @@ const FlashAccountUpdater = () => {
           {selectedClientUid && (
             <>
               <option value="fc-credit">Émettre un virement entrant</option>
-
               <option value="fc-debit">Émettre un virement sortant</option>
-
               <option value="fc-refund">Émettre un remboursement</option>
-
               <option value="fc-new-push">
                 Nouvelle notification à affichée
               </option>
-
               <option value="fc-new-lang">Changer la langue d'affichage</option>
-
               <option value="fc-new-codepin">
                 Changer le code PIN de connexion
               </option>
-
               <option value="fc-new-codetransfer">
                 Changer le code d'activation virement
               </option>
-
+              <option value="fc-new-currency">
+                Changer la devise du compte
+              </option>
               <option value="fc-pp-msg">
                 Nouveau pourcentage d'arrêt virement
               </option>
-
               <option value="fc-lock-unlock">
                 Bloquer ou débloquer l'accès client
+              </option>
+              <option value="fc-reset-transfer">
+                Réinitialiser l'historique des virements
               </option>
             </>
           )}

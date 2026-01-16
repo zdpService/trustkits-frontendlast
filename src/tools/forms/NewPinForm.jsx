@@ -8,52 +8,47 @@ const NewPinForm = ({ clientData, onSubmit, isSubmitting, error, success }) => {
     e.preventDefault();
     setLocalError(null);
 
-    // Vérification basique du format PIN (4 chiffres numériques)
-    if (!/^\d{4}$/.test(newPin)) {
-      setLocalError("Le code PIN doit être composé de 4 chiffres.");
+    // Vérification basique du format PIN (6 chiffres numériques)
+    if (!/^\d{6}$/.test(newPin)) {
+      setLocalError("Le code PIN doit être composé de 6 chiffres.");
       return;
     }
 
-    // Appel de la fonction de soumission du parent,
-    // en passant le nouveau PIN sous la clé 'pin'
+    // Appel de la fonction de soumission du parent
     onSubmit({
       pin: newPin,
     });
+
+    // Réinitialiser après soumission
+    setNewPin("");
   };
 
   return (
-    <div className="action-form">
-      <h4>Changer le code PIN de connexion</h4>
-
+    <div className="action-form" style={{ paddingTop: "1rem" }}>
       {/* Affichage des messages flash (parent ou local) */}
       {(error || localError) && (
-        <p className="flash-message error">{error || localError}</p>
+        <p className="alert alert-danger">{error || localError}</p>
       )}
-      {success && <p className="flash-message success">{success}</p>}
+      {success && <p className="alert alert-success">{success}</p>}
 
       <form onSubmit={handleSubmit} className="form-group">
-        <input
-          type="hidden"
-          name="client-uid"
-          value={clientData?.clientUid || ""}
-        />
         <div className="mb-3">
           <label htmlFor="fc-pin" className="form-label">
-            Nouveau code PIN (4 chiffres)
+            Nouveau code PIN (6 chiffres)
             <span style={{ color: "red" }}> (requis)</span>
           </label>
           <input
-            type="number"
+            type="text"
             id="fc-pin"
             name="fc-pin"
             className="form-control"
-            placeholder="Ex: 1234"
-            maxLength="4"
+            placeholder="Ex: 543054"
+            maxLength="6"
             required
             value={newPin}
             onChange={(e) => {
-              // Limite la saisie à 4 chiffres
-              const value = e.target.value.slice(0, 4);
+              // Limite la saisie à 6 chiffres uniquement
+              const value = e.target.value.replace(/\D/g, "").slice(0, 6);
               setNewPin(value);
             }}
             disabled={isSubmitting}
@@ -62,14 +57,14 @@ const NewPinForm = ({ clientData, onSubmit, isSubmitting, error, success }) => {
             className="text-muted"
             style={{ fontSize: "0.85rem", color: "#6c757d", marginTop: "5px" }}
           >
-            Ancien code PIN: {clientData?.codePin || "N/A"}
+            Ancien code PIN: {clientData?.pinAccess || "N/A"}
           </p>
         </div>
         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
           <button
             className="btn btn-primary"
             type="submit"
-            disabled={isSubmitting || newPin.length !== 4}
+            disabled={isSubmitting || newPin.length !== 6}
           >
             {isSubmitting
               ? "Changement en cours..."

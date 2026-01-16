@@ -4,8 +4,8 @@ import {
   collection,
   query,
   where,
-  onSnapshot,
   orderBy,
+  onSnapshot,
   deleteDoc,
   doc,
 } from "firebase/firestore";
@@ -47,46 +47,42 @@ const baseClientAccessDetails = {
 };
 
 const getStatusIcon = (status) => {
-  const color = status === "Flash Compte actif" ? "green" : "red";
+  const isActive = status === "Flash Compte actif";
+  const color = isActive ? "green" : "red";
 
-  const checkmarkIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className="status-icon active"
-      style={{ height: "18px", width: "18px", color: color }}
-    >
-      <path
-        fillRule="evenodd"
-        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.323 4.105-1.683-1.683a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-
-  const lockIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className="status-icon blocked"
-      style={{ height: "18px", width: "18px", color: color }}
-    >
-      <path
-        fillRule="evenodd"
-        d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25V6.75a3.75 3.75 0 1 0-7.5 0v3a.75.75 0 0 1-1.5 0v-3c0-3.725 3.025-6.75 6.75-6.75S19.5 3.025 19.5 6.75v3a.75.75 0 0 1-1.5 0Z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-
-  if (status === "Flash Compte actif") {
-    return checkmarkIcon;
-  } else if (status === "Flash Compte bloqué") {
-    return lockIcon;
+  if (isActive) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="status-icon active"
+        style={{ height: "18px", width: "18px", color }}
+      >
+        <path
+          fillRule="evenodd"
+          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.323 4.105-1.683-1.683a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  } else {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="status-icon blocked"
+        style={{ height: "18px", width: "18px", color }}
+      >
+        <path
+          fillRule="evenodd"
+          d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25V6.75a3.75 3.75 0 1 0-7.5 0v3a.75.75 0 0 1-1.5 0v-3c0-3.725 3.025-6.75 6.75-6.75S19.5 3.025 19.5 6.75v3a.75.75 0 0 1-1.5 0Z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
   }
-  return null;
 };
 
 const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
@@ -94,6 +90,7 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [swipedItemId, setSwipedItemId] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const touchStartX = useRef(0);
@@ -106,37 +103,26 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
   }, [newClientCreation]);
 
   useEffect(() => {
-    const fetchClientAccesses = async (currentUser) => {
-      if (!currentUser) {
-        setClientAccesses([]);
-        setLoading(false);
-        setError("Vous devez être connecté pour voir l'historique.");
-        return;
-      }
+    let unsubscribeSnapshot = null;
 
+    const setupListener = async (currentUser) => {
       setLoading(true);
       setError(null);
 
       try {
         const clientAccessesRef = collection(db, "clientAccesses");
+
         const q = query(
           clientAccessesRef,
-          where("creatorUid", "==", currentUser.uid),
-          orderBy("dateCreation", "desc")
+          where("creatorUid", "==", currentUser.uid)
         );
 
-        const unsubscribe = onSnapshot(
+        unsubscribeSnapshot = onSnapshot(
           q,
           (snapshot) => {
             const fetchedAccesses = snapshot.docs.map((doc) => {
               const data = doc.data();
-              const clientUid = doc.id;
-
-              const baseClientLink = `${FRONTEND_URL}/login`;
-              const hashLien = data.hashLien || btoa(clientUid).slice(0, 8);
-              const lienRaccourci =
-                data.lienRaccourci || `${FRONTEND_URL}/${hashLien}`;
-              const lienConnexion = data.lienConnexion || baseClientLink;
+              const realClientUid = data.relatedClientUid || data.uid;
 
               let dateCreationFormatted = "N/A";
               if (data.dateCreation) {
@@ -151,7 +137,6 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
                       day: "2-digit",
                       hour: "2-digit",
                       minute: "2-digit",
-                      timeZoneName: "short",
                     });
                 }
               }
@@ -164,67 +149,30 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
                 currency: currencyCode,
               }).format(currentSolde);
 
-              const finalPourcentageDepart =
-                data.pourcentageDepart !== undefined &&
-                data.pourcentageDepart !== null
-                  ? data.pourcentageDepart
-                  : data.percentageStart || "0";
-
-              const finalPourcentageArret =
-                data.pourcentageArret !== undefined &&
-                data.pourcentageArret !== null
-                  ? data.pourcentageArret
-                  : data.percentageStop || "0";
-
-              const finalNotification = data.notification || "N/A";
-              const finalAdresseResidence = data.adresseResidence || "N/A";
-
-              const etatCourt =
-                data.etat === "Flash Compte actif"
-                  ? "Compte actif"
-                  : data.etat === "Flash Compte bloqué"
-                  ? "Compte bloqué"
-                  : "Inconnu";
-
               return {
-                id: clientUid,
-                lienConnexion: lienConnexion,
+                id: doc.id,
+                realClientUid: realClientUid,
+                lienConnexion: data.lienConnexion,
                 dateCreation: dateCreationFormatted,
                 etat:
                   data.etat === "Flash Compte actif"
                     ? "Flash Compte actif"
                     : "Flash Compte bloqué",
-                etatCourt: etatCourt,
+                etatCourt:
+                  data.etat === "Flash Compte actif"
+                    ? "Compte actif"
+                    : "Compte bloqué",
                 details: {
                   ...baseClientAccessDetails,
-                  hashLien: hashLien,
-                  lienRaccourci: lienRaccourci,
-                  lienConnexion: lienConnexion,
-                  email: data.email || "N/A",
-                  codePin: data.codePin || "N/A",
-                  iban: data.iban || "N/A",
+                  ...data,
                   nomPrenom:
                     `${data.prenom || ""} ${data.nom || ""}`.trim() || "N/A",
-                  telephone: data.telephone || "N/A",
-                  paysResidence: data.paysResidence || "N/A",
-                  adresseResidence: finalAdresseResidence,
-                  langueClient: data.langueClient || "N/A",
-                  couleurInterface: data.couleurInterface || "N/A",
                   soldeCompte: soldeCompteFormatted,
-                  messageApresVirement: data.messageApresVirement || "N/A",
-                  stopMessage: data.stopMessage || "N/A",
-                  alertesEmail: data.alertesEmail || "Désactivé",
+                  adresseResidence: data.adresseResidence || "N/A",
                   dateCreation: dateCreationFormatted,
-                  etat:
-                    data.etat === "Flash Compte actif"
-                      ? "Flash Compte actif"
-                      : "Flash Compte bloqué",
-                  pourcentageDepart: finalPourcentageDepart,
-                  pourcentageArret: finalPourcentageArret,
-                  notification: finalNotification,
-                  codeActivationVirement: data.codeActivationVirement || "N/A",
-                  codeTransfert: data.codeTransfert || "N/A",
-                  codeActivationUtilise: data.codeActivationUtilise || "NON",
+                  hashLien: data.hashLien || "N/A",
+                  email: data.email || "N/A",
+                  codePin: data.pinAccess || data.codePin || "N/A",
                   coutCreation: data.coutCreation || "10000 Crédits",
                 },
               };
@@ -233,126 +181,107 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
             setLoading(false);
           },
           (err) => {
-            console.error("Error fetching client accesses:", err);
-            setError("Erreur lors du chargement des accès clients.");
+            console.error("❌ Erreur Firestore:", err);
+            if (err.message.includes("indexes")) {
+              setError(
+                "⚠️ Index manquant ! Ouvre la console (F12) et clique sur le lien Firebase."
+              );
+            } else {
+              setError("Erreur de chargement.");
+            }
             setLoading(false);
           }
         );
-
-        return unsubscribe;
       } catch (err) {
-        console.error("Error setting up client access listener:", err);
-        setError(
-          "Erreur lors de la configuration de l'écoute des accès clients."
-        );
+        console.error("Erreur setup:", err);
         setLoading(false);
       }
     };
 
     const unsubscribeAuth = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
-        fetchClientAccesses(currentUser);
+        setupListener(currentUser);
       } else {
         setClientAccesses([]);
         setLoading(false);
-        setError("Vous devez être connecté pour voir l'historique.");
       }
     });
 
     return () => {
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
       unsubscribeAuth();
     };
   }, []);
 
-  // ✅ Gestion du swipe vers la gauche
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
+  // --- HANDLERS ---
+  const handleStart = (clientX, clientY) => {
+    touchStartX.current = clientX;
+    touchStartY.current = clientY;
   };
 
-  const handleTouchEnd = (e, itemId) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-
-    const diffX = touchStartX.current - touchEndX;
-    const diffY = Math.abs(touchStartY.current - touchEndY);
-
-    // Swipe vers la gauche si: déplacement X > 50px et Y < 50px
-    if (diffX > 50 && diffY < 50) {
-      setSwipedItemId(itemId);
-    }
+  const handleEnd = (clientX, clientY, itemId) => {
+    const diffX = touchStartX.current - clientX;
+    const diffY = Math.abs(touchStartY.current - clientY);
+    if (diffX > 50 && diffY < 50) setSwipedItemId(itemId);
+    else if (diffX < -50 && diffY < 50) setSwipedItemId(null);
   };
 
-  // ✅ Gestion du swipe souris (drag vers la gauche)
-  const handleMouseDown = (e) => {
-    touchStartX.current = e.clientX;
-    touchStartY.current = e.clientY;
-  };
-
-  const handleMouseUp = (e, itemId) => {
-    const touchEndX = e.clientX;
-    const touchEndY = e.clientY;
-
-    const diffX = touchStartX.current - touchEndX;
-    const diffY = Math.abs(touchStartY.current - touchEndY);
-
-    if (diffX > 50 && diffY < 50) {
-      setSwipedItemId(itemId);
-    }
-  };
-
-  // ✅ Supprimer un accès client
-  const handleDeleteClient = async (itemId) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cet accès ?")) {
+  const handleDeleteClient = async (historyDocId, realClientUid) => {
+    if (
+      !window.confirm(
+        "Supprimer définitivement cet accès et le compte client associé ?"
+      )
+    )
       return;
-    }
-
-    setDeleting(itemId);
-
+    setDeleting(historyDocId);
     try {
-      await deleteDoc(doc(db, "clientAccesses", itemId));
+      await deleteDoc(doc(db, "clientAccesses", historyDocId));
+      if (realClientUid) {
+        await deleteDoc(doc(db, "clients", realClientUid));
+      }
       setSwipedItemId(null);
       setDeleting(null);
-      console.log("✅ Accès client supprimé avec succès");
     } catch (err) {
-      console.error("❌ Erreur lors de la suppression:", err);
-      alert("Erreur lors de la suppression de l'accès client.");
+      console.error("Erreur suppression:", err);
+      alert("Erreur lors de la suppression.");
       setDeleting(null);
     }
   };
 
   const handleCardClick = (clientDetails) => {
-    // Ne pas ouvrir le modal si on est en train de swiper
-    if (swipedItemId) return;
+    if (swipedItemId) {
+      setSwipedItemId(null);
+      return;
+    }
     setSelectedClient(clientDetails);
   };
 
   const handleCloseModal = () => {
     setSelectedClient(null);
-    if (onModalClose) {
-      onModalClose(null);
-    }
+    if (onModalClose) onModalClose(null);
   };
 
   const activeAccountsCount = clientAccesses.filter(
     (item) => item.etat === "Flash Compte actif"
   ).length;
 
-  if (loading) {
+  if (loading)
     return (
       <div className="virement-history-container">
         <Loading />
       </div>
     );
-  }
-
-  if (error) {
+  if (error)
     return (
-      <div className="virement-history-container">
-        <p className="error-message">{error}</p>
+      <div
+        className="virement-history-container"
+        style={{ textAlign: "center", padding: "20px" }}
+      >
+        <p className="error-message" style={{ color: "red" }}>
+          {error}
+        </p>
       </div>
     );
-  }
 
   return (
     <div className="virement-history-container">
@@ -373,7 +302,7 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
             <path d="M12 18.75a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75Z" />
           </svg>
           <span className="header-title">
-            Liste des accès compte flash pro ({activeAccountsCount})
+            Liste des accès ({activeAccountsCount})
           </span>
         </div>
       </div>
@@ -384,10 +313,18 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
             <div
               key={item.id}
               className="swipe-container"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={(e) => handleTouchEnd(e, item.id)}
-              onMouseDown={handleMouseDown}
-              onMouseUp={(e) => handleMouseUp(e, item.id)}
+              onTouchStart={(e) =>
+                handleStart(e.touches[0].clientX, e.touches[0].clientY)
+              }
+              onTouchEnd={(e) =>
+                handleEnd(
+                  e.changedTouches[0].clientX,
+                  e.changedTouches[0].clientY,
+                  item.id
+                )
+              }
+              onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+              onMouseUp={(e) => handleEnd(e.clientX, e.clientY, item.id)}
             >
               <div
                 className={`client-list-item ${
@@ -396,37 +333,34 @@ const CompteFlashProHistory = ({ newClientCreation, onModalClose }) => {
                 onClick={() => handleCardClick(item.details)}
               >
                 <div className="client-info-summary">
-                  <p>{item.details.nomPrenom || "N/A"}</p>
-                  <p>{item.dateCreation}</p>
+                  <p className="client-name">{item.details.nomPrenom}</p>
+                  <p className="client-date">{item.dateCreation}</p>
                 </div>
-
                 <div
-                  className={`status-display status-${item.etat
-                    .toLowerCase()
-                    .replace(/\s/g, "-")}`}
+                  className={`status-display status-${
+                    item.etat === "Flash Compte actif" ? "actif" : "bloque"
+                  }`}
                 >
                   {getStatusIcon(item.etat)}
                   <span>{item.etatCourt}</span>
                 </div>
               </div>
-
-              {/* ✅ Bouton de suppression qui apparaît après swipe */}
               {swipedItemId === item.id && (
                 <button
                   className="delete-button"
-                  onClick={() => handleDeleteClient(item.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteClient(item.id, item.realClientUid);
+                  }}
                   disabled={deleting === item.id}
                 >
-                  {deleting === item.id ? "Suppression..." : "Supprimer"}
+                  {deleting === item.id ? "..." : "Supprimer"}
                 </button>
               )}
             </div>
           ))
         ) : (
-          <p className="no-data-message">
-            Aucun accès client trouvé. Créez-en un dans l'onglet "Compte Flash
-            Pro".
-          </p>
+          <p className="no-data-message">Aucun accès client trouvé.</p>
         )}
       </div>
 
