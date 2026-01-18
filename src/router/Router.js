@@ -28,12 +28,13 @@ import { LoadingProvider, LoadingContext } from "../context/LoadingContext";
 import { CoinsProvider } from "../context/CoinsContext";
 import PrivateRoute from "./PrivateRoute";
 import AuthRedirectRoute from "./AuthRedirectRoute";
-import AdminRoute from "./AdminRoute"; // <--- IMPORT DU NOUVEAU COMPOSANT
+import AdminRoute from "./AdminRoute";
 import AdminLayout from "../admin/AdminLayout";
 import AdminDashboard from "../admin/AdminDashboard";
 import AdminUsers from "../admin/AdminUsers";
 import AdminUserDetail from "../admin/AdminUserDetail";
 import AdminMessages from "../admin/AdminMessages";
+import AdminTransfers from "../admin/AdminTransfers"; // ✅ IMPORT AJOUTÉ
 
 const routesConfig = [
   { path: "/", Component: <Home /> },
@@ -171,10 +172,13 @@ const RouterContent = () => {
           <Route path="users" element={<AdminUsers />} />
           <Route path="users/:userId" element={<AdminUserDetail />} />
 
+          {/* ✅ GESTION DES VIREMENTS */}
+          <Route path="transfers" element={<AdminTransfers />} />
+
           {/* Messages / Support */}
           <Route path="messages" element={<AdminMessages />} />
 
-          {/* Outils Admin (J'ai regroupé tes anciennes routes ici) */}
+          {/* Outils Admin (Anciennes routes regroupées) */}
           <Route path="orders" element={<UpdateOrderStatus />} />
           <Route path="add-gift" element={<AddGiftAdmin />} />
           <Route path="newsletter" element={<SendUpdate />} />

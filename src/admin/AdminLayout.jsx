@@ -8,8 +8,9 @@ import {
   Menu,
   X,
   LogOut,
+  ArrowRightLeft,
 } from "lucide-react";
-import { auth } from "../firebase/config"; // Assure-toi que le chemin est bon
+import { auth } from "../firebase/config";
 import { signOut } from "firebase/auth";
 import "./AdminLayout.css";
 
@@ -30,6 +31,11 @@ const AdminLayout = () => {
       label: "Utilisateurs",
     },
     {
+      path: "/admin/transfers",
+      icon: <ArrowRightLeft size={20} />,
+      label: "Virements",
+    },
+    {
       path: "/admin/messages",
       icon: <MessageSquare size={20} />,
       label: "Messages",
@@ -41,7 +47,7 @@ const AdminLayout = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/"); // Redirige vers l'accueil ou le login après déconnexion
+      navigate("/");
     } catch (error) {
       console.error("Erreur déconnexion:", error);
     }
@@ -49,7 +55,7 @@ const AdminLayout = () => {
 
   return (
     <div className="admin-container">
-      {/* OVERLAY MOBILE (Fond sombre quand le menu est ouvert) */}
+      {/* OVERLAY MOBILE */}
       {isMobileMenuOpen && (
         <div
           className="mobile-overlay"
@@ -122,7 +128,6 @@ const AdminLayout = () => {
           <span className="mobile-title">Administration</span>
         </div>
 
-        {/* CONTENU DE LA PAGE (Dashboard, Users, etc.) */}
         <main className="admin-content">
           <Outlet />
         </main>

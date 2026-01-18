@@ -40,7 +40,6 @@ const FlashAccountUpdater = () => {
   const [success, setSuccess] = useState(null);
   const [submittingAction, setSubmittingAction] = useState(false);
 
-  // ✅ Configuration EmailJS - À REMPLACER PAR VOS IDENTIFIANTS
   const EMAILJS_SERVICE_ID = "service_csghyj7"; // Ex: "service_abc123"
   const EMAILJS_TEMPLATE_ID = "template_p30q2h7"; // Ex: "template_xyz789"
   const EMAILJS_PUBLIC_KEY = "fzwU8-p8-20lNC6Mr"; // Ex: "abcd1234efgh5678"
