@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom"; // Ajout de useLocation
 
 // --- PAGES CLIENTS ---
 import Home from "../pages/Home";
@@ -34,7 +34,7 @@ import AdminDashboard from "../admin/AdminDashboard";
 import AdminUsers from "../admin/AdminUsers";
 import AdminUserDetail from "../admin/AdminUserDetail";
 import AdminMessages from "../admin/AdminMessages";
-import AdminTransfers from "../admin/AdminTransfers"; // ✅ IMPORT AJOUTÉ
+import AdminTransfers from "../admin/AdminTransfers";
 
 const routesConfig = [
   { path: "/", Component: <Home /> },
@@ -128,34 +128,38 @@ const routesConfig = [
     ),
   },
   {
-    path: "/contact/admin", // Formulaire de contact pour le client
+    path: "/contact/admin",
     Component: (
       <PrivateRoute>
         <ContactForm />
       </PrivateRoute>
     ),
   },
-  // Pages publiques / utilitaires
   { path: "/loading", Component: <Loading /> },
   { path: "/text", Component: <TextComponent /> },
 ];
 
 const RouterContent = () => {
   const { loading } = useContext(LoadingContext);
+  const location = useLocation(); // Récupère l'URL actuelle
+
+  // Liste des pages où l'on veut afficher le bouton de contact
+  const showContactButton = ["/", "/account"].includes(location.pathname);
 
   return (
     <>
       {loading && <Loading />}
-      <ContactButtonWrapper />
+
+      {/* NOUVEAU : Affichage conditionnel de l'icône de conversation */}
+      {showContactButton && <ContactButtonWrapper />}
+
       <Routes>
         {/* ROUTES CLIENTS */}
         {routesConfig.map((route, index) => (
           <Route key={index} path={route.path} element={route.Component} />
         ))}
 
-        {/* ------------------------------------------------------- */}
-        {/* --- SECTEUR ADMIN SÉCURISÉ (Regroupé) --- */}
-        {/* ------------------------------------------------------- */}
+        {/* --- SECTEUR ADMIN --- */}
         <Route
           path="/admin"
           element={
@@ -164,21 +168,12 @@ const RouterContent = () => {
             </AdminRoute>
           }
         >
-          {/* Dashboard par défaut */}
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
-
-          {/* Gestion Utilisateurs */}
           <Route path="users" element={<AdminUsers />} />
           <Route path="users/:userId" element={<AdminUserDetail />} />
-
-          {/* ✅ GESTION DES VIREMENTS */}
           <Route path="transfers" element={<AdminTransfers />} />
-
-          {/* Messages / Support */}
           <Route path="messages" element={<AdminMessages />} />
-
-          {/* Outils Admin (Anciennes routes regroupées) */}
           <Route path="orders" element={<UpdateOrderStatus />} />
           <Route path="add-gift" element={<AddGiftAdmin />} />
           <Route path="newsletter" element={<SendUpdate />} />

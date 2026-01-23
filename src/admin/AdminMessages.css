@@ -80,7 +80,9 @@
   border: 1px solid #e5e7eb;
   display: flex;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .message-ticket:hover {
@@ -248,4 +250,881 @@
     border-top: 1px dashed #e5e7eb;
     padding-top: 8px;
   }
+}
+/* AdminMessages.css */
+
+.messages-container {
+  display: flex;
+  height: calc(100vh - 100px); /* Hauteur pleine moins le header */
+  background: #fff;
+  border-radius: 16px; /* Arrondis plus modernes */
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin: 20px auto;
+  max-width: 1400px;
+  border: 1px solid #e5e7eb;
+}
+
+/* --- COLONNE GAUCHE (La Liste) --- */
+.inbox-sidebar {
+  width: 380px; /* Un peu plus large pour bien lire les noms */
+  border-right: 1px solid #f3f4f6;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.sidebar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 15px;
+}
+
+/* Barre de recherche stylisée */
+.search-wrapper {
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  padding: 10px 15px 10px 40px; /* Place pour l'icône */
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #f9fafb;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s;
+}
+.search-input:focus {
+  background-color: white;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+.search-icon-pos {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* --- STYLE D'UN ÉLÉMENT DE LA LISTE (Comme votre image) --- */
+.list-item {
+  display: flex;
+  align-items: center; /* Centre verticalement l'avatar et le texte */
+  padding: 15px 20px;
+  border-bottom: 1px solid #f9fafb;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  gap: 15px; /* Espace entre avatar et texte */
+}
+
+.list-item:hover {
+  background-color: #f9fafb;
+}
+
+.list-item.active {
+  background-color: #e0e7ff; /* Fond bleu très clair quand actif */
+  position: relative;
+}
+/* Petite barre bleue à gauche quand actif */
+.list-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #4f46e5;
+}
+
+/* AVATAR ROND */
+.item-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #e0e7ff; /* Fond bleu pâle par défaut */
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-shrink: 0; /* Empêche l'avatar de s'écraser */
+  text-transform: uppercase;
+}
+
+/* Variantes de couleurs pour les avatars (Optionnel, via JS) */
+.avatar-color-0 {
+  background: #fee2e2;
+  color: #ef4444;
+} /* Rouge */
+.avatar-color-1 {
+  background: #e0e7ff;
+  color: #4f46e5;
+} /* Bleu */
+.avatar-color-2 {
+  background: #dcfce7;
+  color: #16a34a;
+} /* Vert */
+.avatar-color-3 {
+  background: #fef3c7;
+  color: #d97706;
+} /* Jaune */
+
+/* CONTENU TEXTE */
+.item-content {
+  flex: 1;
+  min-width: 0; /* Important pour que l'ellipsis (...) fonctionne */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.item-preview {
+  font-size: 0.85rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Ajoute "..." si trop long */
+  line-height: 1.2;
+}
+
+/* Style pour les messages non lus */
+.list-item.unread .item-name {
+  color: #111827;
+  font-weight: 700;
+}
+.list-item.unread .item-preview {
+  color: #374151;
+  font-weight: 500;
+}
+.list-item.unread .item-date {
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+/* --- COLONNE DROITE (Chat) - Reste similaire --- */
+.inbox-chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8fafc; /* Fond légèrement gris pour le chat */
+}
+
+/* ... (Garder le reste du CSS Chat précédent pour la zone de droite) ... */
+/* Je remets ici les essentiels pour que ça marche direct */
+
+.chat-header {
+  padding: 15px 25px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-user-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+.chat-user-email {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.message-bubble {
+  max-width: 65%;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message-bubble.received {
+  align-self: flex-start;
+  background: white;
+  color: #374151;
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble.sent {
+  align-self: flex-end;
+  background: #4f46e5;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-input-area {
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 15px;
+}
+.chat-input-area textarea {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  resize: none;
+  background: #f9fafb;
+}
+.send-btn {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0 24px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.no-selection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+}
+/* AdminMessages.css - Style WhatsApp */
+
+.messages-container {
+  display: flex;
+  height: calc(100vh - 80px); /* Prend toute la hauteur disponible */
+  background: #fff;
+  border-radius: 0; /* WhatsApp Web n'a pas de bordures arrondies */
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin: 0; /* Prend toute la largeur si possible */
+  border: 1px solid #d1d7db;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+/* --- COLONNE GAUCHE (Liste type WhatsApp) --- */
+.inbox-sidebar {
+  width: 400px; /* Largeur confortable */
+  border-right: 1px solid #e9edef;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header de la sidebar (Recherche) */
+.sidebar-header {
+  padding: 10px 16px;
+  background: white;
+  border-bottom: 1px solid #e9edef;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-header h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111b21;
+  margin: 10px 0 5px 0;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px 8px 35px;
+  border-radius: 8px;
+  border: none;
+  background-color: #f0f2f5;
+  font-size: 0.9rem;
+  outline: none;
+  color: #3b4a54;
+}
+.search-input:focus {
+  background-color: #f0f2f5; /* Reste gris comme WhatsApp */
+}
+
+.search-icon-pos {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #54656f;
+  width: 18px;
+  height: 18px;
+}
+
+/* Liste des conversations */
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+}
+
+/* ELEMENT LISTE (Le style WhatsApp) */
+.list-item {
+  display: flex;
+  align-items: center;
+  height: 72px; /* Hauteur standard WhatsApp */
+  padding: 0 15px;
+  cursor: pointer;
+  background: white;
+  position: relative;
+  transition: background 0.1s;
+}
+
+.list-item:hover {
+  background-color: #f5f6f6;
+}
+
+.list-item.active {
+  background-color: #f0f2f5; /* Gris clair sélection */
+}
+
+/* Avatar Rond */
+.item-avatar {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  background-color: #dfe3e5; /* Gris par défaut */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-right: 15px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Contenu Texte */
+.item-content {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid #e9edef; /* Ligne séparatrice */
+  min-width: 0; /* Pour l'ellipsis */
+  padding-right: 10px;
+}
+
+/* Ligne du haut: Nom + Date */
+.item-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+
+.item-name {
+  font-size: 17px;
+  color: #111b21;
+  font-weight: 400; /* WhatsApp utilise regular ou medium */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-date {
+  font-size: 12px;
+  color: #667781;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+/* Ligne du bas: Aperçu (Petit écrit) */
+.item-preview {
+  font-size: 14px;
+  color: #667781; /* Le gris WhatsApp */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 20px;
+}
+
+/* Styles Non lu (Gras + Point vert/bleu) */
+.list-item.unread .item-date {
+  color: #25d366; /* Vert WhatsApp */
+  font-weight: 600;
+}
+
+.list-item.unread .item-name {
+  font-weight: 600;
+}
+
+.list-item.unread .item-preview {
+  color: #111b21; /* Noir si non lu */
+  font-weight: 500;
+}
+
+/* --- COLONNE DROITE (Chat) --- */
+.inbox-chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #efeae2; /* Fond beige WhatsApp */
+  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); /* Optionnel: Motif de fond */
+  background-repeat: repeat;
+}
+
+.chat-header {
+  height: 60px;
+  padding: 0 16px;
+  background: #f0f2f5;
+  border-left: 1px solid #d1d7db;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-user-info h3 {
+  font-size: 16px;
+  color: #111b21;
+  margin: 0;
+}
+.chat-subject-display {
+  font-size: 12px;
+  color: #54656f;
+  margin-top: 2px;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px 50px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Bulles de message */
+.message-bubble {
+  max-width: 65%;
+  padding: 6px 7px 8px 9px;
+  border-radius: 7.5px;
+  font-size: 14.2px;
+  line-height: 19px;
+  position: relative;
+  box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+}
+
+.message-bubble.received {
+  align-self: flex-start;
+  background: white;
+  color: #111b21;
+  border-top-left-radius: 0;
+}
+
+.message-bubble.sent {
+  align-self: flex-end;
+  background: #d9fdd3; /* Vert clair WhatsApp */
+  color: #111b21;
+  border-top-right-radius: 0;
+}
+
+.bubble-time {
+  float: right;
+  font-size: 11px;
+  color: #667781;
+  margin: 10px 0 -5px 10px;
+}
+
+.chat-input-area {
+  min-height: 62px;
+  background: #f0f2f5;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-input-area textarea {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid white;
+  background: white;
+  resize: none;
+  font-size: 15px;
+  outline: none;
+}
+/* AdminMessages.css - Style Mobile WhatsApp */
+
+.messages-container {
+  display: flex;
+  height: calc(100vh - 80px);
+  background: #fff;
+  border: 1px solid #d1d7db;
+  position: relative;
+  overflow: hidden;
+  font-family: Helvetica, Arial, sans-serif; /* Police type WhatsApp */
+}
+
+/* --- LOGIQUE D'AFFICHAGE (VUE UNIQUE) --- */
+/* Par défaut (Desktop large), on garde le split view si vous voulez, 
+   MAIS pour respecter votre demande "faire disparaître la liste", 
+   on va gérer ça via des classes React conditionnelles (.hidden-on-mobile). */
+
+.view-sidebar,
+.view-chat {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Quand on est en mode "Liste", la sidebar prend tout l'espace */
+.view-sidebar.full-width {
+  width: 100%;
+  border-right: none;
+}
+.view-sidebar.hidden {
+  display: none;
+}
+
+/* Quand on est en mode "Chat", le chat prend tout l'espace */
+.view-chat.full-width {
+  width: 100%;
+  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); /* Fond WhatsApp */
+  background-color: #efeae2;
+}
+.view-chat.hidden {
+  display: none;
+}
+
+/* --- COLONNE LISTE (SIDEBAR) --- */
+.sidebar-header {
+  padding: 10px 16px;
+  background: #f0f2f5; /* Gris clair WhatsApp */
+  border-bottom: 1px solid #e9edef;
+}
+.sidebar-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.4rem;
+  color: #111b21;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px 8px 35px;
+  border-radius: 8px;
+  border: none;
+  background: white;
+  height: 35px;
+}
+.search-icon-pos {
+  position: absolute;
+  left: 25px; /* Ajusté pour le padding header */
+  top: 58px; /* Ajusté pour la position */
+  color: #54656f;
+  width: 16px;
+}
+
+.message-list {
+  background: white;
+  overflow-y: auto;
+}
+
+/* --- ITEM DE LISTE (STYLE EXACT WHATSAPP) --- */
+.list-item {
+  display: flex;
+  height: 72px; /* Hauteur standard */
+  padding-left: 13px;
+  cursor: pointer;
+  background: white;
+  align-items: center;
+}
+
+.list-item:hover {
+  background-color: #f5f6f6;
+}
+
+/* Avatar */
+.item-avatar {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  background-color: #cfd8dc; /* Gris par défaut */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+/* Séparateur de ligne (border-bottom ne prend pas toute la largeur) */
+.item-content {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid #f0f2f5;
+  padding-right: 15px;
+}
+
+.item-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+
+.item-name {
+  font-size: 17px;
+  color: #111b21;
+  font-weight: 500; /* Semi-bold comme WhatsApp */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.item-date {
+  font-size: 12px;
+  color: #667781;
+}
+
+.item-preview {
+  font-size: 14px;
+  color: #667781;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Styles Non lu */
+.list-item.unread .item-date {
+  color: #25d366;
+  font-weight: 600;
+}
+.list-item.unread .item-name {
+  font-weight: 600;
+  color: #111b21;
+}
+.list-item.unread .item-preview {
+  color: #111b21;
+  font-weight: 500;
+}
+
+/* --- COLONNE CHAT --- */
+.chat-header {
+  height: 60px;
+  background: #f0f2f5;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #d1d7db;
+}
+
+/* Bouton Retour */
+.back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #54656f;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.chat-avatar-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #dfe3e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.chat-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.chat-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #111b21;
+}
+.chat-info span {
+  font-size: 13px;
+  color: #667781;
+}
+
+/* Messages et Input (idem précédent) */
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.message-bubble {
+  max-width: 75%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14.2px;
+  line-height: 19px;
+  position: relative;
+  box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+}
+.message-bubble.received {
+  align-self: flex-start;
+  background: white;
+  border-top-left-radius: 0;
+}
+.message-bubble.sent {
+  align-self: flex-end;
+  background: #d9fdd3;
+  border-top-right-radius: 0;
+}
+.bubble-time {
+  float: right;
+  font-size: 11px;
+  color: #667781;
+  margin: 5px 0 -5px 10px;
+}
+
+.chat-input-area {
+  background: #f0f2f5;
+  min-height: 62px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.chat-input-area textarea {
+  flex: 1;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  font-size: 15px;
+  outline: none;
+  resize: none;
+}
+.messages-container {
+  display: flex;
+  height: calc(100vh - 80px);
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.full-width {
+  width: 100%;
+}
+.hidden {
+  display: none !important;
+}
+
+/* Styles Typing */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: #fff;
+  border-radius: 12px;
+  width: fit-content;
+  margin: 5px 0;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #909090;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.delete-btn-header {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #54656f;
+  padding: 5px;
+}
+
+.send-btn-chat:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.view-chat.full-width {
+  background-color: #efeae2;
+  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
 }

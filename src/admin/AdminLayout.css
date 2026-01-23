@@ -218,3 +218,18 @@
     display: none;
   }
 }
+/* Style du badge de notification */
+.nav-badge {
+  background-color: #ef4444; /* Rouge vif */
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px; /* Forme de pilule */
+  margin-left: auto; /* Pousse le badge tout à droite */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+}

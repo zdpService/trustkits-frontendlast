@@ -1,97 +1,270 @@
-/* src/components/ContactForm/ContactForm.css */
-
+/* ContactForm.css */
 .contact-container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.contact-container h2 {
-  color: #333;
-  margin-bottom: 15px;
-  font-size: 2.2rem;
-}
-
-.contact-container p {
-  color: #666;
-  margin-bottom: 30px;
-  font-size: 1.1rem;
-}
-
-.contact-form {
+.contact-header {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  text-align: left;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #555;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group textarea {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box; /* Important pour que le padding n'ajoute pas à la largeur */
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-}
-
-.form-group textarea {
-  resize: none; /* Permet de redimensionner verticalement */
-  min-height: 120px;
-}
-
-.contact-form button {
-  background-color: #0f172a;
+.btn-primary {
+  background-color: #4f46e5;
   color: white;
-  padding: 14px 25px;
   border: none;
-  border-radius: 5px;
-  font-size: 1.1rem;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-back {
+  background: none;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --- LISTE DES TICKETS --- */
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ticket-card {
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ticket-card:hover {
+  background-color: #f9fafb;
+  border-color: #4f46e5;
+}
+
+.ticket-info h4 {
+  margin: 0 0 5px 0;
+  color: #1f2937;
+}
+.ticket-meta {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+.ticket-status {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #e5e7eb;
+  color: #374151;
+}
+.ticket-status.replied {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* --- DISCUSSION (CHAT) --- */
+.chat-window {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.message-bubble {
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  max-width: 80%;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.message-bubble.user {
+  background: white;
+  border: 1px solid #e5e7eb;
+  margin-right: auto; /* Aligné à gauche */
+  border-bottom-left-radius: 2px;
+}
+
+.message-bubble.admin {
+  background: #4f46e5;
+  color: white;
+  margin-left: auto; /* Aligné à droite */
+  border-bottom-right-radius: 2px;
+}
+
+.msg-date {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 5px;
+  opacity: 0.7;
+  text-align: right;
+}
+
+.empty-tickets {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+  border: 2px dashed #eee;
+  border-radius: 10px;
+}
+/* Ajout pour la zone de réponse du client */
+.chat-input-area {
   margin-top: 15px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 15px;
+  display: flex;
+  gap: 10px;
 }
 
-.contact-form button:hover {
-  background-color: #1a294d;
+.chat-input-area textarea {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  resize: none;
+  font-family: inherit;
+  outline: none;
 }
 
-.contact-form button:disabled {
-  background-color: #cccccc;
+.btn-send-reply {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-send-reply:hover {
+  background-color: #4338ca;
+}
+
+.btn-send-reply:disabled {
+  background-color: #a5b4fc;
   cursor: not-allowed;
 }
-
-.success-message {
-  color: #28a745;
-  margin-top: 15px;
-  font-weight: bold;
+/* Animation des trois points */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 15px;
+  background: #f0f0f0;
+  border-radius: 15px;
+  width: fit-content;
+  margin: 10px 0;
 }
 
-.error-message {
-  color: #dc3545;
-  margin-top: 15px;
-  font-weight: bold;
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #909090;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Animation Messenger */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: #f1f1f1;
+  border-radius: 12px;
+  width: fit-content;
+  margin: 10px 0;
+  border-bottom-left-radius: 2px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #909090;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.chat-history {
+  max-height: 450px;
+  overflow-y: auto;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bulles */
+.message-bubble.admin {
+  background: #4f46e5;
+  color: white;
+  margin-left: auto;
+  border-bottom-right-radius: 2px;
+}
+
+.message-bubble.user {
+  background: white;
+  border: 1px solid #e5e7eb;
+  margin-right: auto;
+  border-bottom-left-radius: 2px;
 }

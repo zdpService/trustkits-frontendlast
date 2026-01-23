@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { db } from "../firebase/config";
 import {
   collection,
@@ -6,190 +6,307 @@ import {
   orderBy,
   onSnapshot,
   doc,
-  deleteDoc,
   updateDoc,
+  deleteDoc,
+  arrayUnion,
+  Timestamp,
 } from "firebase/firestore";
-import {
-  Mail,
-  Search,
-  Trash2,
-  Reply,
-  CheckCircle,
-  Circle,
-  Clock,
-} from "lucide-react";
-import Loading from "../utilities/laoding/Loading";
+import { Search, Trash2, Send, ArrowLeft, CheckCheck } from "lucide-react";
+import Loading from "../utilities/laoding/Loading"; // Correction orthographe "loading"
 import "./AdminMessages.css";
 
 const AdminMessages = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMsgId, setSelectedMsgId] = useState(null);
+  const [replyText, setReplyText] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const chatEndRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+
+  const getAvatarColor = (name) => {
+    const colors = ["#00a884", "#008f69", "#6559ff", "#ff8f00", "#e55a5a"];
+    const index = name ? name.charCodeAt(0) % colors.length : 0;
+    return colors[index];
+  };
+
+  // --- 1. ÉCOUTE DES DISCUSSIONS EN TEMPS RÉEL ---
   useEffect(() => {
-    // Écoute en temps réel de la collection
     const q = query(
       collection(db, "contact_messages"),
-      orderBy("createdAt", "desc")
+      orderBy("createdAt", "desc"),
     );
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const msgs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          // Si le champ 'read' n'existe pas, on le considère comme faux par défaut
-          isRead: doc.data().isRead || false,
-        }));
-        setMessages(msgs);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Erreur messages:", error);
-        setLoading(false);
-      }
-    );
-
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const msgs = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        isRead: doc.data().isRead || false,
+        replies: doc.data().replies || [],
+      }));
+      setMessages(msgs);
+      setLoading(false);
+    });
     return () => unsubscribe();
   }, []);
 
-  // --- ACTIONS ---
+  // Scroll automatique et gestion du "typing"
+  useEffect(() => {
+    if (selectedMsgId) {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [selectedMsgId, messages]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce message ?")) {
+  // --- 2. GESTION DE L'INDICATEUR "TYPING" ADMIN ---
+  const handleAdminTyping = async (e) => {
+    setReplyText(e.target.value);
+    if (!selectedMsgId) return;
+
+    const msgRef = doc(db, "contact_messages", selectedMsgId);
+
+    // On prévient le client que l'admin écrit
+    await updateDoc(msgRef, { adminIsTyping: e.target.value.length > 0 });
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    typingTimeoutRef.current = setTimeout(async () => {
+      await updateDoc(msgRef, { adminIsTyping: false });
+    }, 3000);
+  };
+
+  // --- 3. ACTIONS ---
+  const handleSelectMessage = async (msg) => {
+    setSelectedMsgId(msg.id);
+    if (!msg.isRead) {
       try {
-        await deleteDoc(doc(db, "contact_messages", id));
+        await updateDoc(doc(db, "contact_messages", msg.id), { isRead: true });
       } catch (error) {
-        alert("Erreur lors de la suppression");
+        console.error("Erreur lecture:", error);
       }
     }
   };
 
-  const handleMarkAsRead = async (id, currentStatus) => {
-    try {
-      await updateDoc(doc(db, "contact_messages", id), {
-        isRead: !currentStatus,
+  const handleBackToList = async () => {
+    if (selectedMsgId) {
+      // Stopper l'indicateur typing en quittant
+      await updateDoc(doc(db, "contact_messages", selectedMsgId), {
+        adminIsTyping: false,
       });
+    }
+    setSelectedMsgId(null);
+  };
+
+  const handleSendReply = async () => {
+    if (!replyText.trim() || !selectedMsgId) return;
+    try {
+      const msgRef = doc(db, "contact_messages", selectedMsgId);
+      await updateDoc(msgRef, {
+        replies: arrayUnion({
+          text: replyText,
+          sender: "admin",
+          createdAt: Timestamp.now(),
+        }),
+        isRead: true,
+        adminIsTyping: false, // Stopper l'indicateur après envoi
+      });
+      setReplyText("");
     } catch (error) {
-      console.error("Erreur update status:", error);
+      console.error("Erreur envoi:", error);
     }
   };
 
-  const handleReply = (email, subject) => {
-    window.location.href = `mailto:${email}?subject=Réponse: ${subject}`;
+  const handleDelete = async () => {
+    if (window.confirm("Supprimer cette discussion ?")) {
+      try {
+        await deleteDoc(doc(db, "contact_messages", selectedMsgId));
+        setSelectedMsgId(null);
+      } catch (error) {
+        alert("Erreur");
+      }
+    }
   };
 
-  // --- FILTRES ---
-  const filteredMessages = messages.filter(
+  const activeMessage = messages.find((m) => m.id === selectedMsgId);
+  const filteredList = messages.filter(
     (msg) =>
-      msg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.message?.toLowerCase().includes(searchTerm.toLowerCase())
+      msg.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      msg.email?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  const formatDateList = (timestamp) => {
+    if (!timestamp) return "";
+    const date = timestamp.toDate();
+    const now = new Date();
+    if (date.toDateString() === now.toDateString()) {
+      return date.toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+    return date.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    });
+  };
+
+  const formatTimeBubble = (timestamp) => {
+    if (!timestamp) return "";
+    return timestamp
+      .toDate()
+      .toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  };
 
   if (loading) return <Loading />;
 
   return (
     <div className="messages-container">
-      {/* HEADER AVEC RECHERCHE */}
-      <div className="messages-header">
-        <div>
-          <h1>Boîte de Réception</h1>
-          <p className="subtitle">
-            {messages.filter((m) => !m.isRead).length} messages non lus
-          </p>
+      {/* --- VUE 1 : LISTE --- */}
+      <div
+        className={`view-sidebar full-width ${selectedMsgId ? "hidden" : ""}`}
+      >
+        <div className="sidebar-header">
+          <h2>Discussions</h2>
+          <div className="search-wrapper">
+            <Search className="search-icon-pos" size={16} />
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
-        <div className="search-bar-message">
-          <Search size={18} color="#6b7280" />
-          <input
-            type="text"
-            placeholder="Rechercher un message..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="message-list">
+          {filteredList.map((msg) => {
+            const displayName = msg.name || msg.email || "Inconnu";
+            let lastText = msg.message;
+            let isLastAdmin = false;
+            if (msg.replies.length > 0) {
+              lastText = msg.replies[msg.replies.length - 1].text;
+              isLastAdmin =
+                msg.replies[msg.replies.length - 1].sender === "admin";
+            }
+
+            return (
+              <div
+                key={msg.id}
+                onClick={() => handleSelectMessage(msg)}
+                className={`list-item ${!msg.isRead ? "unread" : ""}`}
+              >
+                <div
+                  className="item-avatar"
+                  style={{ backgroundColor: getAvatarColor(displayName) }}
+                >
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+                <div className="item-content">
+                  <div className="item-top-row">
+                    <span className="item-name">{displayName}</span>
+                    <span className="item-date">
+                      {formatDateList(msg.createdAt)}
+                    </span>
+                  </div>
+                  <div className="item-preview">
+                    {isLastAdmin && (
+                      <CheckCheck
+                        size={14}
+                        style={{ marginRight: 4, color: "#53bdeb" }}
+                      />
+                    )}
+                    {lastText}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* LISTE DES MESSAGES */}
-      <div className="messages-grid-layout">
-        {filteredMessages.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">
-              <Mail size={40} />
-            </div>
-            <p>Aucun message trouvé.</p>
-          </div>
-        ) : (
-          filteredMessages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`message-ticket ${msg.isRead ? "read" : "unread"}`}
-            >
-              {/* INDICATEUR GAUCHE */}
-              <div className="message-status-stripe"></div>
-
-              <div className="message-body">
-                {/* EN-TÊTE DU TICKET */}
-                <div className="ticket-header">
-                  <div className="sender-info">
-                    <div className="sender-avatar">
-                      {msg.email ? msg.email.charAt(0).toUpperCase() : "?"}
-                    </div>
-                    <div>
-                      <h3 className="sender-email">{msg.email || "Anonyme"}</h3>
-                      <span className="message-date">
-                        <Clock size={12} />
-                        {msg.createdAt?.toDate
-                          ? msg.createdAt.toDate().toLocaleString("fr-FR")
-                          : "Date inconnue"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* ACTIONS */}
-                  <div className="ticket-actions">
-                    <button
-                      className="action-icon reply"
-                      title="Répondre"
-                      onClick={() => handleReply(msg.email, msg.subject)}
-                    >
-                      <Reply size={18} />
-                    </button>
-                    <button
-                      className={`action-icon read-toggle ${
-                        msg.isRead ? "is-read" : ""
-                      }`}
-                      title={msg.isRead ? "Marquer non lu" : "Marquer comme lu"}
-                      onClick={() => handleMarkAsRead(msg.id, msg.isRead)}
-                    >
-                      {msg.isRead ? (
-                        <CheckCircle size={18} />
-                      ) : (
-                        <Circle size={18} />
-                      )}
-                    </button>
-                    <button
-                      className="action-icon delete"
-                      title="Supprimer"
-                      onClick={() => handleDelete(msg.id)}
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* CONTENU */}
-                <div className="ticket-content">
-                  <h4 className="message-subject">
-                    {msg.subject || "Sans objet"}
-                  </h4>
-                  <p className="message-text">{msg.message}</p>
-                </div>
+      {/* --- VUE 2 : CHAT --- */}
+      <div className={`view-chat full-width ${!selectedMsgId ? "hidden" : ""}`}>
+        {activeMessage && (
+          <>
+            <div className="chat-header">
+              <button className="back-btn" onClick={handleBackToList}>
+                <ArrowLeft size={24} />
+              </button>
+              <div
+                className="chat-avatar-small"
+                style={{
+                  backgroundColor: getAvatarColor(
+                    activeMessage.name || activeMessage.email,
+                  ),
+                }}
+              >
+                {(activeMessage.name || activeMessage.email)
+                  .charAt(0)
+                  .toUpperCase()}
               </div>
+              <div className="chat-info">
+                <h3>{activeMessage.name || activeMessage.email}</h3>
+                <span>{activeMessage.subject || "Support Technique"}</span>
+              </div>
+              <button onClick={handleDelete} className="delete-btn-header">
+                <Trash2 size={20} />
+              </button>
             </div>
-          ))
+
+            <div className="chat-messages">
+              <div className="message-bubble received">
+                {activeMessage.message}
+                <span className="bubble-time">
+                  {formatTimeBubble(activeMessage.createdAt)}
+                </span>
+              </div>
+
+              {activeMessage.replies.map((reply, index) => (
+                <div
+                  key={index}
+                  className={`message-bubble ${reply.sender === "admin" ? "sent" : "received"}`}
+                >
+                  {reply.text}
+                  <span className="bubble-time">
+                    {formatTimeBubble(reply.createdAt)}
+                  </span>
+                </div>
+              ))}
+
+              {/* INDICATEUR D'ÉCRITURE CLIENT */}
+              {activeMessage.clientIsTyping && (
+                <div className="typing-indicator received-typing">
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                </div>
+              )}
+              <div ref={chatEndRef} />
+            </div>
+
+            <div className="chat-input-area">
+              <textarea
+                placeholder="Tapez votre réponse..."
+                rows="1"
+                value={replyText}
+                onChange={handleAdminTyping}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendReply();
+                  }
+                }}
+              />
+              <button
+                onClick={handleSendReply}
+                className="send-btn-chat"
+                disabled={!replyText.trim()}
+              >
+                <Send size={24} />
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
