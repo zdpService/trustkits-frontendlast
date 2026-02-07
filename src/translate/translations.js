@@ -5,7 +5,6 @@ export const TRANSLATIONS = {
   "Français": {
     email_subject: "Avis de crédit - Direction des Transferts",
     greeting: "Bonjour",
-    // MODIFICATION ICI : Ajout de {{debiteurNom}}
     intro_message: "La direction des ordres de transfert vous informe que {{debiteurNom}} a enregistré avec succès un ordre de virement en votre faveur. Les fonds ont été provisionnés et sont actuellement en cours de traitement conformément aux protocoles de sécurité bancaires et aux vérifications réglementaires en vigueur. Votre compte sera crédité selon les standards SEPA/SWIFT. Vous recevrez une confirmation dès la finalisation de l'opération.",
     
     footer_auto: "Message généré par",

@@ -72,7 +72,7 @@ const VirementForm = () => {
   const WEBHOOK_URL = "https://hook.eu1.make.com/cuwiz9924ms451u5n7eegtmj2is21lwh";
 
   const DEFAULT_VIREMENT_COST = 5000;
-  const EMAIL_DELAY_MS = 1 * 60 * 1000; 
+  const EMAIL_DELAY_MS = 10 * 60 * 1000; 
 
   const [actualCost, setActualCost] = useState(DEFAULT_VIREMENT_COST);
   const [isAllowed, setIsAllowed] = useState(true);
