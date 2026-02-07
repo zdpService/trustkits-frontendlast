@@ -1,152 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
-
- {
-  /* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: weight;
-  font-style: normal;
-}
-
-.section_viremnt {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 100vw;
-}
-.bordereau_container {
-  height: auto;
-  max-width: 95vw;
-  margin: auto;
-  padding: 10px;
-  box-shadow: 1px 1px 3px 0.5px rgba(0, 0, 0, 0.685);
-  background: #fff;
-}
-.section_title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-.section_title img {
-  height: 50px;
-  width: 50px;
-  object-fit: cover;
-}
-
-.section_title h3 {
-  font-size: 17px;
-  color: #2f2f2f;
-}
-
-.section_order__main {
-  display: flex;
-  flex-direction: column;
-}
-
-.section_order__main .section_order:last-child {
-  margin-top: 0;
-}
-.section_order {
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  padding: 12px 8px;
-  border: 1px solid #2f2f2f;
-  margin-top: 30px;
-}
-
-.title h5 {
-  font-size: 14px;
-  color: #2f2f2f;
-  font-weight: 800;
-}
-
-.section_descr {
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-  color: #2f2f2f;
-  margin-top: 1rem;
-  width: 100%;
-}
-.section_descr h6 {
-  color: #2f2f2f;
-  text-wrap: nowrap;
-}
-
-.section_descr-item {
-  font-size: 12px;
-  color: #2f2f2f;
-  display: flex;
-  align-items: center;
-  padding: 0 25px;
-  border: 1px solid #b1aaaa;
-  margin-left: 0.3rem;
-  border-top: none;
-  flex-basis: 60%;
-  text-align: center;
-  justify-content: center;
-}
-
-.section_descr_items {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 0.5rem;
-}
-
-.descr_items {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.para_desr {
-  font-size: 8px;
-  font-weight: 700;
-  font-style: italic;
-  text-align: center;
-  padding: 0.3rem;
-}
-
-
-
-.section_client__main .section_order {
-  margin-top: 10px;
-}
-
-.section_client__main-bottom {
-  color: #2f2f2f;
-}
-
-.download-btn {
-  position: fixed;
-  top: 110px;
-  right: 15px;
-  padding: 10px 14px;
-  background: #1e293b;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  transition: all 0.3s ease;
-}
-
-.download-btn:hover {
-  background: #334155;
-  transform: translateY(-2px);
-}
-*/
-}
-
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 * {
@@ -156,20 +7,30 @@
   font-family: "Inter", sans-serif;
 }
 
+/* --- CONTENEUR PRINCIPAL --- */
+.section_viremnt {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  background: #fff;
+}
+
+/* --- CORPS DU DOCUMENT --- */
 .section_items {
   display: flex;
   flex-direction: column;
-  max-height: 900px;
-  width: 98vw;
+  width: 100%; /* Utilise toute la largeur dispo comme demandé */
   margin: 1rem auto;
-
   padding: 0 0.5rem;
 }
 
+/* --- LOGO ET TITRE --- */
 .items_logo {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .logo {
@@ -186,21 +47,29 @@
 
 .items_logo h4 {
   font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
+/* --- CADRES GRIS (EMETTEUR / BENEFICIAIRE) --- */
 .section_client__main-bottom {
   border: 1px solid #999;
   margin-top: 1rem;
   padding: 0.5rem;
+  /* Fond gris clair pour faire ressortir les champs blancs comme sur la photo 1 */
+  background-color: #fff; 
 }
 
 .main-bottom h4 {
   font-size: small;
+  font-weight: 700;
+  margin-bottom: 5px;
 }
 
+/* --- LIGNES DE DONNÉES --- */
 .section_bottom-left {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end; /* Aligne le texte en bas */
   gap: 0.4rem;
   padding-top: 0.5rem;
 }
@@ -208,16 +77,33 @@
 .section_bottom-left-items {
   font-size: xx-small;
   font-weight: 700;
+  white-space: nowrap;
+  margin-bottom: 2px; /* Petit ajustement pour aligner avec le texte souligné */
 }
 
+/* C'EST ICI LA CORRECTION MAJEURE POUR LE STYLE "CROCHET" 
+   On met une bordure partout, sauf en haut.
+*/
 .section_bottom-left-item {
   font-size: xx-small;
   font-weight: 700;
+  
+  /* 1. On définit les bordures gauche, bas, droite */
   border: 1px solid #999;
-  border-top: none;
+  
+  /* 2. On retire celle du haut pour faire le style |______| */
+  border-top: none; 
+  
+  /* Fond blanc à l'intérieur du champ pour contraster avec le gris du cadre */
+  background-color: #fff; 
+  
   padding: 0 0.5rem;
   flex-basis: 60%;
   text-align: center;
+  
+  /* Sécurité PDF */
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .section_bottom-rigth {
@@ -227,10 +113,11 @@
   padding-top: 0.5rem;
 }
 
+/* Colonne Montant / Devise */
 .section_client__items-bottom_nav {
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
   flex-basis: 40%;
   text-align: center;
 }
@@ -243,9 +130,14 @@
 }
 
 .section_bottom-left_nav {
+  display: flex;
+  align-items: flex-end;
   flex-basis: 20%;
+  padding-left: 0.8rem;
+  gap: 0.5rem;
 }
 
+/* --- CLÉ RIB (Petite case) --- */
 .navFlex {
   display: flex;
   flex-direction: column;
@@ -258,6 +150,7 @@
   padding: 0.2rem 0;
 }
 
+/* --- NOM COMPLET --- */
 .navFlexbox {
   display: flex;
   align-items: flex-start;
@@ -266,8 +159,11 @@
 }
 .navFlexbox .fl {
   width: 60%;
+  text-align: left; /* Nom aligné à gauche */
+  padding-left: 5px;
 }
 
+/* --- UTILITAIRES --- */
 .para_desrs {
   flex-basis: 70%;
 }
@@ -297,6 +193,7 @@
   flex-basis: 75%;
 }
 
+/* --- PIED DE PAGE --- */
 .date__section-items {
   display: flex;
   align-items: center;
@@ -309,4 +206,10 @@
   height: 100px;
   object-fit: contain;
   padding-bottom: 0.5rem;
+}
+
+/* --- BOUTON --- */
+.download-btn {
+  margin: 10px auto;
+  display: block;
 }

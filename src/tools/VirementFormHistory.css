@@ -1,98 +1,637 @@
-.virement-history-container {
-  max-width: 700px;
-  margin: 20px auto;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  font-family: Arial, sans-serif;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+/* ========================================
+   STYLES POUR HISTORIQUE DES VIREMENTS
+   Avec séparation Statut Virement / Statut Message
+   ======================================== */
+
+/* --- COMPTEUR ET ALERTES MIS À JOUR --- */
+
+/* Style du texte du compte à rebours */
+.flasher-countdown-text {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  color: #b45309;
 }
 
-.virement-history-container h2 {
-  text-align: center;
-  color: #333;
+/* Petit timer dans la liste */
+.flasher-list-timer {
+  font-size: 0.7rem;
+  color: #d97706;
+  margin-top: 2px;
 }
 
-.virement-list {
-  list-style: none;
-  padding: 0;
+/* Boite d'alerte jaune (En attente) */
+.flasher-message-alert.warning {
+  background-color: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-.virement-list li {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.virement-list li:hover {
-  background: #f1f1f1;
-}
-
-.empty-history {
-  text-align: center;
-  font-style: italic;
-  color: #888;
-  margin-top: 20px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+.flasher-timer-box {
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 999;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.modal-content h3 {
-  margin-top: 0;
-}
-
-.modal-content p {
-  margin: 8px 0;
-}
-
-.close-btn {
-  margin-top: 20px;
-  padding: 10px 15px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.close-btn:hover {
-  background: #c82333;
-}
-
-.clear-history-btn {
-  margin-top: 20px;
-  padding: 12px 20px;
-  background: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.flasher-timer-content strong {
   display: block;
-  width: 100%;
-  font-size: 16px;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
 }
 
-.clear-history-btn:hover {
-  background: #ff4c4c;
+/* Bouton Annuler (plus visible) */
+.flasher-btn-cancel-message {
+  background: white;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.flasher-btn-cancel-message:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* --- CONTENEUR PRINCIPAL --- */
+.flasher-virement-history-container {
+  max-width: 650px;
+  margin: 20px auto;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border: 1px solid #f3f4f6;
+}
+
+/* --- HEADER --- */
+.flasher-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.flasher-header-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+/* --- LISTE DES VIREMENTS --- */
+.flasher-virement-list { 
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+}
+
+.flasher-empty-history {
+  text-align: center;
+  color: #9ca3af;
+  padding: 40px 20px;
+  font-size: 0.9rem;
+}
+
+/* --- ITEM DE LA LISTE --- */
+.flasher-virement-item {
+  background: #fff;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.flasher-virement-item:hover { 
+  background: #f9fafb; 
+  border-color: #d1d5db; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.flasher-virement-info-main { 
+  display: flex; 
+  flex-direction: column;
+  gap: 4px;
+}
+
+.flasher-virement-info-main strong {
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.flasher-virement-amount { 
+  color: #6b7280; 
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* --- SECTION STATUT --- */
+.flasher-virement-status-section {
+  display: flex; 
+  flex-direction: column; 
+  align-items: flex-end; 
+  gap: 6px;
+}
+
+.flasher-status-group { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.flasher-status-date {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* --- BADGES DE STATUT MESSAGE --- */
+.flasher-status-badge {
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px;
+  padding: 4px 10px; 
+  border-radius: 6px; 
+  font-size: 0.75rem; 
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Message en attente d'envoi */
+.flasher-pending { 
+  background: #f3f4f6; 
+  color: #4b5563; 
+  border: 1px solid #e5e7eb; 
+}
+
+/* Message envoyé */
+.flasher-sent { 
+  background: #dbeafe; 
+  color: #1e40af; 
+  border: 1px solid #3b82f6; 
+}
+
+/* Message ouvert/vu */
+.flasher-opened { 
+  background: #f3e8ff; 
+  color: #7e22ce; 
+  border: 1px solid #d8b4fe; 
+}
+
+/* Message annulé */
+.flasher-cancelled { 
+  background: #fee2e2; 
+  color: #991b1b; 
+  border: 1px solid #fecaca; 
+}
+
+/* Échec d'envoi */
+.flasher-failed {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde047;
+}
+
+/* --- BOUTON ANNULER DANS LA LISTE --- */
+.flasher-cancel-btn-action {
+  margin-top: 6px;
+  background: white;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.flasher-cancel-btn-action:hover {
+  background: #ef4444;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+/* --- MODAL --- */
+.flasher-modal-overlay {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0;
+  background: rgba(0,0,0,0.5); 
+  backdrop-filter: blur(2px);
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  z-index: 2000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.flasher-modal-content {
+  background: white; 
+  width: 90%; 
+  max-width: 500px; 
+  max-height: 90vh;
+  overflow-y: auto; 
+  border-radius: 12px;
+  box-shadow: 0 20px 25px rgba(0,0,0,0.15);
+  display: flex; 
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.flasher-modal-header {
+  padding: 16px 20px; 
+  border-bottom: 1px solid #f3f4f6;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  position: sticky; 
+  top: 0; 
+  background: white; 
+  z-index: 10;
+}
+
+.flasher-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.flasher-close-icon-btn { 
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  color: #9ca3af;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.flasher-close-icon-btn:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+.flasher-modal-body { 
+  padding: 20px;
+  flex: 1;
+}
+
+/* --- SECTION MONTANT ET STATUTS --- */
+.flasher-modal-amount-section {
+  text-align: center; 
+  margin-bottom: 20px; 
+  padding: 16px;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 10px; 
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flasher-amount-value { 
+  display: block; 
+  font-size: 1.8rem; 
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+/* --- PILLS DE STATUT DANS LE MODAL --- */
+.flasher-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+/* Statuts de VIREMENT */
+.flasher-pill-success {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.flasher-pill-progress {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.flasher-pill-pending {
+  background: #f3f4f6;
+  color: #4b5563;
+  border-color: #d1d5db;
+}
+
+.flasher-pill-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+/* Statuts de MESSAGE */
+.flasher-pill-sent {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #3b82f6;
+}
+
+.flasher-pill-opened {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border-color: #d8b4fe;
+}
+
+.flasher-pill-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.flasher-pill-failed {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde047;
+}
+
+/* --- GRILLE DE DÉTAILS --- */
+.flasher-modal-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px; 
+  margin-top: 20px; 
+}
+
+.flasher-detail-group { 
+  background: #fff; 
+  border: 1px solid #e5e7eb; 
+  padding: 12px; 
+  border-radius: 8px; 
+}
+
+.flasher-detail-group h4 { 
+  margin: 0 0 10px 0; 
+  font-size: 0.75rem; 
+  color: #6b7280; 
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #f3f4f6; 
+  padding-bottom: 6px; 
+}
+
+.flasher-detail-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.flasher-detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.flasher-label {
+  color: #9ca3af;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}
+
+.flasher-value {
+  color: #1f2937;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.flasher-email-text {
+  color: #2563eb;
+  font-size: 0.8rem;
+}
+
+/* Section pleine largeur */
+.flasher-full-width {
+  grid-column: 1 / -1;
+}
+
+.flasher-detail-grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* --- FOOTER DU MODAL --- */
+.flasher-modal-footer-id {
+  margin-top: 20px;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  color: #6b7280;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  border: 1px dashed #e5e7eb;
+}
+
+/* --- ACTIONS DU MODAL --- */
+.flasher-modal-actions { 
+  padding: 16px 20px; 
+  border-top: 1px solid #f3f4f6; 
+  background: #fff; 
+  position: sticky; 
+  bottom: 0; 
+}
+
+.flasher-close-btn-main { 
+  width: 100%; 
+  padding: 12px; 
+  background: #1f2937; 
+  color: white; 
+  border: none; 
+  border-radius: 8px; 
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.flasher-close-btn-main:hover {
+  background: #111827;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* --- BOUTON SUPPRIMER L'HISTORIQUE --- */
+.flasher-clear-history-btn { 
+  margin-top: 20px; 
+  width: 100%; 
+  padding: 12px; 
+  background: #fff; 
+  border: 1px solid #fee2e2; 
+  color: #ef4444; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.flasher-clear-history-btn:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+  transform: translateY(-1px);
+}
+
+/* --- ALERTES DANS LE MODAL --- */
+.flasher-message-alert {
+  padding: 12px; 
+  border-radius: 8px; 
+  font-size: 0.85rem; 
+  display: flex; 
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.flasher-message-alert.error { 
+  background: #fef2f2; 
+  border: 1px solid #fecaca; 
+  color: #991b1b; 
+}
+
+.flasher-message-alert.success { 
+  background: #f3e8ff; 
+  border: 1px solid #d8b4fe; 
+  color: #6b21a8; 
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 640px) {
+  .flasher-virement-history-container {
+    margin: 10px;
+    padding: 12px;
+  }
+
+  .flasher-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .flasher-detail-grid-row {
+    grid-template-columns: 1fr;
+  }
+
+  .flasher-virement-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .flasher-virement-status-section {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .flasher-status-group {
+    align-items: flex-start;
+  }
+
+  .flasher-cancel-btn-action {
+    width: 100%;
+  }
+
+  .flasher-modal-amount-section {
+    padding: 12px;
+  }
+
+  .flasher-amount-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* --- ANIMATIONS --- */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.flasher-status-badge.flasher-pending {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* --- UTILITIES --- */
+.mono { 
+  font-family: 'Courier New', Courier, monospace; 
+  background: #f3f4f6; 
+  padding: 2px 6px; 
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.blue { 
+  color: #2563eb; 
+}
+
+/* --- DIVIDER --- */
+.flasher-divider { 
+  border: 0; 
+  height: 1px; 
+  background: #e5e7eb; 
+  margin: 16px 0; 
+}
+
+/* --- SECTION TRACKING DU MESSAGE --- */
+.flasher-message-tracking-section h4 {
+  font-size: 0.8rem; 
+  text-transform: uppercase; 
+  color: #6b7280; 
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+}
+
+/* --- TRANSITIONS GLOBALES --- */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+button {
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
 }

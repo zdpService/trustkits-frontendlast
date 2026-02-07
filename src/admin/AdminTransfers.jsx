@@ -46,14 +46,14 @@ const AdminTransfers = () => {
   // --- 1. NOTIFICATION SYSTEM (UPDATED FOR I18N) ---
   const createClientNotification = async (clientId, notificationData) => {
     try {
-      // Sécurité ultime : on nettoie les données avant l'envoi
+      // ✅ CORRECTION : Ne pas forcer de devise par défaut
       const cleanMetadata = notificationData.metadata
         ? {
             ...notificationData.metadata,
-            devise: notificationData.metadata.devise || "€",
+            // Ne pas ajouter de devise par défaut - utiliser celle fournie
             beneficiaire: notificationData.metadata.beneficiaire || "Inconnu",
             montant: notificationData.metadata.montant || 0,
-            forceMessage: false, // On force à false pour utiliser la traduction côté client
+            forceMessage: false,
           }
         : {};
 
@@ -268,17 +268,18 @@ const AdminTransfers = () => {
     });
 
     if (success) {
-      const safeCurrency = transfer.currency || "€";
+      // ✅ CORRECTION : Utiliser la devise réelle de la transaction
+      const safeCurrency = transfer.currency || "$"; // Fallback vers $ si pas de devise
+      const safeBeneficiary = transfer.beneficiaryName || "Inconnu";
 
-      // ✅ MODIFIÉ : Utilisation des clés de traduction pour l'approbation
       await createClientNotification(transfer.clientId, {
-        type: "success", // Type générique succès (ou 'debit' avec status 'completed')
-        title: "notifications.title_sent", // CLÉ
-        message: "notifications.msg_sent_success", // CLÉ
+        type: "success",
+        title: "notifications.title_sent",
+        message: "notifications.msg_sent_success",
         metadata: {
           montant: Math.abs(transfer.amount),
-          devise: safeCurrency,
-          beneficiaire: transfer.beneficiaryName,
+          devise: safeCurrency, // ✅ Devise réelle
+          beneficiaire: safeBeneficiary,
           statut: "completed",
         },
       });
@@ -325,19 +326,19 @@ const AdminTransfers = () => {
     );
 
     if (success) {
-      const safeCurrency = transfer.currency || "€";
+      // ✅ CORRECTION : Utiliser la devise réelle de la transaction
+      const safeCurrency = transfer.currency || "$";
       const safeBeneficiary = transfer.beneficiaryName || "Inconnu";
 
-      // ✅ MODIFIÉ : Utilisation des clés de traduction pour Rejet/Remboursement
       if (isRefund) {
         // CAS 1: Remboursé
         await createClientNotification(transfer.clientId, {
-          type: "credit", // Icône 💸
-          title: "notifications.title_refunded", // CLÉ
-          message: "notifications.msg_refunded", // CLÉ
+          type: "credit",
+          title: "notifications.title_refunded",
+          message: "notifications.msg_refunded",
           metadata: {
             montant: Math.abs(transfer.amount),
-            devise: safeCurrency,
+            devise: safeCurrency, // ✅ Devise réelle
             beneficiaire: safeBeneficiary,
             statut: "remboursé",
             motif: rejectionReason,
@@ -346,12 +347,12 @@ const AdminTransfers = () => {
       } else {
         // CAS 2: Rejeté sans remboursement
         await createClientNotification(transfer.clientId, {
-          type: "error", // Icône ❌
-          title: "notifications.title_rejected", // CLÉ
-          message: "notifications.msg_sent_failed", // CLÉ (Mappe vers "Annulé")
+          type: "error",
+          title: "notifications.title_rejected",
+          message: "notifications.msg_sent_failed",
           metadata: {
             montant: Math.abs(transfer.amount),
-            devise: safeCurrency,
+            devise: safeCurrency, // ✅ Devise réelle
             beneficiaire: safeBeneficiary,
             statut: "rejeté",
             motif: rejectionReason,
@@ -383,17 +384,17 @@ const AdminTransfers = () => {
     );
 
     if (success) {
-      const safeCurrency = transfer.currency || "€";
+      // ✅ CORRECTION : Utiliser la devise réelle de la transaction
+      const safeCurrency = transfer.currency || "$";
       const safeBeneficiary = transfer.beneficiaryName || "Inconnu";
 
-      // ✅ MODIFIÉ : Utilisation des clés de traduction pour le remboursement manuel
       await createClientNotification(transfer.clientId, {
-        type: "credit", // Icône 💸
-        title: "notifications.title_refunded", // CLÉ
-        message: "notifications.msg_refunded", // CLÉ
+        type: "credit",
+        title: "notifications.title_refunded",
+        message: "notifications.msg_refunded",
         metadata: {
           montant: Math.abs(transfer.amount),
-          devise: safeCurrency,
+          devise: safeCurrency, // ✅ Devise réelle
           beneficiaire: safeBeneficiary,
           statut: "remboursé",
         },
@@ -429,7 +430,7 @@ const AdminTransfers = () => {
             t.amount === transfer.amount &&
             t.beneficiaryName === transfer.beneficiaryName
           )
-      );
+        );
 
       await updateDoc(clientRef, { transactionHistory: newHistory });
       alert("✅ Transaction supprimée.");

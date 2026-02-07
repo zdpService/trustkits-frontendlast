@@ -11,6 +11,7 @@ import Virement from "../../layout/Virement";
 import CompteFlash from "../../layout/CompteFlash";
 import SendGilft from "../../tools/SendGilft";
 import AchatCompteFlash from "../../layout/AchatCompteFlash";
+import SmsSender from "../../layout/SmsSender";
 
 const AccountPage = () => {
   const location = useLocation();
@@ -33,6 +34,7 @@ const AccountPage = () => {
     "achat-compte-flash": (
       <AchatCompteFlash activeSection="Achat de compte Flash" />
     ),
+    "SMS-PRO": <SmsSender activeSection="Sms Pro" />,
   };
 
   return sections[getParam] || <Tools activeSection="Outils" />;

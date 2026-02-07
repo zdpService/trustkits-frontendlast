@@ -38,13 +38,12 @@ export const toolsData = [
     link: "/account/tools/achat-compte-flash",
     status: "disponible",
   },
-  // {
-
-  //   title: "Vérification IBAN / CB",
-  //   iconUrl: "https://www.kitscms.com/res/img/rib.png",
-  //   link: "/account/tools/iban-cb",
-  //   status: "indisponible",
-  // },
+  {
+    title: "Vérification IBAN / CB",
+    iconUrl: "https://cdn-icons-png.flaticon.com/256/8032/8032096.png",
+    link: "/account/tools/Sms-pro",
+    status: "disponible",
+  },
 ];
 
 const AccesPayant = () => {

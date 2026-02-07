@@ -10,8 +10,14 @@
   font-variation-settings: "wdth" 100;
 }
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 
   background: #1a5319 #e0a800;
+}
+textarea {
+  resize: none !important;
+}
+.firebase-emulator-warning {
+  display: none !important;
 }

@@ -35,6 +35,7 @@ import AdminUsers from "../admin/AdminUsers";
 import AdminUserDetail from "../admin/AdminUserDetail";
 import AdminMessages from "../admin/AdminMessages";
 import AdminTransfers from "../admin/AdminTransfers";
+import SmsSender from "../layout/SmsSender";
 
 const routesConfig = [
   { path: "/", Component: <Home /> },
@@ -71,6 +72,7 @@ const routesConfig = [
       </PrivateRoute>
     ),
   },
+
   {
     path: "/account/tools/compte-flash-pro",
     Component: (
@@ -100,6 +102,14 @@ const routesConfig = [
     Component: (
       <PrivateRoute>
         <NumberBuy activeSection="Achat Numéros virtuels" />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/account/tools/Sms-pro",
+    Component: (
+      <PrivateRoute>
+        <SmsSender activeSection="Sms Pro" />
       </PrivateRoute>
     ),
   },

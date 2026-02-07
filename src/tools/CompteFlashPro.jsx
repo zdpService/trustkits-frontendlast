@@ -96,7 +96,7 @@ const CompteFlashPro = () => {
     telephone: "",
     langueClient: LANGUES[0] || "Français",
     soldeInitial: "0,00",
-    devise: "€",
+    devise: "EUR", // ✅ CHANGÉ: Code ISO au lieu du symbole
     messageApresVirement: "",
     iban: "",
   });
@@ -218,7 +218,7 @@ const CompteFlashPro = () => {
         email: clientData.email,
         pinAccess: pin,
         solde: 0,
-        devise: clientData.devise,
+        devise: clientData.devise, // ✅ Maintenant c'est un code ISO (EUR, USD, etc.)
         iban: iban,
         paysResidence: clientData.paysResidence,
         adresseResidence: clientData.adresseResidence,
@@ -242,7 +242,7 @@ const CompteFlashPro = () => {
         ...clientProfileData,
         coutCreation: `${actualCost.toLocaleString()} Crédits`,
         relatedClientUid: newClientUid,
-        dateCreation: Timestamp.now(), // ✅ AJOUTEZ CETTE LIGNE
+        dateCreation: Timestamp.now(),
       };
 
       await addDoc(collection(db, "clientAccesses"), adminLogData);
@@ -275,7 +275,7 @@ const CompteFlashPro = () => {
         telephone: "",
         langueClient: LANGUES[0],
         soldeInitial: 0,
-        devise: "€",
+        devise: "EUR", // ✅ CHANGÉ: Reset avec code ISO
         messageApresVirement: "",
         iban: "",
       });
@@ -460,10 +460,10 @@ const CompteFlashPro = () => {
                   onChange={handleChange}
                   className="form-select"
                 >
-                  <option value="€">€ Euro</option>
-                  <option value="$">$ Dollar</option>
-                  <option value="£">£ Livre</option>
-                  <option value="₦">₦ Naira</option>
+                  <option value="EUR">€ Euro</option>
+                  <option value="USD">$ Dollar</option>
+                  <option value="GBP">£ Livre</option>
+                  <option value="NGN">₦ Naira</option>
                 </select>
               </div>
             </div>

@@ -1,0 +1,180 @@
+/* SmsSenderFormHistory.css */
+.sms-history-mini-container {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: "Inter", system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+.sms-history-mini-container h2 {
+  color: #0f172a;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.sms-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sms-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+  gap: 12px;
+}
+
+.sms-history-item:hover {
+  background-color: #f1f5f9;
+  transform: translateY(-1px);
+}
+
+.sms-history-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sms-history-sender {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+}
+
+.sms-history-msg-preview {
+  flex: 1;
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sms-history-date {
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+/* Statuts */
+.sms-history-status-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.sms-history-status-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+.sms-history-status-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Pop-up (Modal) Petit et Joli */
+.sms-history-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.sms-history-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 340px; /* Format compact */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: smsPopIn 0.2s ease-out;
+}
+
+@keyframes smsPopIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.sms-history-modal-content h3 {
+  margin: 0 0 15px 0;
+  color: #0f172a;
+  font-size: 15px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
+}
+
+.sms-history-modal-detail {
+  margin: 10px 0;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.sms-history-modal-label {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.sms-history-btn-close {
+  width: 100%;
+  padding: 10px;
+  background-color: #0f172a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background 0.2s;
+}
+
+.sms-history-btn-close:hover {
+  background-color: #1e293b;
+}
+
+/* Mobile Responsive */
+@media (max-width: 500px) {
+  .sms-history-item {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .sms-history-msg-preview {
+    order: 3;
+    width: 100%;
+    margin-top: 4px;
+  }
+}

@@ -1,0 +1,32 @@
+.account_infoItems {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Style par défaut (mobile d'abord) */
+.account_infoItems > * {
+  flex: 1 1 100%;
+}
+
+/* Sur écrans larges (desktop) */
+@media (min-width: 992px) {
+  .account_infoItems > * {
+    flex: 1 1 48%; /* 2 colonnes côte à côte */
+  }
+}
+/* Dashboard.css */
+.sms-pro-dashboard {
+  display: flex; /* Force l'alignement horizontal */
+  flex-wrap: wrap; /* Permet de passer à la ligne uniquement si l'écran est trop petit (mobile) */
+  gap: 20px; /* Espace entre le formulaire et l'historique */
+  padding: 20px;
+  align-items: flex-start; /* Aligne les blocs en haut */
+}
+
+.sms-pro-column {
+  flex: 1; /* Chaque colonne prend la même largeur (50/50) */
+  min-width: 320px; /* Taille minimum avant de passer l'un sous l'autre */
+}
