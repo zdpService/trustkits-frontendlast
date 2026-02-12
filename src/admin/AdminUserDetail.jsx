@@ -64,6 +64,12 @@ const SERVICES_CATALOG = [
     description: "Cost to purchase a virtual phone number.",
     defaultCost: 2000, // Example cost, adjust as needed
   },
+  {
+    id: "verification_iban", // NOUVEAU: Ajout de la vérification IBAN pour matcher le front
+    label: "Vérification IBAN / CB",
+    description: "Vérification des informations bancaires.",
+    defaultCost: 500, 
+  },
 ];
 
 const AdminUserDetail = () => {
