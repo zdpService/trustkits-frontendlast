@@ -44,9 +44,9 @@ export const toolsData = [
     status: "disponible",
   },
   {
-    id: "verification_iban", // NOUVEAU
-    title: "Vérification IBAN / CB",
-    iconUrl: "https://cdn-icons-png.flaticon.com/256/8032/8032096.png",
+    id: "sms pro", // NOUVEAU
+    title: "SMS Pro",
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/8032/8032096.png",
     link: "/account/tools/Sms-pro",
     status: "disponible",
   },

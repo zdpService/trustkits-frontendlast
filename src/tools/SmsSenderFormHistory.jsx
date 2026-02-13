@@ -5,6 +5,9 @@ import {
   orderBy,
   onSnapshot,
   limit,
+  getDocs,    // 👈 Nouvel import
+  deleteDoc,  // 👈 Nouvel import
+  doc         // 👈 Nouvel import
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import "./SmsSenderFormHistory.css";
@@ -13,6 +16,7 @@ const SmsSenderFormHistory = () => {
   const [messages, setMessages] = useState([]);
   const [selectedSms, setSelectedSms] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false); // État pour le chargement suppression
 
   useEffect(() => {
     // Requête Firebase avec limite de 50 messages
@@ -42,6 +46,34 @@ const SmsSenderFormHistory = () => {
     return () => unsubscribe();
   }, []);
 
+  // 🗑️ Fonction pour tout supprimer
+  const handleDeleteAll = async () => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer TOUT l'historique ? Cette action est irréversible.")) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      // 1. Récupérer tous les documents de l'historique
+      const querySnapshot = await getDocs(collection(db, "sms_history"));
+      
+      // 2. Créer une liste de promesses de suppression
+      const deletePromises = querySnapshot.docs.map((document) => 
+        deleteDoc(doc(db, "sms_history", document.id))
+      );
+
+      // 3. Exécuter toutes les suppressions
+      await Promise.all(deletePromises);
+      
+      // Pas besoin de mettre à jour 'messages' manuellement car onSnapshot le fera
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+      alert("Une erreur est survenue lors de la suppression.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const formatDate = (timestamp) => {
     if (!timestamp) return "En attente...";
 
@@ -60,7 +92,47 @@ const SmsSenderFormHistory = () => {
 
   return (
     <div className="sms-history-mini-container">
-      <h2>Historique ({messages.length})</h2>
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center",
+        marginBottom: "15px"
+      }}>
+        <h2 style={{ margin: 0 }}>Historique ({messages.length})</h2>
+        
+        {/* BOUTON SUPPRIMER TOUT */}
+        {messages.length > 0 && (
+          <button 
+            onClick={handleDeleteAll}
+            disabled={isDeleting}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: isDeleting ? "not-allowed" : "pointer",
+              padding: "8px",
+              color: "#ef4444", // Rouge
+              display: "flex",
+              alignItems: "center",
+              fontSize: "12px",
+              fontWeight: "bold",
+              opacity: isDeleting ? 0.5 : 1
+            }}
+            title="Tout supprimer"
+          >
+            {isDeleting ? "Suppression..." : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                <span style={{ marginLeft: "4px" }}>Tout effacer</span>
+              </>
+            )}
+          </button>
+        )}
+      </div>
 
       {loading ? (
         <div style={{ textAlign: "center", padding: "20px" }}>
@@ -73,7 +145,7 @@ const SmsSenderFormHistory = () => {
           {messages.length === 0 && (
             <div style={{ textAlign: "center", padding: "30px" }}>
               <p style={{ fontSize: "14px", color: "#94a3b8" }}>
-                📭 Aucun message envoyé pour le moment
+                 Aucun message envoyé pour le moment
               </p>
             </div>
           )}
@@ -98,9 +170,9 @@ const SmsSenderFormHistory = () => {
               </div>
 
               <p className="sms-history-msg-preview">
-                {item.message.length > 60
+                {item.message?.length > 60
                   ? item.message.substring(0, 60) + "..."
-                  : item.message}
+                  : item.message || "Message vide"}
               </p>
 
               <div
@@ -132,7 +204,7 @@ const SmsSenderFormHistory = () => {
             className="sms-history-modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3>📱 Détails du message</h3>
+            <h3> Détails du message</h3>
 
             <div className="sms-history-modal-detail">
               <span className="sms-history-modal-label">EXPÉDITEUR</span>
