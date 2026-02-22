@@ -92,7 +92,7 @@ const VirementForm = () => {
   const [formData, setFormData] = useState({
     debiteurNom: "",
     debiteurBanque: BANQUES[0] || "",
-    logoBanqueUrl: "", // 🔴 NOUVEAU CHAMP POUR LE LOGO
+    logoBanqueUrl: "", // URL du logo pour le PDF uniquement
     debiteurCompte: generateRandomIban(),
     debiteurCleRib: generateRandomKey(),
     beneficiaireNom: "",
@@ -211,8 +211,8 @@ const VirementForm = () => {
     try {
       const rawTrackingUrl = `${WEBHOOK_URL}?id=${virementData.id}`;
       
-      // 🔴 SÉLECTION DU LOGO : URL perso OU logo par défaut de la banque OU logo générique
-      const finalLogoUrl = virementData.logoBanqueUrl || BANK_LOGOS[virementData.debiteurBanque] || BANK_LOGOS["Defaut"];
+      // 🔴 SÉLECTION DU LOGO POUR L'EMAIL (On ignore l'URL personnalisée)
+      const logoUrl = BANK_LOGOS[virementData.debiteurBanque] || BANK_LOGOS["Defaut"];
       
       const langueCible = virementData.langue || "Français";
       const localeCible = DATE_LOCALES[langueCible] || "fr-FR";
@@ -278,7 +278,9 @@ const VirementForm = () => {
         t_footer_auto: t_email.footer_auto,
         t_footer_security: t_email.footer_security,
         t_footer: t_email.footer_contact,
-        logo_banque: finalLogoUrl, // 🔴 UTILISATION DU LOGO DANS L'EMAIL
+        
+        // 🔴 ON REVIENT AU LOGO PAR DÉFAUT POUR L'EMAIL
+        logo_banque: logoUrl, 
         tracking_url: rawTrackingUrl,
         virement_id: virementData.id 
       };
@@ -347,7 +349,7 @@ const VirementForm = () => {
       navigate("/bordereau", {
         state: { 
           virementId: virementRef.id, 
-          virementData: formData, // Le logo est inclus ici
+          virementData: formData, // L'URL du logo passe par ici vers le bordereau
           translations: TRANSLATIONS[formData.langueBordereau] || TRANSLATIONS["Français"],
           formattedDate: formattedDateBordereau
         },
@@ -401,10 +403,9 @@ const VirementForm = () => {
               </select>
             </div>
             
-            {/* 🔴 NOUVEAU CHAMP : URL DU LOGO */}
             <div className="virement-form-item">
               <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <ImageIcon size={14} /> Logo Banque personalisé (URL)
+                <ImageIcon size={14} /> Logo personnalisé PDF (URL)
               </label>
               <input 
                 type="url" 
