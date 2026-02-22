@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // 👈 Ajout de useEffect
+import { useState, useEffect } from "react";
 import { 
   collection, 
   addDoc, 
@@ -20,7 +20,7 @@ const SmsSenderForm = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: "", message: "" });
 
-  // 💰 Coût d'un SMS
+  // 💰 Coût d'un SMS (Ajuste selon le prix réel de Termii, souvent moins cher)
   const SMS_COST = 2500; 
 
   // ✨ EFFET POUR SUPPRIMER LE MESSAGE APRÈS 5 SECONDES
@@ -28,9 +28,7 @@ const SmsSenderForm = () => {
     if (status.message) {
       const timer = setTimeout(() => {
         setStatus({ type: "", message: "" });
-      }, 5000); // 5000ms = 5 secondes
-
-      // Nettoyage du timer si le composant est démonté ou si le status change
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [status]);
@@ -43,7 +41,6 @@ const SmsSenderForm = () => {
     }));
   };
 
-  // Fonction pour sauvegarder dans Firebase
   const saveToFirebase = async (smsData, userId) => {
     try {
       await addDoc(collection(db, "sms_history"), {
@@ -52,10 +49,10 @@ const SmsSenderForm = () => {
         receiverNumber: smsData.to,
         message: smsData.text, 
         status: smsData.status,
-        messageId: smsData.messageId || null,
+        messageId: smsData.messageId || "ID_INCONNU",
+        provider: "Termii", // Utile pour savoir quel service a été utilisé
         createdAt: serverTimestamp(),
       });
-      console.log("✅ SMS sauvegardé dans Firebase");
     } catch (error) {
       console.error("❌ Erreur Firebase:", error);
     }
@@ -64,7 +61,6 @@ const SmsSenderForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // 1. Vérifier si l'utilisateur est connecté
     const currentUser = auth.currentUser;
     if (!currentUser) {
       setStatus({ type: "error", message: "Vous devez être connecté." });
@@ -72,34 +68,29 @@ const SmsSenderForm = () => {
     }
 
     setLoading(true);
-    setStatus({ type: "", message: "" }); // Reset avant nouvel envoi
+    setStatus({ type: "", message: "" });
 
     try {
-      // 2. Vérifier le solde de Coins
+      // 1. Vérification Solde
       const userRef = doc(db, "users", currentUser.uid);
       const userSnap = await getDoc(userRef);
       
-      if (!userSnap.exists()) {
-        throw new Error("Utilisateur introuvable");
-      }
+      if (!userSnap.exists()) throw new Error("Utilisateur introuvable");
 
-      const userData = userSnap.data();
-      const currentBalance = userData.coins || 0;
+      const currentBalance = userSnap.data().coins || 0;
 
       if (currentBalance < SMS_COST) {
-        setStatus({ type: "error", message: `Solde insuffisant. Coût: ${SMS_COST} Coins.` });
+        setStatus({ type: "error", message: `Solde insuffisant. Il faut ${SMS_COST} Coins.` });
         setLoading(false);
         return;
       }
 
-      // 3. Appel à l'API Backend
+      // 2. Envoi au Backend
       const response = await fetch("http://localhost:5000/api/send-sms", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: formData.senderName, 
+          from: formData.senderName, // Si vide, le backend mettra "N-Alert"
           to: formData.phoneNumber,
           message: formData.message, 
         }),
@@ -107,38 +98,25 @@ const SmsSenderForm = () => {
 
       const data = await response.json();
 
-      if (response.ok) {
-        // 4. Succès : Débiter les Coins
-        await updateDoc(userRef, {
-          coins: increment(-SMS_COST)
-        });
+      if (response.ok && data.success) {
+        // 3. Succès : Débit et Historique
+        await updateDoc(userRef, { coins: increment(-SMS_COST) });
 
-        setStatus({
-          type: "success",
-          message: "SMS envoyé avec succès ! ✓",
-        });
+        setStatus({ type: "success", message: "SMS envoyé avec succès ! ✓" });
 
-        // 5. Sauvegarder dans l'historique
         await saveToFirebase({
-          from: formData.senderName,
+          from: formData.senderName || "N-Alert",
           to: formData.phoneNumber,
           text: formData.message,
           status: "Succès",
-          messageId: data.details?.messages?.[0]?.messageId || "ID_INCONNU",
+          messageId: data.messageId,
         }, currentUser.uid);
 
-        // Réinitialiser le formulaire
-        setFormData({
-          senderName: "",
-          phoneNumber: "",
-          message: "",
-        });
+        setFormData({ senderName: "", phoneNumber: "", message: "" });
       } else {
-        // Échec API
-        setStatus({
-          type: "error",
-          message: data.error || "Erreur lors de l'envoi",
-        });
+        // 4. Gestion d'erreur API
+        const errorMsg = data.error || "Erreur technique";
+        setStatus({ type: "error", message: errorMsg });
 
         await saveToFirebase({
           from: formData.senderName,
@@ -150,10 +128,7 @@ const SmsSenderForm = () => {
       }
     } catch (error) {
       console.error(error);
-      setStatus({
-        type: "error",
-        message: "Erreur de connexion au serveur",
-      });
+      setStatus({ type: "error", message: "Erreur de connexion au serveur" });
     } finally {
       setLoading(false);
     }
@@ -161,11 +136,11 @@ const SmsSenderForm = () => {
 
   return (
     <div className="sms-mini-container">
-      <h2>Envoi de SMS Pro</h2>
+      <h2>Envoi SMS (Termii)</h2>
 
       <form onSubmit={handleSubmit}>
         <div className="form-field">
-          <label>NOM DE L'EXPÉDITEUR (Alphanumérique)</label>
+          <label>NOM DE L'EXPÉDITEUR</label>
           <input
             className="input-style"
             type="text"
@@ -173,12 +148,11 @@ const SmsSenderForm = () => {
             value={formData.senderName}
             onChange={handleChange}
             maxLength={11} 
-            placeholder="Ex: flowerExp"
-            required
+            placeholder="Ex: N-Alert (Défaut)"
             disabled={loading}
           />
-          <small style={{ color: "#666", fontSize: "12px" }}>
-            Max 11 caractères (Lettres et chiffres uniquement)
+          <small style={{ color: "#666", fontSize: "11px" }}>
+            Laissez vide pour utiliser le défaut si non validé.
           </small>
         </div>
 
@@ -194,9 +168,6 @@ const SmsSenderForm = () => {
             required
             disabled={loading}
           />
-          <small style={{ color: "#666", fontSize: "12px" }}>
-            Format international (sans +)
-          </small>
         </div>
 
         <div className="form-field">
@@ -223,10 +194,8 @@ const SmsSenderForm = () => {
               borderRadius: "4px",
               backgroundColor: status.type === "success" ? "#d4edda" : "#f8d7da",
               color: status.type === "success" ? "#155724" : "#721c24",
-              border: `1px solid ${
-                status.type === "success" ? "#c3e6cb" : "#f5c6cb"
-              }`,
-              transition: "opacity 0.5s ease-in-out" // Animation optionnelle
+              border: `1px solid ${status.type === "success" ? "#c3e6cb" : "#f5c6cb"}`,
+              transition: "opacity 0.5s ease-in-out"
             }}
           >
             {status.message}
@@ -237,10 +206,7 @@ const SmsSenderForm = () => {
           type="submit"
           className="btn-send"
           disabled={loading}
-          style={{
-            opacity: loading ? 0.6 : 1,
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
+          style={{ opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}
         >
           {loading ? "ENVOI EN COURS..." : `ENVOYER (${SMS_COST} Coins)`}
         </button>

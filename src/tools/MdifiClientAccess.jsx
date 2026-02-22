@@ -6,20 +6,17 @@ import {
   getDocs,
   doc,
   updateDoc,
-  deleteDoc,
+  // deleteDoc supprimé car on ne détruit plus physiquement les données
 } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 
-// Import des traductions
 import { TRANSLATIONS } from "../translate/translations"; 
 import { NOT_FOUND_TRANSLATIONS } from "../translate/NotfoundTranslate";
 
-// Constantes EmailJS
-const EMAILJS_SERVICE_ID = "service_7514rk8";
+const EMAILJS_SERVICE_ID = "service_ua2vb9u";
 const EMAILJS_TEMPLATE_ID = "template_ebp1pjn"; 
 const EMAILJS_PUBLIC_KEY = "UWYvET8eDModmPseE";
 
-// Options de date pour le formatage
 const DATE_OPTIONS = { day: '2-digit', month: '2-digit', year: 'numeric' };
 
 const MdifiClientAccess = () => {
@@ -33,10 +30,14 @@ const MdifiClientAccess = () => {
   const fetchVirements = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "virements"));
-      const data = querySnapshot.docs.map((docSnap) => ({
-        id: docSnap.id,
-        ...docSnap.data(),
-      }));
+      const data = querySnapshot.docs
+        .map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+        }))
+        // 🔴 On filtre ici aussi pour que l'admin ne voie plus les virements masqués
+        .filter(v => v.masquePourClient !== true);
+        
       setVirements(data);
     } catch (error) {
       console.error("Erreur lors du chargement des virements :", error);
@@ -72,50 +73,36 @@ const MdifiClientAccess = () => {
       const v = virements.find((item) => item.id === selectedId);
 
       if (action === "modifier") {
-        // 1. Mise à jour dans Firebase
         await updateDoc(virementRef, {
           statutVirement: statut,
           statutMessage: statut === "Effectué" || statut === "Rejeté" ? "Envoyé" : "En attente",
-          motif: motif, // Met à jour le motif si modifié par l'admin
+          motif: motif, 
         });
 
-        // 2. Préparation et Envoi de l'email
         if (statut === "Rejeté" || statut === "Effectué") {
-          
-          // Détection de la langue du client
           const clientLang = v.langue || "Français";
-          
-          // Récupération des dictionnaires de traduction
           const t_email = TRANSLATIONS[clientLang] || TRANSLATIONS["Français"];
           const t_notfound = NOT_FOUND_TRANSLATIONS[clientLang] || NOT_FOUND_TRANSLATIONS["Français"];
 
-          // Formatage du montant (ex: 2 000,00 EUR)
           const montantFormate = new Intl.NumberFormat(clientLang === "Anglais" ? "en-US" : "fr-FR", {
             style: "currency", currency: v.devise || "EUR", minimumFractionDigits: 2
           }).format(v.montant);
 
-          // Formatage de la date (ex: 07/02/2026)
           const dateEmail = new Date(v.dateExecution).toLocaleDateString("fr-FR", DATE_OPTIONS);
 
-          // Variables dynamiques pour l'email
           let subjectLine = "";
           let introMessage = "";
           let greetingText = "";
           let badgeText = "";
-          
-          // Variables de style (Couleurs)
-          let statusColor = "#003366"; // Bleu par défaut
+          let statusColor = "#003366"; 
           let badgeBg = "#e0f2fe";
           let badgeColor = "#0369a1";
 
-          // --- LOGIQUE DE REJET (ROUGE) ---
           if (statut === "Rejeté") {
             subjectLine = t_notfound.subject;
-            greetingText = t_notfound.greeting; // "Bonjour"
-            badgeText = t_notfound.status_badge || "REJETÉ"; // "FONDS BLOQUÉS"
+            greetingText = t_notfound.greeting; 
+            badgeText = t_notfound.status_badge || "REJETÉ"; 
 
-            // On prend le corps du message de rejet et on remplace les variables
-            // Note: On utilise message_body ou message selon ce que vous avez mis dans NotfoundTranslate
             let rawMessage = t_notfound.message_body || t_notfound.message; 
             
             introMessage = rawMessage
@@ -125,15 +112,13 @@ const MdifiClientAccess = () => {
               .replace("{{date}}", dateEmail)
               .replace("{{iban}}", v.beneficiaireIban)
               .replace("{{bank}}", v.beneficiaireBanqueNom)
-              .replace("{{recipient}}", v.beneficiaireNom); // Remplacement de sécurité si 2 fois
+              .replace("{{recipient}}", v.beneficiaireNom); 
 
-            // Couleurs d'alerte
-            statusColor = "#b91c1c"; // Rouge foncé
-            badgeBg = "#fee2e2";     // Rouge clair fond
-            badgeColor = "#991b1b";  // Rouge texte
+            statusColor = "#b91c1c"; 
+            badgeBg = "#fee2e2";    
+            badgeColor = "#991b1b";  
 
           } 
-          // --- LOGIQUE EFFECTUÉ (BLEU) ---
           else {
             subjectLine = t_email.email_subject;
             greetingText = t_email.greeting;
@@ -143,59 +128,39 @@ const MdifiClientAccess = () => {
             introMessage = introMessage.replace("{{debiteurNom}}", v.debiteurNom);
           }
 
-          // Construction de l'objet pour EmailJS
           const templateParams = {
             to_email: v.emailBeneficiaire,
-            
-            // En-têtes
             subject: subjectLine,
             logo_banque: "https://cdn-icons-png.flaticon.com/128/3936/3936759.png",
             debiteurBanque: v.debiteurBanque || "Banque",
-            
-            // Corps du texte
             t_greeting: greetingText,
-            t_intro: introMessage, // Le message complet (rejet ou succès)
-            
-            // Carte Montant
+            t_intro: introMessage, 
             t_label_amount: t_email.label_amount,
             montant: montantFormate,
-            statutVirement: badgeText, // "FONDS BLOQUÉS" ou "EFFECTUÉ"
-            status_color: statusColor, // Couleur header
+            statutVirement: badgeText, 
+            status_color: statusColor, 
             badge_bg: badgeBg,
             badge_color: badgeColor,
-
-            // Tableau Détails
             t_label_sender: t_email.label_sender,
             debiteurNom: v.debiteurNom,
-
             t_label_beneficiary_name: t_email.label_beneficiary_name || "Bénéficiaire",
             beneficiaireNom: v.beneficiaireNom,
-
             t_label_execution_date: t_email.label_execution_date || "Date",
             t_formatted_date: dateEmail,
-
             t_label_motive: t_email.label_motive,
-            motif: motif || v.motif, // Motif personnalisé (ex: Raison du rejet)
-
+            motif: motif || v.motif, 
             t_label_iban: t_email.label_iban || "IBAN",
             iban: v.beneficiaireIban,
-
             t_label_bic: t_email.label_bic || "BIC",
             bic: v.beneficiaireBic,
-
             t_label_key: t_email.label_key,
             cleRib: v.beneficiaireCleRib,
-
             t_label_bank: t_email.label_bank,
             beneficiaireBanqueNom: v.beneficiaireBanqueNom,
-
             t_label_bank_address: t_email.label_bank_address || "Adresse",
             beneficiaireBanqueAdresse: v.beneficiaireBanqueAdresse,
-
             t_label_country: t_email.label_country || "Pays",
             paysDestination: v.paysDestination,
-
-            // Pied de page
             t_footer_auto: t_email.footer_auto,
             t_footer: t_email.footer_contact,
             t_footer_security: t_email.footer_security,
@@ -203,7 +168,6 @@ const MdifiClientAccess = () => {
             tracking_url: `https://hook.eu1.make.com/cuwiz9924ms451u5n7eegtmj2is21lwh?id=${v.id}`
           };
 
-          // Envoi effectif
           await emailjs.send(
             EMAILJS_SERVICE_ID,
             EMAILJS_TEMPLATE_ID,
@@ -217,8 +181,11 @@ const MdifiClientAccess = () => {
         }
 
       } else if (action === "supprimer") {
-        await deleteDoc(virementRef);
-        alert("🗑️ Virement supprimé !");
+        // 🔴 CORRECTION ICI : Soft Delete pour ne pas faire crasher Make !
+        await updateDoc(virementRef, {
+          masquePourClient: true
+        });
+        alert("🗑️ Virement masqué avec succès !");
         setSelectedId("");
       }
 

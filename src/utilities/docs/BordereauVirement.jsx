@@ -42,6 +42,9 @@ const normalizeKey = (str) => {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[\s'-]/g, "_");
 };
 
+// 🔴 Logo par défaut global si aucune URL n'est fournie
+const DEFAULT_LOGO_URL = "https://cdn-icons-png.flaticon.com/128/3936/3936759.png";
+
 const BordereauVirement = () => {
   const location = useLocation();
   const [virement, setVirement] = useState(null);
@@ -112,6 +115,8 @@ const BordereauVirement = () => {
         beneficiaireBanqueAdresse: virementData.beneficiaireBanqueAdresse || "",
         dateExecution: displayDate,
         signatureSrc: imageIgnature,
+        // 🔴 On récupère l'URL du logo venant du formulaire
+        logoBanqueUrl: virementData.logoBanqueUrl || "" 
       });
       setLoading(false);
     };
@@ -175,6 +180,9 @@ const BordereauVirement = () => {
 
   if (loading || !virement) return <Loading />;
 
+  // 🔴 Choix du logo final (Perso OU Défaut)
+  const finalLogo = virement.logoBanqueUrl ? virement.logoBanqueUrl : DEFAULT_LOGO_URL;
+
   return (
     <AccountLayout>
       <div className="bordereaux-container">
@@ -189,7 +197,8 @@ const BordereauVirement = () => {
               {/* EN-TÊTE */}
               <div className="items_logo">
                 <div className="logo">
-                  <img width="80px" height="80px" src="https://upload.wikimedia.org/wikipedia/commons/b/b2/BNP_Paribas.png" alt="Logo" />
+                  {/* 🔴 Application de l'image dynamique */}
+                  <img width="80px" height="80px" src={finalLogo} alt="Logo de la banque" style={{objectFit: 'contain'}} />
                 </div>
                 <div><h4>{t.header_title}</h4></div>
               </div>

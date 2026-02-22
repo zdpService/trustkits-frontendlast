@@ -3,11 +3,10 @@ import "./VirementFormHistory.css";
 import { db } from "../firebase/config";
 import {
   collection,
-  deleteDoc,
-  updateDoc,
+  updateDoc, // 🔴 Remplacement de deleteDoc par updateDoc
   doc,
   Timestamp,
-  onSnapshot, // ✅ IMPORTANT : Pour le temps réel
+  onSnapshot, 
 } from "firebase/firestore";
 import Loading from "../utilities/laoding/Loading";
 import { Clock, MailOpen, Ban, Trash2, XCircle, Send, AlertCircle } from "lucide-react";
@@ -17,7 +16,6 @@ const VirementFormHistory = () => {
   const [selectedVirement, setSelectedVirement] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Formatage de date court
   const formatShortDate = (timestamp) => {
     if (!timestamp) return "";
     let dateObj;
@@ -36,22 +34,22 @@ const VirementFormHistory = () => {
     return `le ${day}/${month}/${year} à ${hours}:${minutes}`;
   };
 
-  // ✅ UTILISATION DE onSnapshot AU LIEU DE getDocs
-  // Cela permet de voir le statut passer à "Ouvert" instantanément sans rafraîchir
   useEffect(() => {
     setLoading(true);
     
-    // Écoute de la collection en temps réel
     const unsubscribe = onSnapshot(collection(db, "virements"), (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })).sort((a, b) => {
-        // Tri du plus récent au plus ancien
-        const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : new Date(a.createdAt).getTime();
-        const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : new Date(b.createdAt).getTime();
-        return dateB - dateA;
-      });
+      const data = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        // 🔴 FILTRE MAGIQUE : On cache les documents marqués comme supprimés
+        .filter(v => v.masquePourClient !== true)
+        .sort((a, b) => {
+          const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : new Date(a.createdAt).getTime();
+          const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
 
       setVirements(data);
       setLoading(false);
@@ -60,7 +58,6 @@ const VirementFormHistory = () => {
       setLoading(false);
     });
 
-    // Nettoyage de l'écouteur
     return () => unsubscribe();
   }, []);
 
@@ -72,7 +69,6 @@ const VirementFormHistory = () => {
     setSelectedVirement(null);
   };
 
-  // Annuler l'envoi du message
   const handleCancelMessage = async (e, virementId) => {
     e.stopPropagation();
     if (window.confirm("Êtes-vous sûr de vouloir annuler l'envoi de ce message ?")) {
@@ -81,7 +77,6 @@ const VirementFormHistory = () => {
         await updateDoc(virementRef, {
           statutMessage: "Annulé"
         });
-        // Pas besoin de mettre à jour le state manuellement, onSnapshot le fera
       } catch (error) {
         console.error("Erreur lors de l'annulation :", error);
         alert("Impossible d'annuler pour le moment.");
@@ -90,11 +85,13 @@ const VirementFormHistory = () => {
   };
 
   const handleClearHistory = async () => {
-    if (window.confirm("Voulez-vous vraiment supprimer tout l'historique ?")) {
+    if (window.confirm("Voulez-vous vraiment masquer tout l'historique ?")) {
       try {
-        // Suppression un par un (Firebase ne permet pas de tout supprimer d'un coup côté client facilement)
-        const deletePromises = virements.map(v => deleteDoc(doc(db, "virements", v.id)));
-        await Promise.all(deletePromises);
+        // 🔴 SOFT DELETE : On ne détruit plus, on cache. Make pourra toujours les trouver !
+        const hidePromises = virements.map(v => 
+          updateDoc(doc(db, "virements", v.id), { masquePourClient: true })
+        );
+        await Promise.all(hidePromises);
       } catch (error) {
         console.error("Erreur lors de la suppression :", error);
       }
@@ -116,7 +113,6 @@ const VirementFormHistory = () => {
       ) : (
         <ul className="flasher-virement-list">
           {virements.map((v) => {
-            // Récupération du statut MESSAGE
             const statutMsg = v.statutMessage || "En attente";
             
             return (
@@ -125,16 +121,12 @@ const VirementFormHistory = () => {
                 onClick={() => openModal(v)}
                 className="flasher-virement-item"
               >
-                {/* Informations Générales */}
                 <div className="flasher-virement-info-main">
                   <strong>{v.beneficiaireNom || v.beneficiaire}</strong>
                   <span className="flasher-virement-amount">{v.montant} {v.devise}</span>
                 </div>
 
-                {/* --- SECTION STATUT MESSAGE --- */}
                 <div className="flasher-virement-status-section">
-                  
-                  {/* 1. MESSAGE EN ATTENTE */}
                   {statutMsg === "En attente" && (
                     <div className="flasher-status-group">
                       <div className="flasher-status-badge flasher-pending">
@@ -154,7 +146,6 @@ const VirementFormHistory = () => {
                     </div>
                   )}
 
-                  {/* 2. MESSAGE ENVOYÉ */}
                   {statutMsg === "Envoyé" && (
                     <div className="flasher-status-group">
                       <div className="flasher-status-badge flasher-sent">
@@ -167,7 +158,6 @@ const VirementFormHistory = () => {
                     </div>
                   )}
 
-                  {/* 3. MESSAGE OUVERT / VU (C'est ici que ça s'affichera automatiquement) */}
                   {(statutMsg === "Ouvert" || statutMsg === "Vu") && (
                     <div className="flasher-status-group">
                       <div className="flasher-status-badge flasher-opened">
@@ -180,7 +170,6 @@ const VirementFormHistory = () => {
                     </div>
                   )}
 
-                  {/* 4. MESSAGE ANNULÉ */}
                   {statutMsg === "Annulé" && (
                     <div className="flasher-status-group">
                       <div className="flasher-status-badge flasher-cancelled">
@@ -193,7 +182,6 @@ const VirementFormHistory = () => {
                     </div>
                   )}
 
-                  {/* 5. ÉCHEC */}
                   {statutMsg === "Échec d'envoi" && (
                     <div className="flasher-status-group">
                       <div className="flasher-status-badge flasher-failed">
@@ -205,7 +193,6 @@ const VirementFormHistory = () => {
                       </span>
                     </div>
                   )}
-
                 </div>
               </li>
             );
@@ -213,7 +200,6 @@ const VirementFormHistory = () => {
         </ul>
       )}
 
-      {/* --- MODAL DE DÉTAILS --- */}
       {selectedVirement && (
         <div className="flasher-modal-overlay" onClick={closeModal}>
           <div className="flasher-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -230,7 +216,6 @@ const VirementFormHistory = () => {
                   {selectedVirement.montant} {selectedVirement.devise}
                 </span>
                 
-                {/* Statut Virement */}
                 <span className={`flasher-status-pill ${
                   selectedVirement.statutVirement === "Effectué" ? "flasher-pill-success" : 
                   selectedVirement.statutVirement === "En cours" ? "flasher-pill-progress" : 
@@ -240,7 +225,6 @@ const VirementFormHistory = () => {
                   Virement: {selectedVirement.statutVirement || "En attente"}
                 </span>
                 
-                {/* Statut Message */}
                 <span className={`flasher-status-pill ${
                   (selectedVirement.statutMessage === "Ouvert" || selectedVirement.statutMessage === "Vu") ? "flasher-pill-opened" : 
                   selectedVirement.statutMessage === "Envoyé" ? "flasher-pill-sent" :
@@ -272,7 +256,6 @@ const VirementFormHistory = () => {
                       <span className="flasher-label">Référence :</span>
                       <span className="flasher-value">{selectedVirement.reference}</span>
                     </div>
-                    {/* Affichage de la date d'ouverture si dispo */}
                     {selectedVirement.openedAt && (
                       <div className="flasher-detail-row">
                         <span className="flasher-label">Lu le :</span>

@@ -16,10 +16,10 @@
 }
 
 .secondary-btn:hover {
-  background-color: #c00;
+  background-color: #3b82f6;
   color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(204, 0, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .secondary-btn:active {
