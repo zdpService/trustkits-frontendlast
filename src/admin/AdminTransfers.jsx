@@ -8,6 +8,7 @@ import {
   RefreshCw,
   DollarSign,
   Trash2,
+  Lock, // ✅ Ajout de l'icône Lock
 } from "lucide-react";
 import "./AdminTransfers.css";
 
@@ -39,6 +40,11 @@ const AdminTransfers = () => {
   const [rejectionReason, setRejectionReason] = useState("");
   const [refundOption, setRefundOption] = useState("immediate");
 
+  // ✅ Nouveaux états pour gérer le blocage du client
+  const [showBlockModal, setShowBlockModal] = useState(null);
+  const [isAccountBlocked, setIsAccountBlocked] = useState(false);
+  const [feePercentage, setFeePercentage] = useState("");
+
   const SERVICE_ID = "service_csghyj7";
   const TEMPLATE_ID = "template_37xb6yj";
   const PUBLIC_KEY = "fzwU8-p8-20lNC6Mr";
@@ -46,11 +52,9 @@ const AdminTransfers = () => {
   // --- 1. NOTIFICATION SYSTEM (UPDATED FOR I18N) ---
   const createClientNotification = async (clientId, notificationData) => {
     try {
-      // ✅ CORRECTION : Ne pas forcer de devise par défaut
       const cleanMetadata = notificationData.metadata
         ? {
             ...notificationData.metadata,
-            // Ne pas ajouter de devise par défaut - utiliser celle fournie
             beneficiaire: notificationData.metadata.beneficiaire || "Inconnu",
             montant: notificationData.metadata.montant || 0,
             forceMessage: false,
@@ -97,6 +101,9 @@ const AdminTransfers = () => {
             }`,
             clientEmail: clientData.email,
             currency: transaction.currency || "€",
+            // ✅ On récupère les infos de blocage du client pour les avoir sous la main
+            clientIsBlocked: clientData.isBlocked || false,
+            clientBlockPercentage: clientData.blockPercentage || "",
             displayDate: transaction.date
               ? typeof transaction.date === "string"
                 ? transaction.date
@@ -175,7 +182,7 @@ const AdminTransfers = () => {
     completedTransfers,
   ]);
 
-  // --- 3. EMAIL (RESTE EN FRANÇAIS CAR ADMIN -> CLIENT) ---
+  // --- 3. EMAIL ---
   const sendProfessionalEmail = async (data, type) => {
     try {
       const templateParams = {
@@ -250,7 +257,6 @@ const AdminTransfers = () => {
   };
 
   // --- ACTIONS ---
-
   const handleApproveTransfer = async (transfer) => {
     if (
       !window.confirm(
@@ -268,8 +274,7 @@ const AdminTransfers = () => {
     });
 
     if (success) {
-      // ✅ CORRECTION : Utiliser la devise réelle de la transaction
-      const safeCurrency = transfer.currency || "$"; // Fallback vers $ si pas de devise
+      const safeCurrency = transfer.currency || "$";
       const safeBeneficiary = transfer.beneficiaryName || "Inconnu";
 
       await createClientNotification(transfer.clientId, {
@@ -278,7 +283,7 @@ const AdminTransfers = () => {
         message: "notifications.msg_sent_success",
         metadata: {
           montant: Math.abs(transfer.amount),
-          devise: safeCurrency, // ✅ Devise réelle
+          devise: safeCurrency,
           beneficiaire: safeBeneficiary,
           statut: "completed",
         },
@@ -298,7 +303,6 @@ const AdminTransfers = () => {
     setRejectionReason("");
   };
 
-  // --- REJET AVEC TRADUCTION ---
   const confirmRejectTransfer = async () => {
     if (!rejectionReason.trim()) {
       alert("⚠️ Motif requis");
@@ -326,33 +330,30 @@ const AdminTransfers = () => {
     );
 
     if (success) {
-      // ✅ CORRECTION : Utiliser la devise réelle de la transaction
       const safeCurrency = transfer.currency || "$";
       const safeBeneficiary = transfer.beneficiaryName || "Inconnu";
 
       if (isRefund) {
-        // CAS 1: Remboursé
         await createClientNotification(transfer.clientId, {
           type: "credit",
           title: "notifications.title_refunded",
           message: "notifications.msg_refunded",
           metadata: {
             montant: Math.abs(transfer.amount),
-            devise: safeCurrency, // ✅ Devise réelle
+            devise: safeCurrency,
             beneficiaire: safeBeneficiary,
             statut: "remboursé",
             motif: rejectionReason,
           },
         });
       } else {
-        // CAS 2: Rejeté sans remboursement
         await createClientNotification(transfer.clientId, {
           type: "error",
           title: "notifications.title_rejected",
           message: "notifications.msg_sent_failed",
           metadata: {
             montant: Math.abs(transfer.amount),
-            devise: safeCurrency, // ✅ Devise réelle
+            devise: safeCurrency,
             beneficiaire: safeBeneficiary,
             statut: "rejeté",
             motif: rejectionReason,
@@ -369,7 +370,6 @@ const AdminTransfers = () => {
     setProcessing(false);
   };
 
-  // --- REMBOURSEMENT MANUEL AVEC TRADUCTION ---
   const handleRefundTransfer = async (transfer) => {
     if (!window.confirm(`Rembourser ${Math.abs(transfer.amount)} au client ?`))
       return;
@@ -384,7 +384,6 @@ const AdminTransfers = () => {
     );
 
     if (success) {
-      // ✅ CORRECTION : Utiliser la devise réelle de la transaction
       const safeCurrency = transfer.currency || "$";
       const safeBeneficiary = transfer.beneficiaryName || "Inconnu";
 
@@ -394,7 +393,7 @@ const AdminTransfers = () => {
         message: "notifications.msg_refunded",
         metadata: {
           montant: Math.abs(transfer.amount),
-          devise: safeCurrency, // ✅ Devise réelle
+          devise: safeCurrency,
           beneficiaire: safeBeneficiary,
           statut: "remboursé",
         },
@@ -430,7 +429,7 @@ const AdminTransfers = () => {
             t.amount === transfer.amount &&
             t.beneficiaryName === transfer.beneficiaryName
           )
-        );
+      );
 
       await updateDoc(clientRef, { transactionHistory: newHistory });
       alert("✅ Transaction supprimée.");
@@ -439,6 +438,31 @@ const AdminTransfers = () => {
     } catch (e) {
       console.error(e);
       alert("Erreur suppression");
+    }
+    setProcessing(false);
+  };
+
+  // ✅ LOGIQUE DE BLOCAGE CLIENT
+  const openBlockModal = (transfer) => {
+    setShowBlockModal(transfer);
+    setIsAccountBlocked(transfer.clientIsBlocked);
+    setFeePercentage(transfer.clientBlockPercentage || "");
+  };
+
+  const handleSaveBlockSetting = async () => {
+    setProcessing(true);
+    try {
+      const clientRef = doc(db, "clients", showBlockModal.clientId);
+      await updateDoc(clientRef, {
+        isBlocked: isAccountBlocked,
+        blockPercentage: isAccountBlocked ? parseFloat(feePercentage) : null,
+      });
+      alert("✅ Les paramètres d'accès du client ont été mis à jour.");
+      setShowBlockModal(null);
+      await loadTransfers(); // Pour mettre à jour les données affichées
+    } catch (error) {
+      console.error("Erreur mise à jour blocage:", error);
+      alert("Erreur technique lors de la mise à jour.");
     }
     setProcessing(false);
   };
@@ -534,7 +558,12 @@ const AdminTransfers = () => {
             >
               <div className="transfer-info">
                 <div className="transfer-client">
-                  <strong>{transfer.clientName}</strong>
+                  <strong>
+                    {transfer.clientName}{" "}
+                    {transfer.clientIsBlocked && (
+                      <span style={{ color: "red", fontSize: "12px", marginLeft: "5px" }}>(Bloqué)</span>
+                    )}
+                  </strong>
                   <span className="transfer-email">{transfer.clientEmail}</span>
                 </div>
                 <div className="transfer-details">
@@ -612,6 +641,21 @@ const AdminTransfers = () => {
                     </button>
                   )
                 ) : null}
+                
+                {/* ✅ BOUTON POUR RESTREINDRE LE CLIENT */}
+                <button
+                  className="btn-delete-small"
+                  style={{ backgroundColor: transfer.clientIsBlocked ? "#fee2e2" : "", color: transfer.clientIsBlocked ? "#dc2626" : "" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openBlockModal(transfer);
+                  }}
+                  disabled={processing}
+                  title="Gérer l'accès du client"
+                >
+                  <Lock size={16} />
+                </button>
+
                 <button
                   className="btn-delete-small"
                   onClick={(e) => {
@@ -787,6 +831,72 @@ const AdminTransfers = () => {
           </div>
         </div>
       )}
+
+      {/* ✅ MODALE DE BLOCAGE CLIENT */}
+      {showBlockModal && (
+        <div className="transfer-modal-overlay" onClick={() => setShowBlockModal(null)}>
+          <div className="transfer-modal" style={{ maxWidth: '450px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Restreindre le client</h2>
+              <button onClick={() => setShowBlockModal(null)}>×</button>
+            </div>
+
+            <div className="modal-body">
+              <p style={{ marginBottom: '20px' }}>
+                <strong>Client concerné :</strong> {showBlockModal.clientName}
+              </p>
+
+              <div className="detail-group">
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', backgroundColor: '#f9fafb', padding: '15px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+                  <input
+                    type="checkbox"
+                    checked={isAccountBlocked}
+                    onChange={(e) => setIsAccountBlocked(e.target.checked)}
+                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                  />
+                  <div>
+                    <strong style={{ display: 'block', color: '#111827' }}>Activer le Pop-up de restriction</strong>
+                    <span style={{ fontSize: '12px', color: '#6b7280' }}>Bloque les transferts du client</span>
+                  </div>
+                </label>
+              </div>
+
+              {isAccountBlocked && (
+                <div className="detail-group" style={{ marginTop: '20px', animation: 'fadeIn 0.3s ease' }}>
+                  <label style={{ color: '#374151', fontWeight: 'bold' }}>Pourcentage des frais à régler (%) *</label>
+                  <input
+                    type="number"
+                    value={feePercentage}
+                    onChange={(e) => setFeePercentage(e.target.value)}
+                    placeholder="Ex: 10"
+                    min="0"
+                    max="100"
+                    className="reject-input"
+                    style={{ marginTop: '8px' }}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', marginTop: '25px', gap: '10px' }}>
+              <button
+                className="btn-cancel-reject"
+                onClick={() => setShowBlockModal(null)}
+              >
+                Annuler
+              </button>
+              <button
+                className="btn-approve-modal"
+                onClick={handleSaveBlockSetting}
+                disabled={processing || (isAccountBlocked && !feePercentage)}
+              >
+                {processing ? "..." : "Enregistrer les modifications"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
